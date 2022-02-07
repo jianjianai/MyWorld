@@ -4,8 +4,8 @@ plugins {
 
 group 'cn.jja8.personWorld'
 version '1.0-SNAPSHOT'
-sourceCompatibility = 1.16
-targetCompatibility = 1.16
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()

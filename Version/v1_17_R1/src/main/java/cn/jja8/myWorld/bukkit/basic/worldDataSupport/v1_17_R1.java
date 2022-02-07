@@ -124,13 +124,11 @@ public class v1_17_R1 implements WorldDataSupport{
                     biomeProvider = craftServer.getBiomeProvider(name);
                 }
 
-                ResourceKey actualDimension = switch (creator.environment().ordinal()) {
-                    case 1 -> WorldDimension.b;
-                    case 2 -> WorldDimension.c;
-                    case 3 -> WorldDimension.d;
-                    default -> throw new IllegalArgumentException("Illegal dimension");
+                ResourceKey actualDimension = switch (creator.environment()) {
+                    case NORMAL, CUSTOM -> WorldDimension.b;
+                    case NETHER -> WorldDimension.c;
+                    case THE_END -> WorldDimension.d;
                 };
-
                 Convertable.ConversionSession worldSession;
                 try {
                     worldSession = Convertable.a(craftServer.getWorldContainer().toPath()).c(name, actualDimension);
