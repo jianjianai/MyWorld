@@ -131,7 +131,7 @@ public class v1_17_R1 implements WorldDataSupport{
                 };
                 Convertable.ConversionSession worldSession;
                 try {
-                    worldSession = Convertable.a(craftServer.getWorldContainer().toPath()).c(name, actualDimension);
+                    worldSession = Convertable.a(new File(allWordFile,WordName).toPath()).c(name, actualDimension);
                 } catch (IOException var24) {
                     throw new RuntimeException(var24);
                 }
