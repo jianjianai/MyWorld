@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Build'){
       steps {
-        sh 'gradle clean jar'
+        sh 'gradle :Main:jar'
       }
       post {
         success {
