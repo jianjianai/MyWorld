@@ -325,7 +325,7 @@ public class Command {
                 return;
             }
         }
-        if (!"确认".equals(strings[0])) {
+        if ((!"确认".equals(strings[0]))&(!"yes".equals(strings[0]))) {
             player.sendMessage(MyWorldBukkit.getLang().删除团队_删除确认);
             return;
         }
