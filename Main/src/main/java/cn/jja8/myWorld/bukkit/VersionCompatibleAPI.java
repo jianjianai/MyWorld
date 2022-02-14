@@ -1,8 +1,8 @@
 package cn.jja8.myWorld.bukkit;
 
+import cn.jja8.myWorld.all.basic.teamSupport.TeamManager;
 import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.Portal;
-import cn.jja8.myWorld.bukkit.basic.teamSupport.TeamManager;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.playerDataSupport.PlayerDataSupport;

@@ -1,8 +1,10 @@
 package cn.jja8.myWorld.bukkit.command;
 
+import cn.jja8.myWorld.all.basic.teamSupport.Status;
+import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.all.veryUtil.StringTool;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.basic.teamSupport.Team;
+import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandImplement;
@@ -68,7 +70,7 @@ public class Command {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
         MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> {
-            Team 团队 = Teams.teamManager.getTeam(player);
+            Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
             if (团队 == null) {
                 player.sendMessage(MyWorldBukkit.getLang().返回世界_没有团队);
                 return;
@@ -104,13 +106,14 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_删除确认);
             return;
         }
-        Team 团队 = Teams.teamManager.getTeam(player);
-        if (团队 == null) {
-            player.sendMessage(MyWorldBukkit.getLang().删除世界_玩家没有团队);
+        TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
+        if (teamPlayer.getStatus()!= Status.leader) {
+            player.sendMessage(MyWorldBukkit.getLang().删除世界_不是团长);
             return;
         }
-        if (!团队.isLeader(player)) {
-            player.sendMessage(MyWorldBukkit.getLang().删除世界_不是团长);
+        Team 团队 = teamPlayer.getTeam();
+        if (团队 == null) {
+            player.sendMessage(MyWorldBukkit.getLang().删除世界_玩家没有团队);
             return;
         }
         PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(团队.getWorldName());
@@ -126,7 +129,7 @@ public class Command {
     private void 信任列表(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             player.sendMessage(MyWorldBukkit.getLang().信任列表_你没有团队);
             return;
@@ -144,7 +147,7 @@ public class Command {
     private void 查询信息(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队==null){
             player.sendMessage(MyWorldBukkit.getLang().查询信息_还没有团队);
             return;
@@ -170,11 +173,11 @@ public class Command {
     private List<String> 取消信任_NBT补全(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return null;
         Player player = (Player) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             return null;
         }
-        if (!团队.isAdmin(player)){
+        if (!团队.isAdmin(new TeamPlayer_userPlayer(player))){
             return null;
         }
         PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(团队.getWorldName());
@@ -192,12 +195,12 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().取消信任_没有参数);
             return;
         }
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             player.sendMessage(MyWorldBukkit.getLang().取消信任_你没有团队);
             return;
         }
-        if (!团队.isAdmin(player)){
+        if (!团队.isAdmin(new TeamPlayer_userPlayer(player))){
             player.sendMessage(MyWorldBukkit.getLang().取消信任_权限不足);
             return;
         }
@@ -217,12 +220,12 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().添加信任_没有参数);
             return;
         }
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             player.sendMessage(MyWorldBukkit.getLang().添加信任_你没有团队);
             return;
         }
-        if (!团队.isAdmin(player)){
+        if (!团队.isAdmin(new TeamPlayer_userPlayer(player))){
             player.sendMessage(MyWorldBukkit.getLang().添加信任_权限不足);
             return;
         }
@@ -238,12 +241,12 @@ public class Command {
     private void 退出团队(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_你没有团队);
             return;
         }
-        if (团队.isLeader(player)) {
+        if (团队.isLeader(new TeamPlayer_userPlayer(player))) {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_团长不能退出);
             return;
         }
@@ -255,8 +258,8 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_退出确认);
             return;
         }
-        团队.delMember(player);
-        团队.delAdmin(player);
+        团队.delMember(new TeamPlayer_userPlayer(player));
+        团队.delAdmin(new TeamPlayer_userPlayer(player));
         player.sendMessage(MyWorldBukkit.getLang().退出团队_退出成功);
     }
 
@@ -268,24 +271,24 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().接受邀请_没被邀请);
             return;
         }
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 != null) {
             player.sendMessage(MyWorldBukkit.getLang().接受邀请_已经有团队.replaceAll("<团队>", 团队.getTeamName()));
             return;
         }
-        邀请团队.addMember(player);
+        邀请团队.addMember(new TeamPlayer_userPlayer(player));
         player.sendMessage(MyWorldBukkit.getLang().接受邀请_接受成功.replaceAll("<团队>", 邀请团队.getTeamName()));
     }
 
     private void 邀请成员(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             player.sendMessage(MyWorldBukkit.getLang().邀请成员_玩家没有团队);
             return;
         }
-        if (!团队.isAdmin(player)) {
+        if (!团队.isAdmin(new TeamPlayer_userPlayer(player)) ){
             player.sendMessage(MyWorldBukkit.getLang().邀请成员_不是管理);
             return;
         }
@@ -306,12 +309,12 @@ public class Command {
     private void 解散团队(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 == null) {
             player.sendMessage(MyWorldBukkit.getLang().删除团队_玩家没有团队);
             return;
         }
-        if (!团队.isLeader(player)) {
+        if (!团队.isLeader(new TeamPlayer_userPlayer(player))) {
             player.sendMessage(MyWorldBukkit.getLang().删除团队_不是团长);
             return;
         }
@@ -346,7 +349,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().创建世界_团队名不合法);
             return;
         }
-        Team 团队 = Teams.teamManager.getTeam(player);
+        Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
         if (团队 != null) {
             player.sendMessage(MyWorldBukkit.getLang().创建团队_已经在团队中了.replaceAll("<团队>", 团队.getTeamName()));
             return;
@@ -356,7 +359,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().创建团队_团队名称被占用.replaceAll("<团队>", 团队.getTeamName()));
             return;
         }
-        Teams.teamManager.createTeam(strings[0], player);
+        Teams.teamManager.createTeam(strings[0], new TeamPlayer_userPlayer(player));
         player.sendMessage(MyWorldBukkit.getLang().创建团队_创建成功);
         //如果团队创建时顺便创建世界
         if (MyWorldBukkit.getTeamConfig().创建团队时以团队名称创建世界) {
@@ -388,7 +391,7 @@ public class Command {
                 player.sendMessage(MyWorldBukkit.getLang().创建世界_世界已经存在.replaceAll("<世界>",strings[0]));
                 return;
             }
-            Team 团队 = Teams.teamManager.getTeam(player);
+            Team 团队 = Teams.teamManager.getTeam(new TeamPlayer_userPlayer(player));
             if (团队 == null) {
                 player.sendMessage(MyWorldBukkit.getLang().创建世界_玩家没有团队);
                 return;
@@ -398,7 +401,7 @@ public class Command {
                 player.sendMessage(MyWorldBukkit.getLang().创建世界_团队已经有世界了);
                 return;
             }
-            if (!团队.isLeader(player)) {
+            if (!团队.isLeader(new TeamPlayer_userPlayer(player))) {
                 player.sendMessage(MyWorldBukkit.getLang().创建世界_不是团长);
                 return;
             }
@@ -421,7 +424,7 @@ public class Command {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
         MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> {
-            Team 团队 = Teams.teamManager.getTeam(player);
+            Team 团队 = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
             if (团队 == null) {
                 player.sendMessage(MyWorldBukkit.getLang().去出生点_没有团队);
                 return;
