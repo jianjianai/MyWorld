@@ -1,5 +1,6 @@
 package cn.jja8.myWorld.bukkit.word;
 
+import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.bukkit.basic.Teams;
@@ -44,7 +45,11 @@ public class WorldSecurity implements Listener {
             return true;
         }
         //判断玩家团队
-        Team team = Teams.teamManager.getTamePlayer(player.getUniqueId()).getTeam();
+        TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
+        if (teamPlayer==null){
+            return false;
+        }
+        Team team = teamPlayer.getTeam();
         if (team==null){
             return false;
         }

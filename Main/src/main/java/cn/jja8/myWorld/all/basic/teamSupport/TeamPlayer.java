@@ -8,4 +8,6 @@ public interface TeamPlayer {
     Team getTeam();
     void SetTeam(Team team);
     void setStatus(Status status);
+    String getName();
+    void setName(String name);
 }

@@ -21,6 +21,35 @@ public class JDBC_TeamPlayer implements TeamPlayer{
     }
 
     @Override
+    public String getName() {
+        try (Connection connection = teamManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerName from TeamPlayer where PlayerUUID=?")){
+                preparedStatement.setString(1,PlayerUUID.toString());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()){
+                    return resultSet.getString(1);
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void setName(String name) {
+        try (Connection connection = teamManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set PlayerName=? where PlayerUUID=?")){
+                preparedStatement.setString(1,name);
+                preparedStatement.setString(2,PlayerUUID.toString());
+                preparedStatement.executeQuery();
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
     public Status getStatus() {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select Status from TeamPlayer where PlayerUUID=?")){

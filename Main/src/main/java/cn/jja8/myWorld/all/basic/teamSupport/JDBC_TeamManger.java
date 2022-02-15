@@ -23,7 +23,7 @@ public class JDBC_TeamManger implements TeamManager {
             statement.execute("create unique index if not exists Team_TeamName_uindex on Team (TeamName);");
             statement.execute("create unique index if not exists Team_WorldName_uindex on Team (WorldName);");
             //teamPlayer
-            statement.execute("create table if not exists TeamPlayer(PlayerUUID varchar(36) not null constraint TeamPlayer_pk primary key,TeamUUID varchar(36),Status varchar);");
+            statement.execute("create table if not exists TeamPlayer(PlayerUUID varchar(36) not null constraint TeamPlayer_pk primary key,PlayerName varchar,TeamUUID varchar(36),Status varchar);");
             statement.execute("create unique index if not exists TeamPlayer_TeamUUID_uindex on TeamPlayer (TeamUUID);");
         }
     }
@@ -61,8 +61,21 @@ public class JDBC_TeamManger implements TeamManager {
                     return new JDBC_TeamPlayer(this,uuid);
                 }
             }
-            try (PreparedStatement preparedStatement = connection.prepareStatement("insert into TeamPlayer(PlayerUUID) values(?)")){
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 创建一个TeamPlayer
+     */
+    @Override
+    public TeamPlayer newTamePlayer(UUID uuid, String name) {
+        try (Connection connection = getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("insert into TeamPlayer(PlayerUUID,PlayerName) values(?,?)")){
                 preparedStatement.setString(1,uuid.toString());
+                preparedStatement.setString(2,name);
                 int up = preparedStatement.executeUpdate();
                 if (up==1){
                     return new JDBC_TeamPlayer(this,uuid);
@@ -71,7 +84,7 @@ public class JDBC_TeamManger implements TeamManager {
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-        throw new Error("数据库连接出现异常！");
+        return null;
     }
 
     @Override
