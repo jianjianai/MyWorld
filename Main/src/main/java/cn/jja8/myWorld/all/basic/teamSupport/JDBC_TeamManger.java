@@ -24,7 +24,7 @@ public class JDBC_TeamManger implements TeamManager {
             statement.execute("create unique index if not exists Team_WorldName_uindex on Team (WorldName);");
             //teamPlayer
             statement.execute("create table if not exists TeamPlayer(PlayerUUID varchar(36) not null constraint TeamPlayer_pk primary key,PlayerName varchar,TeamUUID varchar(36),Status varchar);");
-            statement.execute("create unique index if not exists TeamPlayer_TeamUUID_uindex on TeamPlayer (TeamUUID);");
+            statement.execute("create index if not exists TeamPlayer_TeamUUID_uindex on TeamPlayer (TeamUUID);");
         }
     }
     Connection getConnection() throws SQLException {

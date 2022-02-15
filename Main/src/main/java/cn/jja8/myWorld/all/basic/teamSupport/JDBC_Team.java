@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class JDBC_Team implements Team{
@@ -60,6 +62,39 @@ public class JDBC_Team implements Team{
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
+    }
+
+    /**
+     * 获取团队中的全部玩家
+     *
+     * @param status 特定的Status的玩家。 null 不指定Status。
+     */
+    @Override
+    public List<TeamPlayer> getPlayers(Status status) {
+        try (Connection connection = teamManger.getConnection()){
+            ArrayList<TeamPlayer> playerList = new ArrayList<>();
+            if (status==null){
+                try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerUUID from TeamPlayer where TeamUUID=?")){
+                    preparedStatement.setString(1,TeamUUID.toString());
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()){
+                        playerList.add(new JDBC_TeamPlayer(teamManger,UUID.fromString(resultSet.getString(1))));
+                    }
+                }
+            }else {
+                try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerUUID from TeamPlayer where Status=? and TeamUUID=?")){
+                    preparedStatement.setString(1,status.toString());
+                    preparedStatement.setString(2,TeamUUID.toString());
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()){
+                        playerList.add(new JDBC_TeamPlayer(teamManger,UUID.fromString(resultSet.getString(1))));
+                    }
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return null;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Command {
         commandManger.addCommand(new String[]{"解散团队","DisbandOurTeam"}, this::解散团队);
         commandManger.addCommand(new String[]{"邀请成员","InviteFriend"}, this::邀请成员);
         commandManger.addCommand(new String[]{"接受邀请","AcceptInvitation"}, this::接受邀请);
-        commandManger.addCommand(new String[]{"创建世界","NewWord"}, this::创建世界);
+        commandManger.addCommand(new String[]{"创建世界","NewWorld"}, this::创建世界);
         commandManger.addCommand(new String[]{"去出生点","goBeginningPoint"}, this::去出生点);
         commandManger.addCommand(new String[]{"退出团队","QuitThisTeam"}, this::退出团队);
         commandManger.addCommand(new String[]{"添加信任","TrustHim"}, this::添加信任);
@@ -161,9 +161,9 @@ public class Command {
         }else {
             map.put("<团队世界信息>",MyWorldBukkit.getLang().查询信息_团队世界信息.replaceAll("<世界>",团队.getWorldName()));
         }
-        map.put("<团长>",团队.getLeader().toString());
-        map.put("<管理员列表>",团队.admins().toString());
-        map.put("<队员列表>",团队.members().toString());
+        map.put("<团长>",团队.getPlayers(Status.leader).toString());
+        map.put("<管理员列表>",团队.getPlayers(Status.admin).toString());
+        map.put("<队员列表>",团队.getPlayers(Status.player).toString());
         List<String> list = StringTool.stringListReplaces(MyWorldBukkit.getLang().查询信息_长信息列表,map);
         for (String s : list) {
             player.sendMessage(s);
@@ -282,6 +282,7 @@ public class Command {
             return;
         }
         teamPlayer.SetTeam(邀请团队);
+        teamPlayer.setStatus(Status.player);
         player.sendMessage(MyWorldBukkit.getLang().接受邀请_接受成功.replaceAll("<团队>", 邀请团队.getTeamName()));
     }
 
@@ -367,6 +368,7 @@ public class Command {
         }
         Team team = Teams.teamManager.newTeam(strings[0]);
         teamPlayer.SetTeam(team);
+        teamPlayer.setStatus(Status.leader);
         player.sendMessage(MyWorldBukkit.getLang().创建团队_创建成功);
         //如果团队创建时顺便创建世界
         if (MyWorldBukkit.getTeamConfig().创建团队时以团队名称创建世界) {
@@ -452,22 +454,20 @@ public class Command {
         });
     }
 
-    private boolean isAdmin(TeamPlayer teamPlayer){
-        return teamPlayer.getStatus()==Status.leader|
+    private static boolean isAdmin(TeamPlayer teamPlayer){
+        return teamPlayer.getStatus()==Status.admin|
                 isLeader(teamPlayer);
     }
-    private boolean isLeader(TeamPlayer teamPlayer){
+    private static boolean isLeader(TeamPlayer teamPlayer){
         return teamPlayer.getStatus()==Status.leader;
     }
-    private TeamPlayer getTeamPlayerNotNull(Player player){
+    private static TeamPlayer getTeamPlayerNotNull(Player player){
         TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
         if (teamPlayer==null){
             teamPlayer = Teams.teamManager.newTamePlayer(player.getUniqueId(),player.getName());
         }
         return teamPlayer;
     }
-
-
     /**
      * 检查字符串是否合法
      *

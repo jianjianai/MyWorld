@@ -1,7 +1,7 @@
 package cn.jja8.myWorld.bungeecord;
 
 
-import cn.jja8.myWorld.bungeecord.basic.teamSupport.TeamManager;
+import cn.jja8.myWorld.all.basic.teamSupport.TeamManager;
 import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
 import cn.jja8.myWorld.bungeecord.basic.worldDataSupport.WorldDataSupport;

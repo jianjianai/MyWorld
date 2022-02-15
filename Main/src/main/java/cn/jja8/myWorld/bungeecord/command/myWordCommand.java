@@ -1,8 +1,9 @@
 package cn.jja8.myWorld.bungeecord.command;
 
+import cn.jja8.myWorld.all.basic.teamSupport.Status;
+import cn.jja8.myWorld.all.basic.teamSupport.Team;
+import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
-import cn.jja8.myWorld.bungeecord.basic.teamSupport.Team;
-import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
 import cn.jja8.myWorld.bungeecord.veryUtil.ServerFind;
 import cn.jja8.patronSaint_2022_2_7_1713.bungeecord.command.CommandManger;
@@ -39,7 +40,7 @@ public class myWordCommand{
         commandManger.addCommand(new String[]{"接受邀请","AcceptInvitation"}, this::接受邀请);
         commandManger.addCommand(new String[]{"去出生点","goBeginningPoint"}, this::去出生点);
         commandManger.addCommand(new String[]{"回到世界","go"}, this::返回世界);
-        commandManger.addCommand(new String[]{"创建世界","NewWord"},this::创建世界);
+        commandManger.addCommand(new String[]{"创建世界","NewWorld"},this::创建世界);
     }
 
     private void 创建世界(CommandSender commandSender, String[] strings) {
@@ -57,7 +58,8 @@ public class myWordCommand{
             proxiedPlayer.sendMessage(new TextComponent(MyWorldBungeecord.getLang().创建世界_世界名不合法));
             return;
         }
-        Team team = Teams.teamManager.getTeam(proxiedPlayer);
+        TeamPlayer teamPlayer = getTeamPlayerNotNull(proxiedPlayer);
+        Team team = teamPlayer.getTeam();
         if (team==null){
             commandSender.sendMessage(new TextComponent(MyWorldBungeecord.getLang().创建世界_还没创建团队));
             return;
@@ -66,7 +68,7 @@ public class myWordCommand{
             commandSender.sendMessage(new TextComponent(MyWorldBungeecord.getLang().创建世界_团队已经有世界了));
             return;
         }
-        if (!team.isLeader(proxiedPlayer)){
+        if (!isLeader(teamPlayer)){
             commandSender.sendMessage(new TextComponent(MyWorldBungeecord.getLang().创建世界_不是团长));
             return;
         }
@@ -97,24 +99,27 @@ public class myWordCommand{
             proxiedPlayer.sendMessage(new TextComponent(MyWorldBungeecord.getLang().接受邀请_没被邀请));
             return;
         }
-        Team 团队 = Teams.teamManager.getTeam(proxiedPlayer);
+        TeamPlayer teamPlayer = getTeamPlayerNotNull(proxiedPlayer);
+        Team 团队 = teamPlayer.getTeam();
         if (团队 != null) {
             proxiedPlayer.sendMessage(new TextComponent(MyWorldBungeecord.getLang().接受邀请_已经有团队.replaceAll("<团队>", 团队.getTeamName())));
             return;
         }
-        邀请团队.addMember(proxiedPlayer);
+        teamPlayer.SetTeam(邀请团队);
+        teamPlayer.setStatus(Status.player);
         proxiedPlayer.sendMessage(new TextComponent(MyWorldBungeecord.getLang().接受邀请_接受成功.replaceAll("<团队>", 邀请团队.getTeamName())));
     }
 
     private void 邀请成员(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof ProxiedPlayer))) return;
         ProxiedPlayer proxiedPlayer = (ProxiedPlayer) commandSender;
-        Team 团队 = Teams.teamManager.getTeam(proxiedPlayer);
+        TeamPlayer teamPlayer = getTeamPlayerNotNull(proxiedPlayer);
+        Team 团队 = teamPlayer.getTeam();
         if (团队 == null) {
             proxiedPlayer.sendMessage(new TextComponent(MyWorldBungeecord.getLang().邀请成员_玩家没有团队));
             return;
         }
-        if (!团队.isAdmin(proxiedPlayer)) {
+        if (!isAdmin(teamPlayer)) {
             proxiedPlayer.sendMessage(new TextComponent(MyWorldBungeecord.getLang().邀请成员_不是管理));
             return;
         }
@@ -135,7 +140,7 @@ public class myWordCommand{
     private void 去出生点(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof ProxiedPlayer))) return;
         ProxiedPlayer proxiedPlayer = (ProxiedPlayer) commandSender;
-        Team team = Teams.teamManager.getTeam(proxiedPlayer);
+        Team team = getTeamPlayerNotNull(proxiedPlayer).getTeam();
         if (team==null){
             commandSender.sendMessage(new TextComponent(MyWorldBungeecord.getLang().去出生点_还没创建团队));
             return;
@@ -164,7 +169,8 @@ public class myWordCommand{
     private void 返回世界(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof ProxiedPlayer))) return;
         ProxiedPlayer proxiedPlayer = (ProxiedPlayer) commandSender;
-        Team team = Teams.teamManager.getTeam(proxiedPlayer);
+        TeamPlayer teamPlayer = getTeamPlayerNotNull(proxiedPlayer);
+        Team team = teamPlayer.getTeam();
         if (team==null){
             commandSender.sendMessage(new TextComponent(MyWorldBungeecord.getLang().返回世界_还没创建团队));
             return;
@@ -200,6 +206,20 @@ public class myWordCommand{
     }
 
 
+    private static boolean isAdmin(TeamPlayer teamPlayer){
+        return teamPlayer.getStatus()== Status.admin|
+                isLeader(teamPlayer);
+    }
+    private static boolean isLeader(TeamPlayer teamPlayer){
+        return teamPlayer.getStatus()==Status.leader;
+    }
+    private static TeamPlayer getTeamPlayerNotNull(ProxiedPlayer player){
+        TeamPlayer teamPlayer = cn.jja8.myWorld.bukkit.basic.Teams.teamManager.getTamePlayer(player.getUniqueId());
+        if (teamPlayer==null){
+            teamPlayer = cn.jja8.myWorld.bukkit.basic.Teams.teamManager.newTamePlayer(player.getUniqueId(),player.getName());
+        }
+        return teamPlayer;
+    }
     /**
      * 检查字符串是否合法
      *

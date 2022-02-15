@@ -49,6 +49,12 @@ public class JDBC_TeamPlayer implements TeamPlayer{
         }
     }
 
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     @Override
     public Status getStatus() {
         try (Connection connection = teamManger.getConnection()){

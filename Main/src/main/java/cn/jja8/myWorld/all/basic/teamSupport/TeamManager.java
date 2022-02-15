@@ -22,5 +22,8 @@ public interface TeamManager {
      * @return null 这个玩家已经存在
      * */
     TeamPlayer newTamePlayer(UUID uuid,String name);
+    /**
+     * 关闭teamManger，一般在插件关闭时调用。
+     * */
     default void close(){};
 }
