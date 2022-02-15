@@ -84,10 +84,10 @@ public class v1_16_R3 implements WorldDataSupport{
                 WorldDataServer worlddata = (WorldDataServer)worldSession.a(registryreadops, console.datapackconfiguration);
                 if (worlddata == null) {
                     Properties properties = new Properties();
-                    properties.put("generator-settings", Objects.toString(creator.generatorSettings()));
+                    properties.put("generator-settings", creator.generatorSettings());
                     properties.put("level-seed", Objects.toString(creator.seed()));
                     properties.put("generate-structures", Objects.toString(creator.generateStructures()));
-                    properties.put("level-type", Objects.toString(creator.type().getName()));
+                    properties.put("level-type", creator.type().getName());
                     GeneratorSettings generatorsettings = GeneratorSettings.a(console.getCustomRegistry(), properties);
                     WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(craftServer.getDefaultGameMode().getValue()), hardcore, EnumDifficulty.EASY, false, new GameRules(), console.datapackconfiguration);
                     worlddata = new WorldDataServer(worldSettings, generatorsettings, Lifecycle.stable());
@@ -106,11 +106,11 @@ public class v1_16_R3 implements WorldDataSupport{
                 long j = BiomeManager.a(creator.seed());
                 List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
                 RegistryMaterials<WorldDimension> registrymaterials = worlddata.getGeneratorSettings().d();
-                WorldDimension worlddimension = (WorldDimension)registrymaterials.a(actualDimension);
+                WorldDimension worlddimension = registrymaterials.a(actualDimension);
                 DimensionManager dimensionmanager;
                 Object chunkgenerator;
                 if (worlddimension == null) {
-                    dimensionmanager = (DimensionManager)console.customRegistry.a().d(DimensionManager.OVERWORLD);
+                    dimensionmanager = console.customRegistry.a().d(DimensionManager.OVERWORLD);
                     chunkgenerator = GeneratorSettings.a(console.customRegistry.b(IRegistry.ay), console.customRegistry.b(IRegistry.ar), (new Random()).nextLong());
                 } else {
                     dimensionmanager = worlddimension.b();
