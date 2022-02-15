@@ -1,8 +1,6 @@
 package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 
 import cn.jja8.myWorld.all.veryUtil.Lock;
-import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Lifecycle;
@@ -30,35 +28,6 @@ public class v1_16_R3 implements WorldDataSupport{
     public boolean unloadWorld(World world, boolean save){
         CraftServer craftServer = (CraftServer) Bukkit.getServer();
         return craftServer.unloadWorld(world,save);
-//        try {
-//
-//            WorldServer handle = ((CraftWorld) world).getHandle();
-//            //利用反射拿到words
-//            Field worldsField = CraftServer.class.getDeclaredField("worlds");
-//            worldsField.setAccessible(true);
-//            Map<String,World> worlds = (Map<String, World>) worldsField.get(craftServer);
-//
-//            WorldUnloadEvent e = new WorldUnloadEvent(handle.getWorld());
-//            MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().callEvent(e);
-//            if (e.isCancelled()){
-//                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("在卸载"+world.getName()+"世界时，被其他插件阻止，正在强行卸载。");
-//            }
-//            try {
-//                if (save) {
-//                    handle.save(null, true, true);
-//                }
-//                handle.getChunkProvider().close(save);
-//                handle.convertable.close();
-//            } catch (Exception var6) {
-//                Bukkit.getLogger().log(Level.SEVERE, null, var6);
-//            }
-//            worlds.remove(world.getName().toLowerCase(Locale.ENGLISH));
-//            craftServer.getServer().worldServer.remove(handle.getDimensionKey());
-//            return true;
-//        } catch (NoSuchFieldException | IllegalAccessException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
     }
 
     /**
@@ -67,100 +36,107 @@ public class v1_16_R3 implements WorldDataSupport{
     public World loadWorld(WorldCreator creator, String WordName) {
         try {
             CraftServer craftServer = (CraftServer) Bukkit.getServer();
-            //利用反射拿到console
-            Field field = CraftServer.class.getDeclaredField("console");
-            field.setAccessible(true);
-            DedicatedServer console = (DedicatedServer) field.get(craftServer);
+            DedicatedServer console = craftServer.getServer();
             //利用反射拿到words
             Field worldsField = CraftServer.class.getDeclaredField("worlds");
             worldsField.setAccessible(true);
-            Map<String,World> worlds = (Map<String, World>) worldsField.get(craftServer);
+            Map<String, World> worlds = (Map<String, World>) worldsField.get(craftServer);
             //利用反射拿
-            Field pluginManagerField = CraftServer.class.getDeclaredField("pluginManager");
-            pluginManagerField.setAccessible(true);
 
-            Preconditions.checkState(!console.worldServer.isEmpty(), "Cannot create additional worlds on STARTUP");
+            //-----------------------------------------------------------------
             Validate.notNull(creator, "Creator may not be null");
             String name = creator.name();
             ChunkGenerator generator = creator.generator();
-
-            if (generator == null) {
-                generator = craftServer.getGenerator(name);
-            }
-            //世界类型
-            ResourceKey<WorldDimension> actualDimension = WorldDimension.OVERWORLD;
-            switch(creator.environment()) {
-                case NORMAL:
-                    actualDimension = WorldDimension.OVERWORLD;
-                    break;
-                case NETHER:
-                    actualDimension = WorldDimension.THE_NETHER;
-                    break;
-                case THE_END:
-                    actualDimension = WorldDimension.THE_END;
-                    break;
-            }
-
-            Convertable.ConversionSession worldSession;
-            try {
-                worldSession = Convertable.a(new File(allWordFile,WordName).toPath()).c(name, actualDimension);
-            } catch (IOException var21) {
-                throw new RuntimeException(var21);
-            }
-
-            MinecraftServer.convertWorld(worldSession);
-            boolean hardcore = creator.hardcore();
-            RegistryReadOps<NBTBase> registryreadops = RegistryReadOps.a(DynamicOpsNBT.a, console.dataPackResources.h(), console.customRegistry);
-            WorldDataServer worlddata = (WorldDataServer)worldSession.a(registryreadops, console.datapackconfiguration);
-            if (worlddata == null) {
-                Properties properties = new Properties();
-                properties.put("generator-settings", creator.generatorSettings());
-                properties.put("level-seed", Objects.toString(creator.seed()));
-                properties.put("generate-structures", Objects.toString(creator.generateStructures()));
-                properties.put("level-type", creator.type().getName());
-                GeneratorSettings generatorsettings = GeneratorSettings.a(console.getCustomRegistry(), properties);
-                WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(craftServer.getDefaultGameMode().getValue()), hardcore, EnumDifficulty.EASY, false, new GameRules(), console.datapackconfiguration);
-                worlddata = new WorldDataServer(worldSettings, generatorsettings, Lifecycle.stable());
-            }
-
-            worlddata.checkName(name);
-            worlddata.a(console.getServerModName(), console.getModded().isPresent());
-            if (console.options.has("forceUpgrade")) {
-                net.minecraft.server.v1_16_R3.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worlddata.getGeneratorSettings().d().d().stream().map((entry) -> ResourceKey.a(IRegistry.K, (entry.getKey()).a())).collect(ImmutableSet.toImmutableSet()));
-            }
-
-            long j = BiomeManager.a(creator.seed());
-            List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
-            RegistryMaterials<WorldDimension> registrymaterials = worlddata.getGeneratorSettings().d();
-            WorldDimension worlddimension = registrymaterials.a(actualDimension);
-            DimensionManager dimensionmanager;
-            net.minecraft.server.v1_16_R3.ChunkGenerator chunkgenerator;
-            if (worlddimension == null) {
-                dimensionmanager = console.customRegistry.a().d(DimensionManager.OVERWORLD);
-                chunkgenerator = GeneratorSettings.a(console.customRegistry.b(IRegistry.ay), console.customRegistry.b(IRegistry.ar), (new Random()).nextLong());
+            File folder = new File(new File(allWordFile,WordName), name);
+            World world = craftServer.getWorld(name);
+            if (world != null) {
+                return world;
+            } else if (folder.exists() && !folder.isDirectory()) {
+                throw new IllegalArgumentException("File exists with the name '" + name + "' and isn't a folder");
             } else {
-                dimensionmanager = worlddimension.b();
-                chunkgenerator = worlddimension.c();
-            }
+                if (generator == null) {
+                    generator = craftServer.getGenerator(name);
+                }
 
-            ResourceKey<net.minecraft.server.v1_16_R3.World> worldKey = ResourceKey.a(IRegistry.L, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
-            WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().worldLoadListenerFactory.create(11), chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
-            if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
-                return null;
-            } else {
-                console.initWorld(internal, worlddata, worlddata, worlddata.getGeneratorSettings());
-                internal.setSpawnFlags(true, true);
-                console.worldServer.put(internal.getDimensionKey(), internal);
-                MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().callEvent(new WorldInitEvent(internal.getWorld()));
-                craftServer.getServer().loadSpawn(internal.getChunkProvider().playerChunkMap.worldLoadListener, internal);
-                MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().callEvent(new WorldLoadEvent(internal.getWorld()));
-                return internal.getWorld();
-            }
+                ResourceKey actualDimension = WorldDimension.OVERWORLD;
+                switch (creator.environment()) {
+                    case NORMAL:
+                        actualDimension = WorldDimension.OVERWORLD;
+                        break;
+                    case NETHER:
+                        actualDimension = WorldDimension.THE_NETHER;
+                        break;
+                    case THE_END:
+                        actualDimension = WorldDimension.THE_END;
+                        break;
+                }
 
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+                Convertable.ConversionSession worldSession;
+                try {
+                    worldSession = Convertable.a(craftServer.getWorldContainer().toPath()).c(name, actualDimension);
+                } catch (IOException var21) {
+                    throw new RuntimeException(var21);
+                }
+
+                MinecraftServer.convertWorld(worldSession);
+                boolean hardcore = creator.hardcore();
+                RegistryReadOps<NBTBase> registryreadops = RegistryReadOps.a(DynamicOpsNBT.a, console.dataPackResources.h(), console.customRegistry);
+                WorldDataServer worlddata = (WorldDataServer)worldSession.a(registryreadops, console.datapackconfiguration);
+                if (worlddata == null) {
+                    Properties properties = new Properties();
+                    properties.put("generator-settings", Objects.toString(creator.generatorSettings()));
+                    properties.put("level-seed", Objects.toString(creator.seed()));
+                    properties.put("generate-structures", Objects.toString(creator.generateStructures()));
+                    properties.put("level-type", Objects.toString(creator.type().getName()));
+                    GeneratorSettings generatorsettings = GeneratorSettings.a(console.getCustomRegistry(), properties);
+                    WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(craftServer.getDefaultGameMode().getValue()), hardcore, EnumDifficulty.EASY, false, new GameRules(), console.datapackconfiguration);
+                    worlddata = new WorldDataServer(worldSettings, generatorsettings, Lifecycle.stable());
+                }
+
+                worlddata.checkName(name);
+                worlddata.a(console.getServerModName(), console.getModded().isPresent());
+                if (console.options.has("forceUpgrade")) {
+                    net.minecraft.server.v1_16_R3.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> {
+                        return true;
+                    }, (ImmutableSet)worlddata.getGeneratorSettings().d().d().stream().map((entry) -> {
+                        return ResourceKey.a(IRegistry.K, ((ResourceKey)entry.getKey()).a());
+                    }).collect(ImmutableSet.toImmutableSet()));
+                }
+
+                long j = BiomeManager.a(creator.seed());
+                List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
+                RegistryMaterials<WorldDimension> registrymaterials = worlddata.getGeneratorSettings().d();
+                WorldDimension worlddimension = (WorldDimension)registrymaterials.a(actualDimension);
+                DimensionManager dimensionmanager;
+                Object chunkgenerator;
+                if (worlddimension == null) {
+                    dimensionmanager = (DimensionManager)console.customRegistry.a().d(DimensionManager.OVERWORLD);
+                    chunkgenerator = GeneratorSettings.a(console.customRegistry.b(IRegistry.ay), console.customRegistry.b(IRegistry.ar), (new Random()).nextLong());
+                } else {
+                    dimensionmanager = worlddimension.b();
+                    chunkgenerator = worlddimension.c();
+                }
+
+                ResourceKey<net.minecraft.server.v1_16_R3.World> worldKey = ResourceKey.a(IRegistry.L, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
+                WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().worldLoadListenerFactory.create(11), (net.minecraft.server.v1_16_R3.ChunkGenerator)chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
+                if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
+                    return null;
+                } else {
+                    console.initWorld(internal, worlddata, worlddata, worlddata.getGeneratorSettings());
+                    internal.setSpawnFlags(true, true);
+                    console.worldServer.put(internal.getDimensionKey(), internal);
+                    craftServer.getPluginManager().callEvent(new WorldInitEvent(internal.getWorld()));
+                    craftServer.getServer().loadSpawn(internal.getChunkProvider().playerChunkMap.worldLoadListener, internal);
+                    craftServer.getPluginManager().callEvent(new WorldLoadEvent(internal.getWorld()));
+                    return internal.getWorld();
+                }
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return null;
         }
-        return null;
+
+
     }
 
     /**

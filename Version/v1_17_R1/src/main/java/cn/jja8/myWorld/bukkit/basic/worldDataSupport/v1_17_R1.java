@@ -1,8 +1,6 @@
 package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 
 import cn.jja8.myWorld.all.veryUtil.Lock;
-import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Lifecycle;
@@ -60,35 +58,6 @@ public class v1_17_R1 implements WorldDataSupport{
     public boolean unloadWorld(World world, boolean save){
         CraftServer craftServer = (CraftServer) Bukkit.getServer();
         return craftServer.unloadWorld(world,save);
-//        try {
-//
-//            WorldServer handle = ((CraftWorld) world).getHandle();
-//            //利用反射拿到words
-//            Field worldsField = CraftServer.class.getDeclaredField("worlds");
-//            worldsField.setAccessible(true);
-//            Map<String,World> worlds = (Map<String, World>) worldsField.get(craftServer);
-//
-//            WorldUnloadEvent e = new WorldUnloadEvent(handle.getWorld());
-//            MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().callEvent(e);
-//            if (e.isCancelled()){
-//                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("在卸载"+world.getName()+"世界时，被其他插件阻止，正在强行卸载。");
-//            }
-//            try {
-//                if (save) {
-//                    handle.save(null, true, true);
-//                }
-//                handle.getChunkProvider().close(save);
-//                handle.convertable.close();
-//            } catch (Exception var6) {
-//                Bukkit.getLogger().log(Level.SEVERE, null, var6);
-//            }
-//            worlds.remove(world.getName().toLowerCase(Locale.ENGLISH));
-//            craftServer.getServer().worldServer.remove(handle.getDimensionKey());
-//            return true;
-//        } catch (NoSuchFieldException | IllegalAccessException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
     }
 
     /**
