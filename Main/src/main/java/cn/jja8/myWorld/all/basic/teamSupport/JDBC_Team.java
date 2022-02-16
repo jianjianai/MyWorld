@@ -53,11 +53,11 @@ public class JDBC_Team implements Team{
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("delete from Team where UUID=?")){
                 preparedStatement.setString(1,TeamUUID.toString());
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
             }
             try (PreparedStatement preparedStatement = connection.prepareStatement("delete from TeamPlayer where TeamUUID=?")){
                 preparedStatement.setString(1,TeamUUID.toString());
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -108,7 +108,7 @@ public class JDBC_Team implements Team{
             try (PreparedStatement preparedStatement = connection.prepareStatement("update Team set TeamName=? where UUID=?")){
                 preparedStatement.setString(1,teamName);
                 preparedStatement.setString(2,TeamUUID.toString());
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -137,7 +137,7 @@ public class JDBC_Team implements Team{
             try (PreparedStatement preparedStatement = connection.prepareStatement("update Team set WorldName=? where UUID=?")){
                 preparedStatement.setString(1,teamName);
                 preparedStatement.setString(2,TeamUUID.toString());
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
