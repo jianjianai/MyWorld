@@ -403,7 +403,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().创建世界_团队已经有世界了);
             return;
         }
-        if (isLeader(teamPlayer)) {
+        if (!isLeader(teamPlayer)) {
             player.sendMessage(MyWorldBukkit.getLang().创建世界_不是团长);
             return;
         }
