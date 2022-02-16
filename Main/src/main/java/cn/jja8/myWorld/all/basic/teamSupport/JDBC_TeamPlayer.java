@@ -82,9 +82,9 @@ public class JDBC_TeamPlayer implements TeamPlayer{
     public void SetTeam(Team team) {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set TeamUUID=? where PlayerUUID=?")){
-                preparedStatement.setString(1,team.getUUID().toString());
+                preparedStatement.setString(1,team==null?null:team.getUUID().toString());
                 preparedStatement.setString(2,PlayerUUID.toString());
-                preparedStatement.executeUpdate();
+                preparedStatement.executeQuery();
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
