@@ -1,8 +1,10 @@
 package cn.jja8.myWorld.bukkit.basic.playerDataSupport;
 
+import cn.jja8.myWorld.all.veryUtil.FileLock;
 import com.mojang.datafixers.DataFixer;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -23,6 +25,7 @@ public class v1_16_R3 implements PlayerDataSupport{
     }
 
     private NBTTagCompound loadFromNBT(Player player, NBTTagCompound nbttagcompound){
+        Location location = player.getLocation();
         try {
             //利用反射拿到playerFileData的a
             Field field = WorldNBTStorage.class.getDeclaredField("a");
@@ -33,12 +36,11 @@ public class v1_16_R3 implements PlayerDataSupport{
             int i = nbttagcompound.hasKeyOfType("DataVersion", 3) ? nbttagcompound.getInt("DataVersion") : -1;
             ((CraftPlayer)player).getHandle().load(GameProfileSerializer.a(a, DataFixTypes.PLAYER, nbttagcompound, i));
 
-            return nbttagcompound;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-            return nbttagcompound;
         }
-
+        player.teleport(location);
+        return nbttagcompound;
     }
 
     public void saveData(Player player) {
@@ -70,11 +72,11 @@ public class v1_16_R3 implements PlayerDataSupport{
      */
     @Override
     public PlayerDataLock getPlayerDataLock(Player player) {
-        return new Lock(cn.jja8.myWorld.all.veryUtil.Lock.git(dataFile,player.getUniqueId().toString()));
+        return new Lock(FileLock.git(dataFile,player.getUniqueId().toString()));
     }
     public static class Lock implements PlayerDataLock{
-        cn.jja8.myWorld.all.veryUtil.Lock.lockWork lock;
-        Lock(cn.jja8.myWorld.all.veryUtil.Lock.lockWork lock){
+        FileLock.lockWork lock;
+        Lock(FileLock.lockWork lock){
             this.lock=lock;
         }
         /**
@@ -94,7 +96,7 @@ public class v1_16_R3 implements PlayerDataSupport{
         @Override
         public boolean locked(String serverName) {
             try {
-                lock.Lock(new cn.jja8.myWorld.all.veryUtil.Lock.lockNews(serverName));
+                lock.Lock(new FileLock.lockNews(serverName));
                 return true;
             }catch (Error e){
                 return false;

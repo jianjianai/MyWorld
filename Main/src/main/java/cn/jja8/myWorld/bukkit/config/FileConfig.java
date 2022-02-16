@@ -5,5 +5,4 @@ public class FileConfig {
     public String 团队数据库URL = "jdbc:sqlite:C://myWorld/Team.db";
     public String 玩家数据文件路径 = "C://myWorld/playerData";
     public String 玩家世界文件路径 = "C://myWorld/playerWorld";
-    public int 自动保存时间 = 600;
 }

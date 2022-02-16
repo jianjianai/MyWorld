@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 
 import java.io.*;
@@ -80,12 +81,12 @@ public class PlayerWorlds {
     public World getEndWorld(){
         return 末地;
     }
-    public void savePlayerLocation(String PlauerName, Location location) {
+    public void setPlayerLocation(Player player, Location location) {
         World world = location.getWorld();
         if (world!= getWorld()&world!= getInfernalWorld()&world!= getEndWorld()){
             throw new Error("不可以保存玩家世界以外的位置。"+world.getName()+"不是玩家世界"+getName()+"中的世界。");
         }
-        OutputStream outputStream = WorldData.worldDataSupport.getCustomDataOutputStream(name, "location/" + PlauerName);
+        OutputStream outputStream = WorldData.worldDataSupport.getCustomDataOutputStream(name, "location/"+player.getUniqueId());
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
         yamlConfiguration.set("location",location);
@@ -100,8 +101,8 @@ public class PlayerWorlds {
     /**
      * @return null 没有这个玩家的位置
      * */
-    public Location loadPlayerLocation(String PlayerName) {
-        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(name,"location/"+PlayerName);
+    public Location getPlayerLocation(Player player) {
+        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(name,"location/"+player.getUniqueId());
         if (inputStream==null){
             return null;
         }
@@ -110,5 +111,39 @@ public class PlayerWorlds {
         try { inputStreamReader.close(); } catch (IOException ignored) { }
         try { inputStream.close(); } catch (IOException ignored) { }
         return yamlConfiguration.getLocation("location",null);
+    }
+
+    /**
+     * 将某玩家会到这个世界
+     * */
+    public void playerBack(Player player){
+        Location location = null;
+        try {
+            location = getPlayerLocation(player);
+        }catch (Exception|Error e){
+            e.printStackTrace();
+        }
+
+        if (location!=null){
+            player.teleport(location);
+        }else {
+            playerBackSpawn(player);
+        }
+    }
+    /**
+     * 将某玩家传送去出生点
+     * */
+    public void playerBackSpawn(Player player){
+        World world = getWorld();
+        if (world==null){
+            world = getInfernalWorld();
+        }
+        if (world==null){
+            world = getEndWorld();
+        }
+        if (world==null){
+            throw new Error("至少要开启一个世界才能去玩家的世界。");
+        }
+        player.teleport(world.getSpawnLocation());
     }
 }

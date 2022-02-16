@@ -1,5 +1,6 @@
 package cn.jja8.myWorld.bukkit.basic.playerDataSupport;
 
+import cn.jja8.myWorld.all.veryUtil.FileLock;
 import com.mojang.datafixers.DataFixer;
 import net.minecraft.nbt.GameProfileSerializer;
 import net.minecraft.nbt.NBTCompressedStreamTools;
@@ -7,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.storage.WorldNBTStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -28,6 +30,7 @@ public class v1_18_R1 implements PlayerDataSupport{
     }
 
     private NBTTagCompound loadFromNBT(Player player,NBTTagCompound nbttagcompound){
+        Location location = player.getLocation();
         try {
             //利用反射拿到playerFileData的a
             Field field = WorldNBTStorage.class.getDeclaredField("a");
@@ -37,13 +40,11 @@ public class v1_18_R1 implements PlayerDataSupport{
             //加载数据
             int i = nbttagcompound.b("DataVersion", 3) ? nbttagcompound.h("DataVersion") : -1;
             ((CraftPlayer)player).getHandle().g(GameProfileSerializer.a(a, DataFixTypes.b, nbttagcompound, i));
-
-            return nbttagcompound;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-            return nbttagcompound;
         }
-
+        player.teleport(location);
+        return nbttagcompound;
     }
 
     public void saveData(Player player) {
@@ -75,11 +76,11 @@ public class v1_18_R1 implements PlayerDataSupport{
      */
     @Override
     public PlayerDataLock getPlayerDataLock(Player player) {
-        return new Lock(cn.jja8.myWorld.all.veryUtil.Lock.git(dataFile,player.getUniqueId().toString()));
+        return new Lock(FileLock.git(dataFile,player.getUniqueId().toString()));
     }
     public static class Lock implements PlayerDataLock{
-        cn.jja8.myWorld.all.veryUtil.Lock.lockWork lock;
-        Lock(cn.jja8.myWorld.all.veryUtil.Lock.lockWork lock){
+        FileLock.lockWork lock;
+        Lock(FileLock.lockWork lock){
             this.lock=lock;
         }
         /**
@@ -99,7 +100,7 @@ public class v1_18_R1 implements PlayerDataSupport{
         @Override
         public boolean locked(String serverName) {
             try {
-                lock.Lock(new cn.jja8.myWorld.all.veryUtil.Lock.lockNews(serverName));
+                lock.Lock(new FileLock.lockNews(serverName));
                 return true;
             }catch (Error e){
                 return false;

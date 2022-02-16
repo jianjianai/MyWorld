@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 
-import cn.jja8.myWorld.all.veryUtil.Lock;
+import cn.jja8.myWorld.all.veryUtil.FileLock;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.IRegistry;
@@ -182,7 +182,7 @@ public class v1_18_R1 implements WorldDataSupport{
      */
     @Override
     public WorldDataLock getWorldDataLock(String WorldName) {
-        return new Look(Lock.git(allWordFile,WorldName));
+        return new Look(FileLock.git(allWordFile,WorldName));
     }
 
     /**
@@ -246,8 +246,8 @@ public class v1_18_R1 implements WorldDataSupport{
     }
 
     public static class Look implements WorldDataLock{
-        Lock.lockWork lock;
-        Look(Lock.lockWork lock){
+        FileLock.lockWork lock;
+        Look(FileLock.lockWork lock){
             this.lock=lock;
         }
         /**
@@ -267,7 +267,7 @@ public class v1_18_R1 implements WorldDataSupport{
         @Override
         public boolean locked(String serverName) {
             try {
-                lock.Lock(new Lock.lockNews(serverName));
+                lock.Lock(new FileLock.lockNews(serverName));
                 return true;
             }catch (Error e){
                 return false;

@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bungeecord.basic.worldDataSupport;
 
-import cn.jja8.myWorld.all.veryUtil.Lock;
+import cn.jja8.myWorld.all.veryUtil.FileLock;
 
 import java.io.*;
 
@@ -15,7 +15,7 @@ public class FileWorldAndLock implements WorldDataSupport {
      */
     @Override
     public WorldDataLock getWorldDataLock(String WorldName) {
-        return new Look(Lock.git(allWordFile,WorldName));
+        return new Look(FileLock.git(allWordFile,WorldName));
     }
     /**
      * 返回这个世界是否存在
@@ -27,8 +27,8 @@ public class FileWorldAndLock implements WorldDataSupport {
     }
 
     public static class Look implements WorldDataLock {
-        Lock.lockWork lock;
-        Look(Lock.lockWork lock){
+        FileLock.lockWork lock;
+        Look(FileLock.lockWork lock){
             this.lock=lock;
         }
         /**
