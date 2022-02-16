@@ -19,7 +19,7 @@ public class v1_18_R1 implements PortalTransmission{
         }
         try {
             ((CraftEntity) entity).getHandle().b(((CraftWorld)ToWorld).getHandle());//调用原版的实体传送逻辑，传送到地狱之前玩家必须碰一下地狱门，地狱传送到主世界同理。
-        }catch (NullPointerException ignored){
+        }catch (Throwable ignored){
 
         }
 
