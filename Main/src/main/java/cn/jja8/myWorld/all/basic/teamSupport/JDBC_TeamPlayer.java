@@ -84,7 +84,7 @@ public class JDBC_TeamPlayer implements TeamPlayer{
             try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set TeamUUID=? where PlayerUUID=?")){
                 preparedStatement.setString(1,team.getUUID().toString());
                 preparedStatement.setString(2,PlayerUUID.toString());
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();

@@ -54,7 +54,7 @@ public class JDBC_TeamManger implements TeamManager {
     @Override
     public TeamPlayer getTamePlayer(UUID uuid) {
         try (Connection connection = getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("select TeamPlayer from TeamPlayer where PlayerUUID=?")){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerUUID from TeamPlayer where PlayerUUID=?")){
                 preparedStatement.setString(1,uuid.toString());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()){
