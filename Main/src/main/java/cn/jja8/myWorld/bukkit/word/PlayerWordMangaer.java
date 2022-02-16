@@ -3,19 +3,28 @@ package cn.jja8.myWorld.bukkit.word;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
  * 用于管理每个世界
  */
-public class PlayerWordMangaer {
+public class PlayerWordMangaer implements Listener {
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
+
+    public PlayerWordMangaer() {
+        MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this,MyWorldBukkit.getMyWorldBukkit());
+    }
 
     /**
      * 通过世界名称加载一个玩家世界
@@ -131,5 +140,18 @@ public class PlayerWordMangaer {
         WorldData.worldDataSupport.delWorld(worldName);
         WorldData.worldDataSupport.delWorld(worldName+"_nether");
         WorldData.worldDataSupport.delWorld(worldName+"_the_end");
+    }
+
+    @EventHandler
+    public void 玩家传送(PlayerTeleportEvent event){
+        PlayerWorlds form = getBeLoadPlayerWorlds(event.getFrom().getWorld());
+        PlayerWorlds to = getBeLoadPlayerWorlds(Objects.requireNonNull(event.getTo()).getWorld());
+        if (form==null){
+            return;
+        }
+        if (form==to){
+            return;
+        }
+        form.setPlayerLocation(event.getPlayer(),event.getFrom());
     }
 }

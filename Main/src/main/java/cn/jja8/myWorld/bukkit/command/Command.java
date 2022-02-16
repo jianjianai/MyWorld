@@ -84,12 +84,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().返回世界_世界被其他服务器加载);
             return;
         }
-        Location 位置 = 世界.getPlayerLocation(player.getName());
-        if (位置!=null){
-            player.teleport(位置);
-        }else {
-            player.teleport(世界.getWorld().getSpawnLocation());
-        }
+        世界.playerBack(player);
         player.sendMessage(MyWorldBukkit.getLang().返回世界_传送成功);
     }
 
