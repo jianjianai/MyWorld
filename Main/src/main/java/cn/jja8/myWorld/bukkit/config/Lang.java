@@ -15,7 +15,7 @@ public class Lang {
     public   String 创建世界_名称禁止使用 = "<世界>名称被禁止使用";
     public   String 创建世界_世界已经存在 = "<世界>世界已经存在服务器中了，请换一个名称。";
     public   String 删除世界_删除成功 = "删除成功";
-    public   String 删除世界_删除确认 = "请添加一条参数”确认“来确认你确认要删除世界。";
+    public   String 删除世界_删除确认 = "请添加一条参数”yes“来确认你确认要删除世界。";
     public   String 删除世界_玩家没有团队 = "你没有团队";
     public   String 删除世界_不是团长 = "只有团长才可以删除。";
     public   String 删除世界_世界未加载 = "世界没有加载时无法删除，请先进入你所在团队的世界。";
@@ -47,14 +47,14 @@ public class Lang {
     public   String 邀请成员_玩家没有团队 = "你没有团队";
     public   String 退出团队_退出成功 = "退出成功";
     public   String 退出团队_团长不能退出 = "团长不能退出团队";
-    public   String 退出团队_退出确认 = "请添加一条参数”确认“来确认你确认要退出团队。";
+    public   String 退出团队_退出确认 = "请添加一条参数”yes“来确认你确认要退出团队。";
     public   String 去出生点_传送成功 = "已将你传送到出生点。";
     public   String 创建世界_创建成功 = "世界创建成功";
     public   String 创建世界_世界名不合法 = "世界创建失败，世界名不合法";
     public   String 创建团队_创建成功 = "团队创建成功";
     public   String 删除团队_删除成功 = "删除成功";
     public   String 退出团队_你没有团队 = "你不在任何团队中";
-    public   String 删除团队_删除确认 = "请添加一条参数”确认“来确认你确认要删除团队。";
+    public   String 删除团队_删除确认 = "请添加一条参数”yes“来确认你确认要删除团队。";
     public   String 删除团队_不是团长 = "只有团长才可以删除。";
     public   String 删除团队_玩家没有团队 = "你没有团队";
     public   String 去出生点_团队没有世界 = "你的团队没有世界。";

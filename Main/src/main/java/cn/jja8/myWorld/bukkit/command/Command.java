@@ -95,7 +95,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_删除确认);
             return;
         }
-        if (!"确认".equals(strings[0])) {
+        if (!"yes".equals(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_删除确认);
             return;
         }
@@ -251,7 +251,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_退出确认);
             return;
         }
-        if (!"确认".equals(strings[0])) {
+        if (!"yes".equals(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_退出确认);
             return;
         }
@@ -329,7 +329,7 @@ public class Command {
                 return;
             }
         }
-        if ((!"确认".equals(strings[0]))&(!"yes".equals(strings[0]))) {
+        if (!"yes".equals(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().删除团队_删除确认);
             return;
         }
