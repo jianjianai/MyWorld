@@ -73,7 +73,7 @@ public class PlayerWordMangaer implements Listener {
      * 卸载一个玩家世界
      */
      public void unloadPlayerWorlds(PlayerWorlds playerWord, boolean save){
-         MyWorldBukkit.getMyWorldBukkit().getLogger().info("卸载"+playerWord.getName()+"世界组。"+(save?"并报错":"并不保存"));
+         MyWorldBukkit.getMyWorldBukkit().getLogger().info("卸载"+playerWord.getName()+"世界组。"+(save?"并保存":"并不保存"));
          World world = Bukkit.getWorld(MyWorldBukkit.getWorldConfig().主世界名称);
          Consumer<Player> consumer = player -> {
              if (world==null){

@@ -1,6 +1,6 @@
 name: MyWorld
 main: cn.jja8.myWorld.bukkit.MyWorldBukkit
-version: 2022.02.17.1927-test
+version: 2022.02.17.1929-test
 author: jianjianai , 钟小白Core
 api-version: 1.16
 softdepend: [patronSaint]
