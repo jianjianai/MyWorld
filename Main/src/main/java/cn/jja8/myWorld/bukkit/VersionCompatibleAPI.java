@@ -22,7 +22,7 @@ public class VersionCompatibleAPI {
      * 您可在你插件的Load阶段调用此接口，来使插件兼容您的mc版本。
      * 插件其他逻辑基本支持bukkit服务端的所有版本。
      * */
-    static void regPlayerDataSupport(PlayerDataSupport playerDataSupport){
+    public static void regPlayerDataSupport(PlayerDataSupport playerDataSupport){
         PlayerData.playerDataSupport = playerDataSupport;
     }
 
@@ -33,7 +33,7 @@ public class VersionCompatibleAPI {
      * 您可在你插件的Load阶段调用此接口，来使插件兼容您的mc版本。
      * 插件其他逻辑基本支持bukkit服务端的所有版本。
      * */
-    static void regWorldDataSupport(WorldDataSupport worldDataSupport){
+    public static void regWorldDataSupport(WorldDataSupport worldDataSupport){
         WorldData.worldDataSupport = worldDataSupport;
     }
 
@@ -44,7 +44,7 @@ public class VersionCompatibleAPI {
      * 您可在你插件的Load阶段调用此接口，来使插件兼容您的mc版本。
      * 插件其他逻辑基本支持bukkit服务端的所有版本。
      * */
-    static void regPortalTransmission(PortalTransmission portalTransmission){
+    public static void regPortalTransmission(PortalTransmission portalTransmission){
         Portal.portalTransmission = portalTransmission;
     }
 
@@ -54,7 +54,7 @@ public class VersionCompatibleAPI {
      * 插件默认的TeamManager基本支持所有版本，并且使用的sqlite
      * 您可在你插件的Load阶段调用此接口
      * */
-    static void regPortalTeam(TeamManager teamManager){
+    public static void regPortalTeam(TeamManager teamManager){
         Teams.teamManager = teamManager;
     }
 

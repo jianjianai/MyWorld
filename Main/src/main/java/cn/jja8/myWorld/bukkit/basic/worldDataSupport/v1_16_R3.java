@@ -10,7 +10,6 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.generator.ChunkGenerator;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -46,7 +45,7 @@ public class v1_16_R3 implements WorldDataSupport{
             //-----------------------------------------------------------------
             Validate.notNull(creator, "Creator may not be null");
             String name = creator.name();
-            ChunkGenerator generator = creator.generator();
+            org.bukkit.generator.ChunkGenerator generator = creator.generator();
             File folder = new File(new File(allWordFile,WordName), name);
             World world = craftServer.getWorld(name);
             if (world != null) {
@@ -95,20 +94,16 @@ public class v1_16_R3 implements WorldDataSupport{
 
                 worlddata.checkName(name);
                 worlddata.a(console.getServerModName(), console.getModded().isPresent());
-                if (console.options.has("forceUpgrade")) {
-                    net.minecraft.server.v1_16_R3.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> {
-                        return true;
-                    }, (ImmutableSet)worlddata.getGeneratorSettings().d().d().stream().map((entry) -> {
-                        return ResourceKey.a(IRegistry.K, ((ResourceKey)entry.getKey()).a());
-                    }).collect(ImmutableSet.toImmutableSet()));
-                }
+//                if (console.options.has("forceUpgrade")) {
+//                    net.minecraft.server.v1_16_R3.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worlddata.getGeneratorSettings().d().d().stream().map((entry) -> ResourceKey.a(IRegistry.K, (entry.getKey()).a())).collect(ImmutableSet.toImmutableSet()));
+//                }
 
                 long j = BiomeManager.a(creator.seed());
                 List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
                 RegistryMaterials<WorldDimension> registrymaterials = worlddata.getGeneratorSettings().d();
                 WorldDimension worlddimension = registrymaterials.a(actualDimension);
                 DimensionManager dimensionmanager;
-                Object chunkgenerator;
+                ChunkGenerator chunkgenerator;
                 if (worlddimension == null) {
                     dimensionmanager = console.customRegistry.a().d(DimensionManager.OVERWORLD);
                     chunkgenerator = GeneratorSettings.a(console.customRegistry.b(IRegistry.ay), console.customRegistry.b(IRegistry.ar), (new Random()).nextLong());
@@ -118,7 +113,7 @@ public class v1_16_R3 implements WorldDataSupport{
                 }
 
                 ResourceKey<net.minecraft.server.v1_16_R3.World> worldKey = ResourceKey.a(IRegistry.L, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
-                WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().worldLoadListenerFactory.create(11), (net.minecraft.server.v1_16_R3.ChunkGenerator)chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
+                WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().worldLoadListenerFactory.create(11), chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
                 if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
                     return null;
                 } else {

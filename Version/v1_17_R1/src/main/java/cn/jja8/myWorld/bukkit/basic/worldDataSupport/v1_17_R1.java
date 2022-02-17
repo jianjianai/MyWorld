@@ -122,18 +122,14 @@ public class v1_17_R1 implements WorldDataSupport{
 
                 worlddata.checkName(name);
                 worlddata.a(console.getServerModName(), console.getModded().isPresent());
-                if (console.options.has("forceUpgrade")) {
-                    net.minecraft.server.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> {
-                        return true;
-                    }, (ImmutableSet)worlddata.getGeneratorSettings().d().d().stream().map((entry) -> {
-                        return ResourceKey.a(IRegistry.P, ((ResourceKey)entry.getKey()).a());
-                    }).collect(ImmutableSet.toImmutableSet()));
-                }
+//                if (console.options.has("forceUpgrade")) {
+//                    net.minecraft.server.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worlddata.getGeneratorSettings().d().d().stream().map((entry) -> ResourceKey.a(IRegistry.P, (entry.getKey()).a())).collect(ImmutableSet.toImmutableSet()));
+//                }
 
                 long j = BiomeManager.a(creator.seed());
                 List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
                 RegistryMaterials<WorldDimension> registrymaterials = worlddata.getGeneratorSettings().d();
-                WorldDimension worlddimension = (WorldDimension)registrymaterials.a(actualDimension);
+                WorldDimension worlddimension = registrymaterials.a(actualDimension);
                 DimensionManager dimensionmanager;
                 net.minecraft.world.level.chunk.ChunkGenerator chunkgenerator;
                 if (worlddimension == null) {

@@ -116,20 +116,18 @@ public class v1_18_R1 implements WorldDataSupport{
 
                 worlddata.checkName(name);
                 worlddata.a(console.getServerModName(), console.K().a());
-                if (console.options.has("forceUpgrade")) {
-                    net.minecraft.server.Main.a(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> {
-                        return true;
-                    }, worlddata.A());
-                }
+//                if (console.options.has("forceUpgrade")) {
+//                    net.minecraft.server.Main.a(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worlddata.A());
+//                }
 
                 long j = BiomeManager.a(creator.seed());
                 List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
                 RegistryMaterials<WorldDimension> registrymaterials = worlddata.A().d();
-                WorldDimension worlddimension = (WorldDimension)registrymaterials.a(actualDimension);
+                WorldDimension worlddimension = registrymaterials.a(actualDimension);
                 DimensionManager dimensionmanager;
                 net.minecraft.world.level.chunk.ChunkGenerator chunkgenerator;
                 if (worlddimension == null) {
-                    dimensionmanager = (DimensionManager)console.n.d(IRegistry.Q).d(DimensionManager.m);
+                    dimensionmanager = console.n.d(IRegistry.Q).d(DimensionManager.m);
                     chunkgenerator = GeneratorSettings.a(console.n, (new Random()).nextLong());
                 } else {
                     dimensionmanager = worlddimension.b();
