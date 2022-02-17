@@ -31,7 +31,7 @@ public class PlayerWordMangaer implements Listener {
      * @param name 世界唯一名称。
      * @return null 如果世界被其他服务器加载
      */
-     public PlayerWorlds loadPlayerWorlds(String name){
+     public synchronized PlayerWorlds loadPlayerWorlds(String name){
          PlayerWorlds playerWorlds = nameMap.get(name);
          if (playerWorlds !=null){
              return playerWorlds;
