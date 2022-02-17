@@ -66,6 +66,7 @@ public class PlayerWorlds {
         }
         锁.locked(MyWorldBukkit.getWorldConfig().服务器名称);
         世界信息 = new PlayerWordInform(name);
+        MyWorldBukkit.getMyWorldBukkit().getLogger().info("加载"+getName()+"世界组。");
         LoadWorldsNews loadWorldsNews = new LoadWorldsNews();
         try {
             //加载世界-------
