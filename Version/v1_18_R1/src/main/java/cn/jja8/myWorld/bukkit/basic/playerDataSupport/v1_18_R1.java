@@ -1,21 +1,12 @@
 package cn.jja8.myWorld.bukkit.basic.playerDataSupport;
 
 import cn.jja8.myWorld.all.veryUtil.FileLock;
-import com.mojang.datafixers.DataFixer;
-import net.minecraft.nbt.GameProfileSerializer;
 import net.minecraft.nbt.NBTCompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.world.level.storage.WorldNBTStorage;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-
 import java.io.*;
-import java.lang.reflect.Field;
 
 public class v1_18_R1 implements PlayerDataSupport{
     File dataFile;
@@ -25,25 +16,15 @@ public class v1_18_R1 implements PlayerDataSupport{
     }
 
     private NBTTagCompound saveToNBT(Player player, NBTTagCompound nbttagcompound){
-        nbttagcompound = ((CraftPlayer)player).getHandle().f(nbttagcompound);
+        if (nbttagcompound==null){
+            nbttagcompound = new NBTTagCompound();
+        }
+        ((CraftPlayer)player).getHandle().b(nbttagcompound);
         return nbttagcompound;
     }
 
-    private NBTTagCompound loadFromNBT(Player player,NBTTagCompound nbttagcompound){
-        Location location = player.getLocation();
-        try {
-            //利用反射拿到playerFileData的a
-            Field field = WorldNBTStorage.class.getDeclaredField("a");
-            field.setAccessible(true);
-            DataFixer a = (DataFixer) field.get(((CraftServer) Bukkit.getServer()).getHandle().r);
-
-            //加载数据
-            int i = nbttagcompound.b("DataVersion", 3) ? nbttagcompound.h("DataVersion") : -1;
-            ((CraftPlayer)player).getHandle().g(GameProfileSerializer.a(a, DataFixTypes.b, nbttagcompound, i));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        player.teleport(location);
+    private NBTTagCompound loadFromNBT(Player player, NBTTagCompound nbttagcompound){
+        ((CraftPlayer)player).getHandle().a(nbttagcompound);
         return nbttagcompound;
     }
 
