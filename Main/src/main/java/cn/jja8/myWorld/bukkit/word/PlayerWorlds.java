@@ -42,6 +42,7 @@ public class PlayerWorlds {
             }).start();
         }
 
+
         public void setLoadWold(String loadWold) {
             this.loadWold = loadWold;
             x =0;
@@ -69,7 +70,7 @@ public class PlayerWorlds {
         try {
             //加载世界-------
             {
-                loadWorldsNews.setLoadWold("name");
+                loadWorldsNews.setLoadWold(name);
                 WorldCreator 世界生成器 = new WorldCreator(name);
                 世界生成器.generateStructures(MyWorldBukkit.getWorldConfig().主世界生成器.生成建筑);
                 世界生成器.environment(MyWorldBukkit.getWorldConfig().主世界生成器.世界维度);

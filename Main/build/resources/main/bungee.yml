@@ -1,6 +1,6 @@
 name: MyWorld
 main: cn.jja8.myWorld.bungeecord.MyWorldBungeecord
-version: 2022.02.17.1735-test
+version: 2022.02.17.1904-test
 author: jianjianai
 api-version: 1.16
 softdepend: [patronSaint]
