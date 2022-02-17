@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -75,6 +76,21 @@ public class WorldClean  implements Listener {
             return;
         }
         World word = lo.getWorld();
+        if (word==null){
+            return;
+        }
+        PlayerWorlds wo = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(word);
+        if (wo==null){
+            return;
+        }
+        空世界.remove(wo);
+        过期空世界.remove(wo);
+        cleaningWorlds.remove(wo);
+    }
+
+    @EventHandler
+    public void 玩家进入(PlayerJoinEvent event){
+        World word = event.getPlayer().getLocation().getWorld();
         if (word==null){
             return;
         }
