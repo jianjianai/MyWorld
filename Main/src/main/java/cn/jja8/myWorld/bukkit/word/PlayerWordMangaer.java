@@ -3,7 +3,6 @@ package cn.jja8.myWorld.bukkit.word;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +19,7 @@ import java.util.function.Consumer;
  */
 public class PlayerWordMangaer implements Listener {
     public static class LoadingPlayerWorlds extends Error {}
-    boolean loadworld = false;
+    boolean worldBusy = false;
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
 
@@ -34,19 +33,19 @@ public class PlayerWordMangaer implements Listener {
      * @return null 如果世界被其他服务器加载
      */
     public PlayerWorlds loadPlayerWorlds(String name){
-        if (loadworld){
+        if (worldBusy){
             throw new LoadingPlayerWorlds();
         }
-        loadworld=true;
+        worldBusy =true;
         PlayerWorlds playerWorlds = nameMap.get(name);
         if (playerWorlds !=null){
-            loadworld=false;
+            worldBusy =false;
             return playerWorlds;
         }
         try {
             playerWorlds = new PlayerWorlds(name);
         }catch (PlayerWorlds.LoadedByAnotherServer r){
-            loadworld=false;
+            worldBusy =false;
             return null;
         }
         nameMap.put(name, playerWorlds);
@@ -59,7 +58,7 @@ public class PlayerWordMangaer implements Listener {
         if (playerWorlds.getEndWorld()!=null){
             wordMap.put(playerWorlds.getEndWorld(), playerWorlds);
         }
-        loadworld=false;
+        worldBusy =false;
         return playerWorlds;
      }
     /**
