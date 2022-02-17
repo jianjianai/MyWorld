@@ -3,7 +3,6 @@ package cn.jja8.myWorld.bukkit.word;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +18,8 @@ import java.util.function.Consumer;
  * 用于管理每个世界
  */
 public class PlayerWordMangaer implements Listener {
+    public static class LoadingPlayerWorlds extends Error {}
+    boolean worldBusy = false;
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
 
@@ -31,27 +32,34 @@ public class PlayerWordMangaer implements Listener {
      * @param name 世界唯一名称。
      * @return null 如果世界被其他服务器加载
      */
-     public synchronized PlayerWorlds loadPlayerWorlds(String name){
-         PlayerWorlds playerWorlds = nameMap.get(name);
-         if (playerWorlds !=null){
-             return playerWorlds;
-         }
-         try {
-             playerWorlds = new PlayerWorlds(name);
-         }catch (PlayerWorlds.LoadedByAnotherServer r){
-             return null;
-         }
-         nameMap.put(name, playerWorlds);
-         if (playerWorlds.getWorld()!=null){
-             wordMap.put(playerWorlds.getWorld(), playerWorlds);
-         }
-         if (playerWorlds.getInfernalWorld()!=null){
-             wordMap.put(playerWorlds.getInfernalWorld(), playerWorlds);
-         }
-         if (playerWorlds.getEndWorld()!=null){
-             wordMap.put(playerWorlds.getEndWorld(), playerWorlds);
-         }
-         return playerWorlds;
+    public PlayerWorlds loadPlayerWorlds(String name){
+        if (worldBusy){
+            throw new LoadingPlayerWorlds();
+        }
+        worldBusy =true;
+        PlayerWorlds playerWorlds = nameMap.get(name);
+        if (playerWorlds !=null){
+            worldBusy =false;
+            return playerWorlds;
+        }
+        try {
+            playerWorlds = new PlayerWorlds(name);
+        }catch (PlayerWorlds.LoadedByAnotherServer r){
+            worldBusy =false;
+            return null;
+        }
+        nameMap.put(name, playerWorlds);
+        if (playerWorlds.getWorld()!=null){
+            wordMap.put(playerWorlds.getWorld(), playerWorlds);
+        }
+        if (playerWorlds.getInfernalWorld()!=null){
+            wordMap.put(playerWorlds.getInfernalWorld(), playerWorlds);
+        }
+        if (playerWorlds.getEndWorld()!=null){
+            wordMap.put(playerWorlds.getEndWorld(), playerWorlds);
+        }
+        worldBusy =false;
+        return playerWorlds;
      }
     /**
      * 从已加载的世界中获取世界
