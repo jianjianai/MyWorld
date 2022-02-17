@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  */
 public class PlayerWordMangaer implements Listener {
     public static class LoadingPlayerWorlds extends Error {}
-    static boolean loadworld = false;
+    boolean loadworld = false;
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
 
@@ -40,11 +40,13 @@ public class PlayerWordMangaer implements Listener {
         loadworld=true;
         PlayerWorlds playerWorlds = nameMap.get(name);
         if (playerWorlds !=null){
+            loadworld=false;
             return playerWorlds;
         }
         try {
             playerWorlds = new PlayerWorlds(name);
         }catch (PlayerWorlds.LoadedByAnotherServer r){
+            loadworld=false;
             return null;
         }
         nameMap.put(name, playerWorlds);
