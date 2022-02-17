@@ -17,20 +17,21 @@ import java.util.List;
 public class WorldClean  implements Listener {
     List<PlayerWorlds> 空世界 = new ArrayList<>();
     List<PlayerWorlds> 过期空世界 = new ArrayList<>();
+    List<PlayerWorlds> cleaningWorlds = new ArrayList<>();
     public WorldClean(){
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
+        //扫描过期世界
         new BukkitRunnable(){
             @Override
             public void run() {
-                //卸载世界
-                List<PlayerWorlds> clean = 过期空世界;
+                cleaningWorlds.addAll(过期空世界);
                 过期空世界 = 空世界;
                 空世界 = new ArrayList<>();
-                clean.forEach(playerWord -> MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWord,true));
                 //扫描空世界
                 List<PlayerWorlds> playerWorldsList = new ArrayList<>(MyWorldBukkit.getPlayerWordMangaer().nameMap.values());
                 playerWorldsList.removeAll(空世界);
                 playerWorldsList.removeAll(过期空世界);
+                playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
                     if (playerWord.getWorld()!=null){
                         if (playerWord.getWorld().getPlayers().size()>0){
@@ -51,6 +52,20 @@ public class WorldClean  implements Listener {
                 });
             }
         }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20, MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20);
+        //卸载过期世界
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                if (cleaningWorlds.size()>0){
+                    PlayerWorlds playerWorlds = cleaningWorlds.remove(0);
+                    try {
+                        MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
+                    }catch (PlayerWordMangaer.worldBusy worldBusy){
+                        cleaningWorlds.add(playerWorlds);
+                    }
+                }
+            }
+        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20, MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20);
     }
 
     @EventHandler
@@ -69,6 +84,7 @@ public class WorldClean  implements Listener {
         }
         空世界.remove(wo);
         过期空世界.remove(wo);
+        cleaningWorlds.remove(wo);
     }
 
 }

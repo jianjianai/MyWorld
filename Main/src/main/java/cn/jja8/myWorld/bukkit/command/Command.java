@@ -12,7 +12,6 @@ import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandManger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -89,7 +88,7 @@ public class Command {
             }
             世界.playerBack(player);
             player.sendMessage(MyWorldBukkit.getLang().返回世界_传送成功);
-        }catch (PlayerWordMangaer.LoadingPlayerWorlds loadingPlayerWorlds){
+        }catch (PlayerWordMangaer.worldBusy worldBusy){
             player.sendMessage(MyWorldBukkit.getLang().返回世界_服务器忙);
         }
     }
@@ -120,9 +119,14 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_世界未加载);
             return;
         }
-        MyWorldBukkit.getPlayerWordMangaer().delPlayerWorlds(团队.getWorldName());
-        团队.setWorldName(null);
-        player.sendMessage(MyWorldBukkit.getLang().删除世界_删除成功);
+        try {
+            MyWorldBukkit.getPlayerWordMangaer().delPlayerWorlds(团队.getWorldName());
+            团队.setWorldName(null);
+            player.sendMessage(MyWorldBukkit.getLang().删除世界_删除成功);
+        }catch (PlayerWordMangaer.worldBusy busy){
+            player.sendMessage(MyWorldBukkit.getLang().删除世界_服务器忙);
+        }
+
     }
 
     private void 信任列表(CommandSender commandSender, String[] strings) {
@@ -435,7 +439,7 @@ public class Command {
             if (MyWorldBukkit.getWorldConfig().创建世界后传送到世界) {
                 去出生点(commandSender, new String[]{});
             }
-        }catch (PlayerWordMangaer.LoadingPlayerWorlds loadingPlayerWorlds){
+        }catch (PlayerWordMangaer.worldBusy worldBusy){
             player.sendMessage(MyWorldBukkit.getLang().创建世界_服务器忙);
         }
 
@@ -462,7 +466,7 @@ public class Command {
             }
             player.teleport(世界.getWorld().getSpawnLocation());
             player.sendMessage(MyWorldBukkit.getLang().去出生点_传送成功);
-        }catch (PlayerWordMangaer.LoadingPlayerWorlds loadingPlayerWorlds){
+        }catch (PlayerWordMangaer.worldBusy worldBusy){
             player.sendMessage(MyWorldBukkit.getLang().去出生点_服务器忙);
         }
 

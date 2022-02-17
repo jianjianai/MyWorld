@@ -6,6 +6,7 @@ import org.bukkit.WorldType;
 import java.util.ArrayList;
 
 public class WorldConfig {
+    public long 卸载空世界间隔时间 = 30;
     public boolean 自动配置服务器名称 = true;
     public String 主世界名称 = "world";
     public long 无玩家世界最短卸载时间 = 600;
