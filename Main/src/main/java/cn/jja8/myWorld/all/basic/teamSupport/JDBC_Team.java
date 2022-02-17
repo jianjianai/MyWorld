@@ -91,6 +91,7 @@ public class JDBC_Team implements Team{
                     }
                 }
             }
+            return playerList;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }

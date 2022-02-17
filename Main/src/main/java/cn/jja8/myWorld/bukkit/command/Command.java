@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,13 +155,22 @@ public class Command {
         }else {
             map.put("<团队世界信息>",MyWorldBukkit.getLang().查询信息_团队世界信息.replaceAll("<世界>",团队.getWorldName()));
         }
-        map.put("<团长>",团队.getPlayers(Status.leader).toString());
-        map.put("<管理员列表>",团队.getPlayers(Status.admin).toString());
-        map.put("<队员列表>",团队.getPlayers(Status.player).toString());
+
+        map.put("<团长>",getPlayersNotNull(团队,Status.leader).toString());
+        map.put("<管理员列表>",getPlayersNotNull(团队,Status.admin).toString());
+        map.put("<队员列表>",getPlayersNotNull(团队,Status.player).toString());
         List<String> list = StringTool.stringListReplaces(MyWorldBukkit.getLang().查询信息_长信息列表,map);
         for (String s : list) {
             player.sendMessage(s);
         }
+    }
+
+    private List<TeamPlayer> getPlayersNotNull(Team team,Status status) {
+        List<TeamPlayer> playerList = team.getPlayers(status);
+        if (playerList==null){
+            playerList = new ArrayList<>();
+        }
+        return playerList;
     }
 
     private List<String> 取消信任_NBT补全(CommandSender commandSender, String[] strings) {

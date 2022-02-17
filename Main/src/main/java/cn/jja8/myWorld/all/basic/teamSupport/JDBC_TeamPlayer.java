@@ -84,7 +84,7 @@ public class JDBC_TeamPlayer implements TeamPlayer{
             try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set TeamUUID=? where PlayerUUID=?")){
                 preparedStatement.setString(1,team==null?null:team.getUUID().toString());
                 preparedStatement.setString(2,PlayerUUID.toString());
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -118,7 +118,7 @@ public class JDBC_TeamPlayer implements TeamPlayer{
     public void setStatus(Status status) {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set Status=? where PlayerUUID=?")){
-                preparedStatement.setString(1,status.toString());
+                preparedStatement.setString(1,status==null?null:status.toString());
                 preparedStatement.setString(2,PlayerUUID.toString());
                 preparedStatement.executeUpdate();
             }
