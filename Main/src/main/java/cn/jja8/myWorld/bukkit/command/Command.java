@@ -6,6 +6,7 @@ import cn.jja8.myWorld.all.veryUtil.StringTool;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.bukkit.basic.Teams;
+import cn.jja8.myWorld.bukkit.word.PlayerWordMangaer;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandManger;
@@ -80,13 +81,17 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().返回世界_团队没有世界);
             return;
         }
-        PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称);
-        if (世界==null){
-            player.sendMessage(MyWorldBukkit.getLang().返回世界_世界被其他服务器加载);
-            return;
+        try {
+            PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称);
+            if (世界==null){
+                player.sendMessage(MyWorldBukkit.getLang().返回世界_世界被其他服务器加载);
+                return;
+            }
+            世界.playerBack(player);
+            player.sendMessage(MyWorldBukkit.getLang().返回世界_传送成功);
+        }catch (PlayerWordMangaer.LoadingPlayerWorlds loadingPlayerWorlds){
+            player.sendMessage(MyWorldBukkit.getLang().返回世界_服务器忙);
         }
-        世界.playerBack(player);
-        player.sendMessage(MyWorldBukkit.getLang().返回世界_传送成功);
     }
 
     private void 删除世界(CommandSender commandSender, String[] strings) {
@@ -423,12 +428,17 @@ public class Command {
         }
         //创建世界了
         团队.setWorldName(strings[0]);
-        MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(strings[0]);
-        player.sendMessage(MyWorldBukkit.getLang().创建世界_创建成功);
-        //如果创建后传送到世界
-        if (MyWorldBukkit.getWorldConfig().创建世界后传送到世界) {
-            去出生点(commandSender, new String[]{});
+        try {
+            MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(strings[0]);
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_创建成功);
+            //如果创建后传送到世界
+            if (MyWorldBukkit.getWorldConfig().创建世界后传送到世界) {
+                去出生点(commandSender, new String[]{});
+            }
+        }catch (PlayerWordMangaer.LoadingPlayerWorlds loadingPlayerWorlds){
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_服务器忙);
         }
+
     }
 
     private void 去出生点(CommandSender commandSender, String[] strings) {
@@ -444,13 +454,18 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().去出生点_团队没有世界);
             return;
         }
-        PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称);
-        if (世界==null){
-            player.sendMessage(MyWorldBukkit.getLang().去出生点_世界被其他服务器加载);
-            return;
+        try {
+            PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称);
+            if (世界==null){
+                player.sendMessage(MyWorldBukkit.getLang().去出生点_世界被其他服务器加载);
+                return;
+            }
+            player.teleport(世界.getWorld().getSpawnLocation());
+            player.sendMessage(MyWorldBukkit.getLang().去出生点_传送成功);
+        }catch (PlayerWordMangaer.LoadingPlayerWorlds loadingPlayerWorlds){
+            player.sendMessage(MyWorldBukkit.getLang().去出生点_服务器忙);
         }
-        player.teleport(世界.getWorld().getSpawnLocation());
-        player.sendMessage(MyWorldBukkit.getLang().去出生点_传送成功);
+
     }
 
     private static boolean isAdmin(TeamPlayer teamPlayer){

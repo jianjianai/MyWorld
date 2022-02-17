@@ -4,6 +4,9 @@ package cn.jja8.myWorld.bukkit.config;
 import java.util.ArrayList;
 
 public class Lang {
+    public   String 去出生点_服务器忙 = "服务器现在很忙，请过一会再试。";
+    public   String 创建世界_服务器忙 = "服务器现在很忙，请过一会再试。";
+    public   String 返回世界_服务器忙 = "服务器现在很忙，请过一会再试。";
     public   String 世界加载完成提示文本 = "完成";
     public   String 世界加载提示文本 = "服务器可能卡顿几秒钟，正在加载世界<世界>..<数>";
     public   String 查询信息_还没有团队 = "你现在还没有加入团队";
