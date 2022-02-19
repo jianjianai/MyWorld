@@ -25,5 +25,5 @@ public interface TeamManager {
     /**
      * 关闭teamManger，一般在插件关闭时调用。
      * */
-    default void close(){};
+    default void close(){}
 }

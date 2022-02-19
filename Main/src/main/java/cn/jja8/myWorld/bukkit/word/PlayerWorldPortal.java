@@ -71,17 +71,29 @@ public class PlayerWorldPortal implements Listener {
             if (bookType.equals(Material.END_PORTAL)){//末地门
                 if (timer.p(entity)){
                     if(World.Environment.THE_END.equals(event.getLocation().getWorld().getEnvironment())){//在末地
-                        Portal.portalTransmission.TpToWorld(entity, playerWorlds.getWorld());
+                        World world = playerWorlds.getWorld();
+                        if(world!=null){
+                            Portal.portalTransmission.TpToWorld(entity, world);
+                        }
                     }else {
-                        Portal.portalTransmission.TpToWorld(entity, playerWorlds.getEndWorld());
+                        World world = playerWorlds.getEndWorld();
+                        if(world!=null){
+                            Portal.portalTransmission.TpToWorld(entity, world);
+                        }
                     }
                 }
             }else if (bookType.equals(Material.NETHER_PORTAL)){//地狱门
                 if (timer.p(entity)){
                     if(World.Environment.NETHER.equals(event.getLocation().getWorld().getEnvironment())){//在地狱
-                        Portal.portalTransmission.TpToWorld(entity, playerWorlds.getWorld());
+                        World world = playerWorlds.getWorld();
+                        if(world!=null){
+                            Portal.portalTransmission.TpToWorld(entity, world);
+                        }
                     }else {
-                        Portal.portalTransmission.TpToWorld(entity, playerWorlds.getInfernalWorld());
+                        World world = playerWorlds.getInfernalWorld();
+                        if(world!=null){
+                            Portal.portalTransmission.TpToWorld(entity, world);
+                        }
                     }
                 }
             }

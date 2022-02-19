@@ -9,7 +9,6 @@ import net.minecraft.resources.MinecraftKey;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.WorldServer;
-import net.minecraft.util.datafix.DataConverterRegistry;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.entity.ai.village.VillageSiege;
 import net.minecraft.world.entity.npc.MobSpawnerCat;

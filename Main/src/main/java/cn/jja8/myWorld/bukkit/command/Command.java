@@ -142,7 +142,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().信任列表_世界未加载);
             return;
         }
-        String 世界名称 = 世界.getWorld().getName();
+        String 世界名称 = 世界.getName();
         List<String> 信任列表 = 世界.getPlayerWordInform().BeTrustList();
         player.sendMessage(MyWorldBukkit.getLang().信任列表_信息.replaceAll("<世界>",世界名称).replaceAll("<数量>", String.valueOf(信任列表.size())).replaceAll("<列表>",信任列表.toString()));
     }
