@@ -6,15 +6,16 @@ import cn.jja8.myWorld.all.veryUtil.StringTool;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.bukkit.basic.Teams;
+import cn.jja8.myWorld.bukkit.word.PlayerWordMangaer;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandManger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,30 +70,27 @@ public class Command {
     private void 返回世界(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> {
-            Team 团队 = getTeamPlayerNotNull(player).getTeam();
-            if (团队 == null) {
-                player.sendMessage(MyWorldBukkit.getLang().返回世界_没有团队);
-                return;
-            }
-            String 世界名称 = 团队.getWorldName();
-            if (世界名称 == null) {
-                player.sendMessage(MyWorldBukkit.getLang().返回世界_团队没有世界);
-                return;
-            }
+        Team 团队 = getTeamPlayerNotNull(player).getTeam();
+        if (团队 == null) {
+            player.sendMessage(MyWorldBukkit.getLang().返回世界_没有团队);
+            return;
+        }
+        String 世界名称 = 团队.getWorldName();
+        if (世界名称 == null) {
+            player.sendMessage(MyWorldBukkit.getLang().返回世界_团队没有世界);
+            return;
+        }
+        try {
             PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称);
             if (世界==null){
                 player.sendMessage(MyWorldBukkit.getLang().返回世界_世界被其他服务器加载);
                 return;
             }
-            Location 位置 = 世界.loadPlayerLocation(player.getName());
-            if (位置!=null){
-                player.teleport(位置);
-            }else {
-                player.teleport(世界.getWorld().getSpawnLocation());
-            }
+            世界.playerBack(player);
             player.sendMessage(MyWorldBukkit.getLang().返回世界_传送成功);
-        });
+        }catch (PlayerWordMangaer.worldBusy worldBusy){
+            player.sendMessage(MyWorldBukkit.getLang().返回世界_服务器忙);
+        }
     }
 
     private void 删除世界(CommandSender commandSender, String[] strings) {
@@ -102,7 +100,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_删除确认);
             return;
         }
-        if (!"确认".equals(strings[0])) {
+        if (!"yes".equals(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_删除确认);
             return;
         }
@@ -121,9 +119,14 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().删除世界_世界未加载);
             return;
         }
-        MyWorldBukkit.getPlayerWordMangaer().delPlayerWorlds(团队.getWorldName());
-        团队.setWorldName(null);
-        player.sendMessage(MyWorldBukkit.getLang().删除世界_删除成功);
+        try {
+            MyWorldBukkit.getPlayerWordMangaer().delPlayerWorlds(团队.getWorldName());
+            团队.setWorldName(null);
+            player.sendMessage(MyWorldBukkit.getLang().删除世界_删除成功);
+        }catch (PlayerWordMangaer.worldBusy busy){
+            player.sendMessage(MyWorldBukkit.getLang().删除世界_服务器忙);
+        }
+
     }
 
     private void 信任列表(CommandSender commandSender, String[] strings) {
@@ -139,7 +142,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().信任列表_世界未加载);
             return;
         }
-        String 世界名称 = 世界.getWorld().getName();
+        String 世界名称 = 世界.getName();
         List<String> 信任列表 = 世界.getPlayerWordInform().BeTrustList();
         player.sendMessage(MyWorldBukkit.getLang().信任列表_信息.replaceAll("<世界>",世界名称).replaceAll("<数量>", String.valueOf(信任列表.size())).replaceAll("<列表>",信任列表.toString()));
     }
@@ -161,13 +164,22 @@ public class Command {
         }else {
             map.put("<团队世界信息>",MyWorldBukkit.getLang().查询信息_团队世界信息.replaceAll("<世界>",团队.getWorldName()));
         }
-        map.put("<团长>",团队.getPlayers(Status.leader).toString());
-        map.put("<管理员列表>",团队.getPlayers(Status.admin).toString());
-        map.put("<队员列表>",团队.getPlayers(Status.player).toString());
+
+        map.put("<团长>",getPlayersNotNull(团队,Status.leader).toString());
+        map.put("<管理员列表>",getPlayersNotNull(团队,Status.admin).toString());
+        map.put("<队员列表>",getPlayersNotNull(团队,Status.player).toString());
         List<String> list = StringTool.stringListReplaces(MyWorldBukkit.getLang().查询信息_长信息列表,map);
         for (String s : list) {
             player.sendMessage(s);
         }
+    }
+
+    private List<TeamPlayer> getPlayersNotNull(Team team,Status status) {
+        List<TeamPlayer> playerList = team.getPlayers(status);
+        if (playerList==null){
+            playerList = new ArrayList<>();
+        }
+        return playerList;
     }
 
     private List<String> 取消信任_NBT补全(CommandSender commandSender, String[] strings) {
@@ -258,7 +270,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_退出确认);
             return;
         }
-        if (!"确认".equals(strings[0])) {
+        if (!"yes".equals(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().退出团队_退出确认);
             return;
         }
@@ -336,7 +348,7 @@ public class Command {
                 return;
             }
         }
-        if ((!"确认".equals(strings[0]))&(!"yes".equals(strings[0]))) {
+        if (!"yes".equals(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().删除团队_删除确认);
             return;
         }
@@ -379,71 +391,74 @@ public class Command {
     private void 创建世界(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> {
-            if (strings.length < 1) {
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_需要世界名称);
-                return;
-            }
-            if (!isLegitimate(strings[0])) {
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名不合法);
-                return;
-            }
-            if(strings[0].contains("_nether")|strings[0].contains("_the_end")){
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名不合法);
-                return;
-            }
-            if (MyWorldBukkit.getWorldConfig().禁止玩家使用的世界名称列表.contains(strings[0].toLowerCase())){
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_名称禁止使用.replaceAll("<世界>",strings[0]));
-                return;
-            }
-            if (Bukkit.getWorld(strings[0])!=null){
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_世界已经存在.replaceAll("<世界>",strings[0]));
-                return;
-            }
-            TeamPlayer teamPlayer = getTeamPlayerNotNull(player);
-            Team 团队 = teamPlayer.getTeam();
-            if (团队 == null) {
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_玩家没有团队);
-                return;
-            }
-            String s = 团队.getWorldName();
-            if (s != null) {
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_团队已经有世界了);
-                return;
-            }
-            if (isLeader(teamPlayer)) {
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_不是团长);
-                return;
-            }
-            if (MyWorldBukkit.getPlayerWordMangaer().isWorldExistence(strings[0])) {
-                player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名称被他人占用);
-                return;
-            }
-            //创建世界了
-            团队.setWorldName(strings[0]);
+        if (strings.length < 1) {
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_需要世界名称);
+            return;
+        }
+        if (!isLegitimate(strings[0])) {
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名不合法);
+            return;
+        }
+        if(strings[0].contains("_nether")|strings[0].contains("_the_end")){
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名不合法);
+            return;
+        }
+        if (MyWorldBukkit.getWorldConfig().禁止玩家使用的世界名称列表.contains(strings[0].toLowerCase())){
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_名称禁止使用.replaceAll("<世界>",strings[0]));
+            return;
+        }
+        if (Bukkit.getWorld(strings[0])!=null){
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_世界已经存在.replaceAll("<世界>",strings[0]));
+            return;
+        }
+        TeamPlayer teamPlayer = getTeamPlayerNotNull(player);
+        Team 团队 = teamPlayer.getTeam();
+        if (团队 == null) {
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_玩家没有团队);
+            return;
+        }
+        String s = 团队.getWorldName();
+        if (s != null) {
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_团队已经有世界了);
+            return;
+        }
+        if (!isLeader(teamPlayer)) {
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_不是团长);
+            return;
+        }
+        if (MyWorldBukkit.getPlayerWordMangaer().isWorldExistence(strings[0])) {
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名称被他人占用);
+            return;
+        }
+        //创建世界了
+        团队.setWorldName(strings[0]);
+        try {
             MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(strings[0]);
             player.sendMessage(MyWorldBukkit.getLang().创建世界_创建成功);
             //如果创建后传送到世界
             if (MyWorldBukkit.getWorldConfig().创建世界后传送到世界) {
                 去出生点(commandSender, new String[]{});
             }
-        });
+        }catch (PlayerWordMangaer.worldBusy worldBusy){
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_服务器忙);
+        }
+
     }
 
     private void 去出生点(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> {
-            Team 团队 = getTeamPlayerNotNull(player).getTeam();
-            if (团队 == null) {
-                player.sendMessage(MyWorldBukkit.getLang().去出生点_没有团队);
-                return;
-            }
-            String 世界名称 = 团队.getWorldName();
-            if (世界名称 == null) {
-                player.sendMessage(MyWorldBukkit.getLang().去出生点_团队没有世界);
-                return;
-            }
+        Team 团队 = getTeamPlayerNotNull(player).getTeam();
+        if (团队 == null) {
+            player.sendMessage(MyWorldBukkit.getLang().去出生点_没有团队);
+            return;
+        }
+        String 世界名称 = 团队.getWorldName();
+        if (世界名称 == null) {
+            player.sendMessage(MyWorldBukkit.getLang().去出生点_团队没有世界);
+            return;
+        }
+        try {
             PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称);
             if (世界==null){
                 player.sendMessage(MyWorldBukkit.getLang().去出生点_世界被其他服务器加载);
@@ -451,7 +466,10 @@ public class Command {
             }
             player.teleport(世界.getWorld().getSpawnLocation());
             player.sendMessage(MyWorldBukkit.getLang().去出生点_传送成功);
-        });
+        }catch (PlayerWordMangaer.worldBusy worldBusy){
+            player.sendMessage(MyWorldBukkit.getLang().去出生点_服务器忙);
+        }
+
     }
 
     private static boolean isAdmin(TeamPlayer teamPlayer){

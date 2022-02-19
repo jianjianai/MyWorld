@@ -3,23 +3,53 @@ package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 import cn.jja8.myWorld.all.veryUtil.FileLock;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
+import net.minecraft.core.IRegistry;
+import net.minecraft.core.RegistryMaterials;
+import net.minecraft.nbt.DynamicOpsNBT;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.RegistryReadOps;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.entity.ai.village.VillageSiege;
+import net.minecraft.world.entity.npc.MobSpawnerCat;
+import net.minecraft.world.entity.npc.MobSpawnerTrader;
+import net.minecraft.world.level.EnumGamemode;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.MobSpawner;
+import net.minecraft.world.level.WorldSettings;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.WorldChunkManager;
+import net.minecraft.world.level.dimension.DimensionManager;
+import net.minecraft.world.level.dimension.WorldDimension;
+import net.minecraft.world.level.levelgen.ChunkGeneratorAbstract;
+import net.minecraft.world.level.levelgen.GeneratorSettings;
+import net.minecraft.world.level.levelgen.MobSpawnerPatrol;
+import net.minecraft.world.level.levelgen.MobSpawnerPhantom;
+import net.minecraft.world.level.storage.Convertable;
+import net.minecraft.world.level.storage.WorldDataServer;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.generator.CraftWorldInfo;
+import org.bukkit.craftbukkit.v1_17_R1.generator.CustomWorldChunkManager;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.generator.BiomeProvider;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.WorldInfo;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import net.minecraft.server.v1_16_R3.*;
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
-
-public class v1_16_R3 implements WorldDataSupport{
+public class v1_17_R1 implements WorldDataSupport{
     File allWordFile;
-    public v1_16_R3(File allWordFile){
+    public v1_17_R1(File allWordFile){
         this.allWordFile = allWordFile;
         allWordFile.mkdirs();
     }
@@ -44,7 +74,8 @@ public class v1_16_R3 implements WorldDataSupport{
             //-----------------------------------------------------------------
             Validate.notNull(creator, "Creator may not be null");
             String name = creator.name();
-            org.bukkit.generator.ChunkGenerator generator = creator.generator();
+            ChunkGenerator generator = creator.generator();
+            BiomeProvider biomeProvider = creator.biomeProvider();
             File folder = new File(new File(allWordFile,WordName), name);
             World world = craftServer.getWorld(name);
             if (world != null) {
@@ -56,29 +87,25 @@ public class v1_16_R3 implements WorldDataSupport{
                     generator = craftServer.getGenerator(name);
                 }
 
-                ResourceKey actualDimension = WorldDimension.OVERWORLD;
-                switch (creator.environment()) {
-                    case NORMAL:
-                        actualDimension = WorldDimension.OVERWORLD;
-                        break;
-                    case NETHER:
-                        actualDimension = WorldDimension.THE_NETHER;
-                        break;
-                    case THE_END:
-                        actualDimension = WorldDimension.THE_END;
-                        break;
+                if (biomeProvider == null) {
+                    biomeProvider = craftServer.getBiomeProvider(name);
                 }
 
+                ResourceKey actualDimension = switch (creator.environment()) {
+                    case NORMAL, CUSTOM -> WorldDimension.b;
+                    case NETHER -> WorldDimension.c;
+                    case THE_END -> WorldDimension.d;
+                };
                 Convertable.ConversionSession worldSession;
                 try {
                     worldSession = Convertable.a(new File(allWordFile,WordName).toPath()).c(name, actualDimension);
-                } catch (IOException var21) {
-                    throw new RuntimeException(var21);
+                } catch (IOException var24) {
+                    throw new RuntimeException(var24);
                 }
 
                 MinecraftServer.convertWorld(worldSession);
                 boolean hardcore = creator.hardcore();
-                RegistryReadOps<NBTBase> registryreadops = RegistryReadOps.a(DynamicOpsNBT.a, console.dataPackResources.h(), console.customRegistry);
+                RegistryReadOps<NBTBase> registryreadops = RegistryReadOps.a(DynamicOpsNBT.a, console.aB.i(), console.l);
                 WorldDataServer worlddata = (WorldDataServer)worldSession.a(registryreadops, console.datapackconfiguration);
                 if (worlddata == null) {
                     Properties properties = new Properties();
@@ -87,14 +114,14 @@ public class v1_16_R3 implements WorldDataSupport{
                     properties.put("generate-structures", Objects.toString(creator.generateStructures()));
                     properties.put("level-type", creator.type().getName());
                     GeneratorSettings generatorsettings = GeneratorSettings.a(console.getCustomRegistry(), properties);
-                    WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(craftServer.getDefaultGameMode().getValue()), hardcore, EnumDifficulty.EASY, false, new GameRules(), console.datapackconfiguration);
+                    WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(craftServer.getDefaultGameMode().getValue()), hardcore, EnumDifficulty.b, false, new GameRules(), console.datapackconfiguration);
                     worlddata = new WorldDataServer(worldSettings, generatorsettings, Lifecycle.stable());
                 }
 
                 worlddata.checkName(name);
                 worlddata.a(console.getServerModName(), console.getModded().isPresent());
 //                if (console.options.has("forceUpgrade")) {
-//                    net.minecraft.server.v1_16_R3.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worlddata.getGeneratorSettings().d().d().stream().map((entry) -> ResourceKey.a(IRegistry.K, (entry.getKey()).a())).collect(ImmutableSet.toImmutableSet()));
+//                    net.minecraft.server.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worlddata.getGeneratorSettings().d().d().stream().map((entry) -> ResourceKey.a(IRegistry.P, (entry.getKey()).a())).collect(ImmutableSet.toImmutableSet()));
 //                }
 
                 long j = BiomeManager.a(creator.seed());
@@ -102,26 +129,47 @@ public class v1_16_R3 implements WorldDataSupport{
                 RegistryMaterials<WorldDimension> registrymaterials = worlddata.getGeneratorSettings().d();
                 WorldDimension worlddimension = registrymaterials.a(actualDimension);
                 DimensionManager dimensionmanager;
-                ChunkGenerator chunkgenerator;
+                net.minecraft.world.level.chunk.ChunkGenerator chunkgenerator;
                 if (worlddimension == null) {
-                    dimensionmanager = console.customRegistry.a().d(DimensionManager.OVERWORLD);
-                    chunkgenerator = GeneratorSettings.a(console.customRegistry.b(IRegistry.ay), console.customRegistry.b(IRegistry.ar), (new Random()).nextLong());
+                    dimensionmanager = console.l.d(IRegistry.P).d(DimensionManager.k);
+                    chunkgenerator = GeneratorSettings.a(console.l.d(IRegistry.aO), console.l.d(IRegistry.aH), (new Random()).nextLong());
                 } else {
                     dimensionmanager = worlddimension.b();
                     chunkgenerator = worlddimension.c();
                 }
 
-                ResourceKey<net.minecraft.server.v1_16_R3.World> worldKey = ResourceKey.a(IRegistry.L, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
-                WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().worldLoadListenerFactory.create(11), chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
+                WorldInfo worldInfo = new CraftWorldInfo(worlddata, worldSession, creator.environment(), dimensionmanager);
+                if (biomeProvider == null && generator != null) {
+                    biomeProvider = generator.getDefaultBiomeProvider(worldInfo);
+                }
+
+                if (biomeProvider != null) {
+                    WorldChunkManager worldChunkManager = new CustomWorldChunkManager(worldInfo, biomeProvider, console.l.b(IRegistry.aO));
+                    if (chunkgenerator instanceof ChunkGeneratorAbstract) {
+                        chunkgenerator = new ChunkGeneratorAbstract(worldChunkManager, chunkgenerator.e, ((ChunkGeneratorAbstract)chunkgenerator).g);
+                    }
+                }
+
+                String levelName = craftServer.getServer().getDedicatedServerProperties().p;
+                ResourceKey worldKey;
+                if (name.equals(levelName + "_nether")) {
+                    worldKey = net.minecraft.world.level.World.g;
+                } else if (name.equals(levelName + "_the_end")) {
+                    worldKey = net.minecraft.world.level.World.h;
+                } else {
+                    worldKey = ResourceKey.a(IRegistry.Q, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
+                }
+
+                WorldServer internal = new WorldServer(console, console.az, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().L.create(11), chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
                 if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
                     return null;
                 } else {
                     console.initWorld(internal, worlddata, worlddata, worlddata.getGeneratorSettings());
                     internal.setSpawnFlags(true, true);
-                    console.worldServer.put(internal.getDimensionKey(), internal);
-                    craftServer.getPluginManager().callEvent(new WorldInitEvent(internal.getWorld()));
-                    craftServer.getServer().loadSpawn(internal.getChunkProvider().playerChunkMap.worldLoadListener, internal);
-                    craftServer.getPluginManager().callEvent(new WorldLoadEvent(internal.getWorld()));
+                    console.R.put(internal.getDimensionKey(), internal);
+                    craftServer.getServer().loadSpawn(internal.getChunkProvider().a.z, internal);
+                    internal.G.tick();
+                    Bukkit.getServer().getPluginManager().callEvent(new WorldLoadEvent(internal.getWorld()));
                     return internal.getWorld();
                 }
             }
@@ -129,8 +177,6 @@ public class v1_16_R3 implements WorldDataSupport{
             exception.printStackTrace();
             return null;
         }
-
-
     }
 
     /**
