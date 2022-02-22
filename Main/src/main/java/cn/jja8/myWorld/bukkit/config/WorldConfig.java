@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit.config;
 
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 
 import java.util.ArrayList;
@@ -24,6 +25,16 @@ public class WorldConfig {
         public WorldType 世界类型 = WorldType.NORMAL;
         public World.Environment 世界维度 = World.Environment.NORMAL;
         public boolean 生成建筑 = false;
+
+        public WorldCreator getWordBuilder(String wordName){
+            WorldCreator 世界生成器 = new WorldCreator(wordName);
+            世界生成器.generateStructures(生成建筑);
+            世界生成器.environment(世界维度);
+            世界生成器.type(世界类型);
+            世界生成器.generator(WorldCreator.getGeneratorForName(wordName, this.世界生成器,null));
+            世界生成器.generatorSettings(世界生成器参数);
+            return 世界生成器;
+        }
     }
 
     public WorldConfig(){

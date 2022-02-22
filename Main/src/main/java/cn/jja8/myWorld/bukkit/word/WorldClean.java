@@ -34,22 +34,16 @@ public class WorldClean  implements Listener {
                 playerWorldsList.removeAll(过期空世界);
                 playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
-                    if (playerWord.getWorld()!=null){
-                        if (playerWord.getWorld().getPlayers().size()>0){
-                            return;
+                    boolean k = true;
+                    for (World value : playerWord.worldMap.values()) {
+                        if (value.getPlayers().size()>0){
+                            k = false;
+                            break;
                         }
                     }
-                    if (playerWord.getInfernalWorld()!=null){
-                        if (playerWord.getInfernalWorld().getPlayers().size()>0){
-                            return;
-                        }
+                    if (k){
+                        空世界.add(playerWord);
                     }
-                    if (playerWord.getEndWorld()!=null){
-                        if (playerWord.getEndWorld().getPlayers().size()>0){
-                            return;
-                        }
-                    }
-                    空世界.add(playerWord);
                 });
             }
         }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20, MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20);
@@ -59,11 +53,7 @@ public class WorldClean  implements Listener {
             public void run() {
                 if (cleaningWorlds.size()>0){
                     PlayerWorlds playerWorlds = cleaningWorlds.remove(0);
-                    try {
-                        MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
-                    }catch (PlayerWordMangaer.worldBusy worldBusy){
-                        cleaningWorlds.add(playerWorlds);
-                    }
+                    MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
                 }
             }
         }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20, MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20);

@@ -10,15 +10,23 @@ import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 
 /**
  * 代表一个世界
  */
 public class PlayerWorlds {
+    enum WorldType{
+        world,//主世界
+        infernal,//地狱
+        end//末地
+    }
 
-    World 主世界,地狱,末地;
-    PlayerWordInform 世界信息;
+    Map<String,World> worldMap = new HashMap<>();
+    PlayerWordInform playerWordInform;
     String name;
     WorldDataLock 锁;
 
@@ -27,21 +35,24 @@ public class PlayerWorlds {
         return name;
     }
     public PlayerWordInform getPlayerWordInform() {
-        return 世界信息;
+        return playerWordInform;
     }
-    public World getWorld() {
-        return 主世界;
+    public World getWorld(String type){
+        return worldMap.get(type);
     }
-    public World getInfernalWorld(){
-        return 地狱;
+    public World getWorld(WorldType type) {
+        return getWorld(type.toString());
     }
-    public World getEndWorld(){
-        return 末地;
+    public World putWorld(String type,World world){
+        return worldMap.put(type,world);
+    }
+    public World putWorld(WorldType type,World world){
+        return putWorld(type.toString(),world);
     }
     public void setPlayerLocation(Player player, Location location) {
         World world = location.getWorld();
-        if (world!= getWorld()&world!= getInfernalWorld()&world!= getEndWorld()){
-            throw new Error("不可以保存玩家世界以外的位置。"+world.getName()+"不是玩家世界"+getName()+"中的世界。");
+        if (!worldMap.containsValue(world)){
+            throw new Error("不可以保存玩家世界以外的位置。"+ Objects.requireNonNull(world).getName()+"不是玩家世界"+getName()+"中的世界。");
         }
         OutputStream outputStream = WorldData.worldDataSupport.getCustomDataOutputStream(name, "location/"+player.getUniqueId());
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
@@ -91,12 +102,12 @@ public class PlayerWorlds {
      * 将某玩家传送去出生点
      * */
     public void playerBackSpawn(Player player){
-        World world = getWorld();
+        World world = getWorld(WorldType.world);
         if (world==null){
-            world = getInfernalWorld();
-        }
-        if (world==null){
-            world = getEndWorld();
+            for (World s : worldMap.values()) {
+                world = s;
+                break;
+            }
         }
         if (world==null){
             throw new Error("至少要开启一个世界才能去玩家的世界。");

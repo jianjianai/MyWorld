@@ -1,5 +1,7 @@
 package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 
+import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
@@ -19,6 +21,17 @@ public interface WorldDataSupport {
      * 加载指定名称的世界
      * */
     World loadWorld(WorldCreator creator, String worldName);
+    /**
+     * 异步加载指定名称的世界,如果没有被实现，就会调用loadWorld()
+     * */
+    default void loadWorldAsync(WorldCreator creator, String worldName, RunOnCompletion run){
+        Bukkit.getLogger().warning("异步加载世界方式未被实现，将在主线程加载世界："+worldName);
+        Bukkit.getServer().getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+            run.LoadingProgress(-1);
+            run.CompletionRun(loadWorld(creator,worldName));
+            run.LoadingProgress(100);
+        });
+    }
     /**
      * 获取某世界的锁
      * */
