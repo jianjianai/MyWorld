@@ -3,6 +3,8 @@ package cn.jja8.myWorld.bukkit.word;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.RunOnCompletion;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -45,11 +47,28 @@ public class PlayerWordMangaer implements Listener {
         private PlayerWorlds playerWorlds;
         private PlayerWorlds.WorldType worldType;
         private String name;
+        private int loading = -1;
+        private boolean finish = false;
+        private int x = 0;
 
         public WorldRunOnCompletion(PlayerWorlds playerWorlds, PlayerWorlds.WorldType worldType,String name) {
             this.playerWorlds = playerWorlds;
             this.worldType = worldType;
             this.name = name;
+            new Thread(() -> {//bukkit的异步任务在主线程被阻塞的情况下不会运行，所以就用Thread
+                while (true){
+                    if (finish){
+                        return;
+                    }
+                    x++;
+                    if (loading==-1){
+                        Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(MyWorldBukkit.getLang().世界加载提示文本.replaceAll("<世界>",name).replaceAll("<数>", String.valueOf(x)))));
+                    }else {
+                        Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(MyWorldBukkit.getLang().世界加载提示文本.replaceAll("<世界>",name).replaceAll("<数>",loading+"%"))));
+                    }
+                    try { Thread.sleep(50); } catch (InterruptedException ignored) { }
+                }
+            }).start();
         }
 
         /**
@@ -62,8 +81,10 @@ public class PlayerWordMangaer implements Listener {
             playerWorlds.putWorld(worldType,world);
             wordMap.put(world, playerWorlds);
             if (inspect!=null){
+                finish = true;
                 inspect.finish(this);
             }
+            Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(MyWorldBukkit.getLang().世界加载完成提示文本)));
         }
 
         /**
@@ -72,7 +93,7 @@ public class PlayerWordMangaer implements Listener {
          */
         @Override
         public void LoadingProgress(int loading) {
-            Bukkit.getLogger().info("正在加载世界'"+name+"'.."+loading+"%");
+            this.loading = loading;
         }
     }
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
