@@ -17,6 +17,8 @@ import java.util.*;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 
+import javax.annotation.Nullable;
+
 public class v1_16_R3 implements WorldDataSupport{
     File allWordFile;
     public v1_16_R3(File allWordFile){
@@ -31,7 +33,7 @@ public class v1_16_R3 implements WorldDataSupport{
     /**
      * 在指定路径加载世界，必须在主线程调用
      * */
-    public World loadWorld(WorldCreator creator, String WordName) {
+    public World loadWorld(WorldCreator creator, String WordName, LoadingProgress loadingProgress) {
         try {
             CraftServer craftServer = (CraftServer) Bukkit.getServer();
             DedicatedServer console = craftServer.getServer();
@@ -112,7 +114,30 @@ public class v1_16_R3 implements WorldDataSupport{
                 }
 
                 ResourceKey<net.minecraft.server.v1_16_R3.World> worldKey = ResourceKey.a(IRegistry.L, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
-                WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().worldLoadListenerFactory.create(11), chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
+                WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListener() {
+                    int b = (11 * 2 + 1) * (11 * 2 + 1);
+                    boolean g = true;
+                    private int c;
+                    public void a(ChunkCoordIntPair var0) {
+                    }
+
+                    public void a(ChunkCoordIntPair var0, @Nullable ChunkStatus var1) {
+                        if (var1 == ChunkStatus.FULL) {
+                            ++this.c;
+                        }
+                        if (g){
+                            loadingProgress.LoadingProgress(MathHelper.clamp(MathHelper.d((float)this.c * 100.0F / (float) b), 0, 100));
+                        }
+                    }
+                    public void b() {
+                        g = false;
+                    }
+
+                    public void setChunkRadius(int i) {
+                        int j = i * 2 + 1;
+                        this.b = j * j;
+                    }
+                }, chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
                 if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
                     return null;
                 } else {

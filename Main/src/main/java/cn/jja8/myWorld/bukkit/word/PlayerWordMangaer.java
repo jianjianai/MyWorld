@@ -6,7 +6,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,12 +24,16 @@ public class PlayerWordMangaer implements Listener {
     public class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
         String worldName;
         int v =0;
+        long t = 0;
         public LoadingProgress(String worldName) {
             this.worldName = worldName;
         }
         @Override
         public void LoadingProgress(int loading) {
-            cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress.super.LoadingProgress(loading);
+            if (System.currentTimeMillis()-18<t){
+                return;
+            }
+            t = System.currentTimeMillis();
             Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
                     player.spigot().sendMessage(
                             ChatMessageType.ACTION_BAR,
@@ -59,6 +62,8 @@ public class PlayerWordMangaer implements Listener {
     }
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
+    Map<String, PlayerWorlds> loadingMap = new HashMap<>();
+    Map<PlayerWorlds, List<Consumer<PlayerWorlds>>> loadedMap = new HashMap<>();
 
     public PlayerWordMangaer() {
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this,MyWorldBukkit.getMyWorldBukkit());
@@ -77,8 +82,16 @@ public class PlayerWordMangaer implements Listener {
                 consumer.accept(playerWorlds);
                 return;
             }
-            playerWorlds = new PlayerWorlds();
-            nameMap.put(name, playerWorlds);
+            synchronized (PlayerWordMangaer.this){
+                playerWorlds = loadingMap.get(name);
+                if (playerWorlds!=null){
+                    loadedMap.computeIfAbsent(playerWorlds, k -> new ArrayList<>()).add(consumer);
+                    return;
+                }
+                playerWorlds = new PlayerWorlds();
+                loadedMap.computeIfAbsent(playerWorlds, k -> new ArrayList<>()).add(consumer);
+                loadingMap.put(name,playerWorlds);
+            }
             playerWorlds.name = name;
             //验证没被其他服务器加载------
             playerWorlds.锁 = WorldData.worldDataSupport.getWorldDataLock(name);
@@ -110,7 +123,14 @@ public class PlayerWordMangaer implements Listener {
                 playerWorlds.putWorld(PlayerWorlds.WorldType.end,WorldData.worldDataSupport.loadWorldAsync(MyWorldBukkit.getWorldConfig().末地界生成器.getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
             }
-            consumer.accept(playerWorlds);
+            nameMap.put(name, playerWorlds);
+            loadingMap.remove(name);
+            List<Consumer<PlayerWorlds>> list= loadedMap.remove(playerWorlds);
+            if (list!=null){
+                for (Consumer<PlayerWorlds> consumer1 : list) {
+                    consumer1.accept(playerWorlds);
+                }
+            }
         });
      }
     /**
