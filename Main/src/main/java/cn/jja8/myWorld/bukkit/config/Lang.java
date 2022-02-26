@@ -58,7 +58,7 @@ public class Lang {
     public   String 退出团队_退出确认 = "请添加一条参数”yes“来确认你确认要退出团队。";
     public   String 去出生点_传送成功 = "已将你传送到出生点。";
     public   String 创建世界_创建成功 = "世界创建成功";
-    public   String 创建世界_世界名不合法 = "世界创建失败，世界名不合法";
+    public   String 创建世界_世界名不合法 = "世界创建失败，世界名不合法。{长度必须大于3，只能使用小写字母}";
     public   String 创建团队_创建成功 = "团队创建成功";
     public   String 删除团队_删除成功 = "删除成功";
     public   String 退出团队_你没有团队 = "你不在任何团队中";

@@ -19,7 +19,7 @@ public class Lang {
     public   String 创建世界_需要世界名称 = "世界需要一个名称哦";
     public   String 创建世界_不是团长 = "只有团长才可以创建世界。";
     public   String 创建世界_团队已经有世界了 = "你所在的团队已经有世界了";
-    public   String 创建世界_世界名不合法 = "世界创建失败，世界名不合法";
+    public   String 创建世界_世界名不合法 = "世界创建失败，世界名不合法。{长度必须大于3，只能使用小写字母}";
     public   String 创建世界_还没创建团队 = "创建世界之前需要先加入一个团队";
     public   String 去出生点_还没创建世界 = "你的团队没有世界。";
     public   String 去出生点_还没创建团队 = "你还没有加入团队。";

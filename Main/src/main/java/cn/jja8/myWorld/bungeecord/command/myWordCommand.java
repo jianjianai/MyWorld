@@ -4,6 +4,7 @@ import cn.jja8.myWorld.all.basic.teamSupport.Status;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
+import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
 import cn.jja8.myWorld.bungeecord.veryUtil.ServerFind;
 import cn.jja8.patronSaint_2022_2_7_1713.bungeecord.command.CommandManger;
@@ -11,7 +12,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +87,7 @@ public class myWordCommand{
         String ServerName = serverInfo.getName();
         MyWorldBungeecord.getPreciseExecution().jumpAndImplement(proxiedPlayer, serverInfo, () -> {
             proxiedPlayer.chat("/myWorld ServerName ServerName ServerName "+ ServerName);
-            proxiedPlayer.chat("/myWorld NewWord "+strings[0]);
+            proxiedPlayer.chat("/myWorld NewWorld "+strings[0]);
         });
     }
 
@@ -214,9 +214,9 @@ public class myWordCommand{
         return teamPlayer.getStatus()==Status.leader;
     }
     private static TeamPlayer getTeamPlayerNotNull(ProxiedPlayer player){
-        TeamPlayer teamPlayer = cn.jja8.myWorld.bukkit.basic.Teams.teamManager.getTamePlayer(player.getUniqueId());
+        TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
         if (teamPlayer==null){
-            teamPlayer = cn.jja8.myWorld.bukkit.basic.Teams.teamManager.newTamePlayer(player.getUniqueId(),player.getName());
+            teamPlayer = Teams.teamManager.newTamePlayer(player.getUniqueId(),player.getName());
         }
         return teamPlayer;
     }
@@ -227,7 +227,7 @@ public class myWordCommand{
      * @return 字符串必须只能由数字字母下划线组成
      */
     public static boolean isLegitimate(String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (str.length()<3){
             return false;
         }
         return p.matcher(str).find();

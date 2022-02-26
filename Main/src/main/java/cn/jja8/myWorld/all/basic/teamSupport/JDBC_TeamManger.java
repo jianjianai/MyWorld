@@ -4,6 +4,14 @@ import java.sql.*;
 import java.util.UUID;
 
 public class JDBC_TeamManger implements TeamManager {
+    static {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            System.out.println("sqlite驱动程序加载失败！！");
+            e.printStackTrace();
+        }
+    }
     final String userName;
     final String PassWord;
     final String dataBaseURL;
@@ -32,10 +40,29 @@ public class JDBC_TeamManger implements TeamManager {
     }
 
     @Override
-    public Team getTeam(String teamName) {
+    public Team getTeamFromTeamName(String teamName) {
         try (Connection connection = getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select UUID from Team where TeamName=?")){
                 preparedStatement.setString(1,teamName);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()){
+                    try {
+                        return JDBC_Team.get(this,UUID.fromString(resultSet.getString(1)));
+                    }catch (IllegalArgumentException illegalArgumentException){
+                        illegalArgumentException.printStackTrace();
+                    }
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return null;
+    }
+
+    public Team getTeamFromWorldName(String worldName) {
+        try (Connection connection = getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select UUID from Team where WorldName=?")){
+                preparedStatement.setString(1,worldName);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()){
                     try {

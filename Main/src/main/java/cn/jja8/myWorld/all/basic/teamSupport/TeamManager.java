@@ -7,7 +7,12 @@ public interface TeamManager {
      * 通过团队名称获取团队
      * @return null 没有叫做teamName的团队
      * */
-    Team getTeam(String teamName);
+    Team getTeamFromTeamName(String teamName);
+    /**
+     * 通过世界名称获取团队
+     * @return null 没有叫做worldName的世界
+     * */
+    Team getTeamFromWorldName(String worldName);
     /**
      * 创建一个新团队
      * */

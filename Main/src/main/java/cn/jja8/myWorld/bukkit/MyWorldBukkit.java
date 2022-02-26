@@ -135,7 +135,7 @@ public class MyWorldBukkit extends JavaPlugin{
         getLogger().info("当前服务端版本："+v);
         getLogger().info("-------------------------------------------------------");
         getLogger().info("若有疑问，您可以前往 “PlugClub/插件实验室 - 820131534” 交流。");
-        getLogger().warning("当前版本为测试版本，请酌情使用。");
+        getLogger().warning("当前非正式版本，若有bug您可以前往 “PlugClub/插件实验室 - 820131534” 交流和反馈。");
         //加载管理器
         playerWordMangaer = new PlayerWordMangaer();
         command = new Command();

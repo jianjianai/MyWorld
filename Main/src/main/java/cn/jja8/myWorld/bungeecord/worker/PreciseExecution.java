@@ -10,6 +10,7 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 负责在指定的时候执行指定的事情
@@ -50,14 +51,16 @@ public class PreciseExecution implements Listener {
 
     @EventHandler
     public void 玩家成功跳转服务器(ServerConnectedEvent event){
-        ServerInfoAndRunnable serverInfoAndRunnable =  serverInfoAndRunnableMap.remove(event.getPlayer());
-        if (serverInfoAndRunnable==null){
-            return;
-        }
-        if (!serverInfoAndRunnable.getServerInfo().equals(event.getServer().getInfo())){
-            return;
-        }
-        MyWorldBungeecord.getMyWorldBungeecord().getProxy().getScheduler().runAsync(MyWorldBungeecord.getMyWorldBungeecord(),serverInfoAndRunnable.getRunnable());
+        MyWorldBungeecord.getMyWorldBungeecord().getProxy().getScheduler().schedule(MyWorldBungeecord.getMyWorldBungeecord(), () -> {
+            ServerInfoAndRunnable serverInfoAndRunnable =  serverInfoAndRunnableMap.remove(event.getPlayer());
+            if (serverInfoAndRunnable==null){
+                return;
+            }
+            if (!serverInfoAndRunnable.getServerInfo().equals(event.getServer().getInfo())){
+                return;
+            }
+            serverInfoAndRunnable.getRunnable().run();
+        },3, TimeUnit.SECONDS);
     }
 
     @EventHandler

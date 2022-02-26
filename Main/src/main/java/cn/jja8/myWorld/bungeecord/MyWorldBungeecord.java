@@ -78,7 +78,7 @@ public class MyWorldBungeecord extends Plugin implements Listener {
         WorldData.load();
         Teams.load();
 
-        getLogger().warning("当前版本为测试版本，请酌情使用。");
+        getLogger().warning("当前非正式版本，若有bug您可以前往 “PlugClub/插件实验室 - 820131534” 交流和反馈。");
         preciseExecution = new PreciseExecution();
         myWordCommand=new myWordCommand();
     }

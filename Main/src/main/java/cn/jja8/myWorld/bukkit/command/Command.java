@@ -9,7 +9,6 @@ import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandManger;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,12 +27,10 @@ public class Command {
     public Command() {
         CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld");
         commandManger.setDefaulCommand(this::返回世界);
-        commandManger.addCommand(new String[]{"创建团队","NewTeam"}, this::创建团队);
+        commandManger.addCommand(new String[]{"创建团队","NewTeam"},this::创建团队);
         commandManger.addCommand(new String[]{"解散团队","DisbandOurTeam"}, this::解散团队);
         commandManger.addCommand(new String[]{"邀请成员","InviteFriend"}, this::邀请成员);
         commandManger.addCommand(new String[]{"接受邀请","AcceptInvitation"}, this::接受邀请);
-        commandManger.addCommand(new String[]{"创建世界","NewWorld"}, this::创建世界);
-        commandManger.addCommand(new String[]{"去出生点","goBeginningPoint"}, this::去出生点);
         commandManger.addCommand(new String[]{"退出团队","QuitThisTeam"}, this::退出团队);
         commandManger.addCommand(new String[]{"添加信任","TrustHim"}, this::添加信任);
         commandManger.addCommand(new String[]{"取消信任","DistrustHim"}, new CommandImplement() {
@@ -50,8 +47,12 @@ public class Command {
         commandManger.addCommand(new String[]{"查询信息","Information"}, this::查询信息);
         commandManger.addCommand(new String[]{"信任列表","TrustedPeoples"}, this::信任列表);
         commandManger.addCommand(new String[]{"删除世界","DeleteWorld"}, this::删除世界);
-        commandManger.addCommand(new String[]{"回到世界","go"}, this::返回世界);
         commandManger.addCommand(new String[]{"ServerName"}, this::ServerName);
+
+
+        commandManger.addCommand(new String[]{"去出生点","goBeginningPoint"}, this::去出生点);
+        commandManger.addCommand(new String[]{"回到世界","go"}, this::返回世界);
+        commandManger.addCommand(new String[]{"创建世界","NewWorld"}, this::创建世界);
     }
 
 
@@ -79,7 +80,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().返回世界_团队没有世界);
             return;
         }
-        MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称, playerWorlds -> {
+        MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称, playerWorlds -> {
             if (playerWorlds==null){
                 player.sendMessage(MyWorldBukkit.getLang().返回世界_世界被其他服务器加载);
                 return;
@@ -88,7 +89,7 @@ public class Command {
                 playerWorlds.playerBack(player);
                 player.sendMessage(MyWorldBukkit.getLang().返回世界_传送成功);
             });
-        });
+        }));
     }
 
     private void 删除世界(CommandSender commandSender, String[] strings) {
@@ -366,7 +367,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().创建团队_已经在团队中了.replaceAll("<团队>", 团队.getTeamName()));
             return;
         }
-        团队 = Teams.teamManager.getTeam(strings[0]);
+        团队 = Teams.teamManager.getTeamFromTeamName(strings[0]);
         if (团队 != null) {
             player.sendMessage(MyWorldBukkit.getLang().创建团队_团队名称被占用.replaceAll("<团队>", 团队.getTeamName()));
             return;
@@ -419,19 +420,24 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().创建世界_不是团长);
             return;
         }
+        if (Teams.teamManager.getTeamFromWorldName(strings[0])!=null){
+            player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名称被他人占用);
+            return;
+        }
         if (MyWorldBukkit.getPlayerWordMangaer().isWorldExistence(strings[0])) {
             player.sendMessage(MyWorldBukkit.getLang().创建世界_世界名称被他人占用);
             return;
         }
         //创建世界了
         团队.setWorldName(strings[0]);
-        MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(strings[0], playerWorlds -> {
+        MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(strings[0], playerWorlds -> {
             player.sendMessage(MyWorldBukkit.getLang().创建世界_创建成功);
             //如果创建后传送到世界
             if (MyWorldBukkit.getWorldConfig().创建世界后传送到世界) {
                 去出生点(commandSender, new String[]{});
             }
-        });
+        }));
+
     }
 
     private void 去出生点(CommandSender commandSender, String[] strings) {
@@ -447,7 +453,7 @@ public class Command {
             player.sendMessage(MyWorldBukkit.getLang().去出生点_团队没有世界);
             return;
         }
-        MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称, playerWorlds -> {
+        MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(世界名称, playerWorlds -> {
             if (playerWorlds==null){
                 player.sendMessage(MyWorldBukkit.getLang().去出生点_世界被其他服务器加载);
                 return;
@@ -456,7 +462,7 @@ public class Command {
                 playerWorlds.playerBackSpawn(player);
                 player.sendMessage(MyWorldBukkit.getLang().去出生点_传送成功);
             });
-        });
+        }));
     }
 
     private static boolean isAdmin(TeamPlayer teamPlayer){
@@ -480,7 +486,7 @@ public class Command {
      * @return 字符串必须只能由数字字母下划线组成
      */
     public static boolean isLegitimate(String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (str.length()<3){
             return false;
         }
         return p.matcher(str).find();
