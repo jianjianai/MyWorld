@@ -162,7 +162,7 @@ public class v1_17_R1 implements WorldDataSupport{
                 }
 
                 WorldServer internal = new WorldServer(console, console.az, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListener() {
-                    final int b = (11 * 2 + 1) * (11 * 2 + 1);
+                    int b = (11 * 2 + 1) * (11 * 2 + 1);
                     private int c;
                     boolean g = true;
                     public void a(ChunkCoordIntPair var0) {
@@ -184,6 +184,11 @@ public class v1_17_R1 implements WorldDataSupport{
 
                     public void b() {
                         g = false;
+                    }
+
+                    @Override
+                    public void setChunkRadius(int i) {
+                        b = (i * 2 + 1) * (i * 2 + 1);
                     }
                 }, chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
                 if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
