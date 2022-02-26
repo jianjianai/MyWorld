@@ -1,6 +1,0 @@
-name: MyWorld
-main: cn.jja8.myWorld.bungeecord.MyWorldBungeecord
-version: ${版本号}
-author: jianjianai
-api-version: 1.16
-softdepend: [patronSaint]
