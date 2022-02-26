@@ -117,14 +117,13 @@ public class v1_16_R3 implements WorldDataSupport{
             }
 
             ResourceKey<net.minecraft.server.v1_16_R3.World> worldKey = ResourceKey.a(IRegistry.L, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
-            WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListener() {
-                int b = (11 * 2 + 1) * (11 * 2 + 1);
+            WorldServer internal = new WorldServer(console, console.executorService, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListenerLogger(11) {
+                final int b = (11 * 2 + 1) * (11 * 2 + 1);
                 boolean g = true;
                 private int c;
-                public void a(ChunkCoordIntPair var0) {
-                }
 
                 public void a(ChunkCoordIntPair var0, @Nullable ChunkStatus var1) {
+                    super.a(var0,var1);
                     if (var1 == ChunkStatus.FULL) {
                         ++this.c;
                     }
@@ -133,12 +132,8 @@ public class v1_16_R3 implements WorldDataSupport{
                     }
                 }
                 public void b() {
+                    super.b();
                     g = false;
-                }
-
-                public void setChunkRadius(int i) {
-                    int j = i * 2 + 1;
-                    this.b = j * j;
                 }
             }, chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator);
             if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {

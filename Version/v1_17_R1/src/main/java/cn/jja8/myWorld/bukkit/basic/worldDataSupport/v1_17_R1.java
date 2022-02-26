@@ -14,6 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.level.progress.WorldLoadListener;
+import net.minecraft.server.level.progress.WorldLoadListenerLogger;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.entity.ai.village.VillageSiege;
@@ -161,14 +162,12 @@ public class v1_17_R1 implements WorldDataSupport{
                     worldKey = ResourceKey.a(IRegistry.Q, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
                 }
 
-                WorldServer internal = new WorldServer(console, console.az, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListener() {
-                    int b = (11 * 2 + 1) * (11 * 2 + 1);
+                WorldServer internal = new WorldServer(console, console.az, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListenerLogger(11) {
+                    final int b = (11 * 2 + 1) * (11 * 2 + 1);
                     private int c;
                     boolean g = true;
-                    public void a(ChunkCoordIntPair var0) {
-                    }
-
                     public void a(ChunkCoordIntPair var0, @Nullable ChunkStatus var1) {
+                        super.a(var0,var1);
                         if (var1 == ChunkStatus.m) {
                             ++this.c;
                         }
@@ -177,18 +176,9 @@ public class v1_17_R1 implements WorldDataSupport{
                         }
                     }
 
-                    @Override
-                    public void a() {
-
-                    }
-
                     public void b() {
+                        super.b();
                         g = false;
-                    }
-
-                    @Override
-                    public void setChunkRadius(int i) {
-                        b = (i * 2 + 1) * (i * 2 + 1);
                     }
                 }, chunkgenerator, worlddata.getGeneratorSettings().isDebugWorld(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
                 if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
