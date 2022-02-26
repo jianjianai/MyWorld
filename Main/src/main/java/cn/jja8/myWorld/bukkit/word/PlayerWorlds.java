@@ -19,7 +19,7 @@ import java.util.Objects;
  * 代表一个世界
  */
 public class PlayerWorlds {
-    enum WorldType{
+    public enum WorldType{
         world,//主世界
         infernal,//地狱
         end//末地
@@ -89,7 +89,7 @@ public class PlayerWorlds {
         try {
             location = getPlayerLocation(player);
         }catch (Exception|Error e){
-            e.printStackTrace();
+            new Exception("玩家"+player.getName()+"在"+name+"世界上次的位置加载失败！",e).printStackTrace();
         }
 
         if (location!=null){

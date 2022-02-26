@@ -1,10 +1,12 @@
 rootProject.name = 'MyWorld'
 include 'Main'
 findProject(':Main')?.name = 'Main'
+
 include 'Version:v1_17_R1'
 findProject(':Version:v1_17_R1')?.name = 'v1_17_R1'
+
 include 'Version:v1_18_R1'
 findProject(':Version:v1_18_R1')?.name = 'v1_18_R1'
-include 'plugin:LoliServer_1_16_5'
-findProject(':plugin:LoliServer_1_16_5')?.name = 'LoliServer_1_16_5'
 
+include 'Version:v1_12_R1'
+findProject(':Version:v1_12_R1')?.name = 'v1_12_R1'

@@ -1,12 +1,11 @@
 package cn.jja8.myWorld.bukkit.command;
 
 import cn.jja8.myWorld.all.basic.teamSupport.Status;
+import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.all.veryUtil.StringTool;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.bukkit.basic.Teams;
-import cn.jja8.myWorld.bukkit.word.PlayerWordMangaer;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_2_7_1713.bukkit.command.CommandManger;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class Command {

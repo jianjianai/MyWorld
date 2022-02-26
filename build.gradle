@@ -15,6 +15,7 @@ dependencies {
     implementation project("Main")
     implementation project("Version:v1_17_R1")
     implementation project("Version:v1_18_R1")
+    implementation project("Version:v1_12_R1")
 }
 
 test {

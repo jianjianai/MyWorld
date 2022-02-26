@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
@@ -21,7 +22,7 @@ public class PlayerWordMangaer implements Listener {
     /**
      * 加载进度接收
      * */
-    public class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
+    public static class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
         String worldName;
         int v =0;
         long t = 0;
@@ -30,24 +31,28 @@ public class PlayerWordMangaer implements Listener {
         }
         @Override
         public void LoadingProgress(int loading) {
-            if (System.currentTimeMillis()-18<t){
-                return;
+            try {
+                if (System.currentTimeMillis()-50<t){
+                    return;
+                }
+                t = System.currentTimeMillis();
+                Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
+                        player.spigot().sendMessage(
+                                ChatMessageType.ACTION_BAR,
+                                new TextComponent(MyWorldBukkit.getLang().世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1|loading==0?v():loading+"%"))
+                        )
+                );
+            }catch (Exception|Error throwable){
+                throwable.printStackTrace();
             }
-            t = System.currentTimeMillis();
-            Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
-                    player.spigot().sendMessage(
-                            ChatMessageType.ACTION_BAR,
-                            new TextComponent(MyWorldBukkit.getLang().世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1?v():loading+"%"))
-                    )
-            );
         }
         private String v(){
             String s = "/";
             switch (v++%4){
                 case 0: s="/";break;
-                case 1: s="|";break;
-                case 2: s="\\";break;
-                case 3: s="-";break;
+                case 1: s="-";break;
+                case 2: s="\\\\";break;
+                case 3: s="|";break;
             }
             return s;
         }
@@ -122,6 +127,9 @@ public class PlayerWordMangaer implements Listener {
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
                 playerWorlds.putWorld(PlayerWorlds.WorldType.end,WorldData.worldDataSupport.loadWorldAsync(MyWorldBukkit.getWorldConfig().末地界生成器.getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
+            }
+            for (World value : playerWorlds.worldMap.values()) {
+                wordMap.put(value,playerWorlds);
             }
             nameMap.put(name, playerWorlds);
             loadingMap.remove(name);
@@ -228,5 +236,12 @@ public class PlayerWordMangaer implements Listener {
             return;
         }
         form.setPlayerLocation(event.getPlayer(),event.getFrom());
+    }
+    @EventHandler
+    public void 玩家离开服务器(PlayerQuitEvent event){
+        PlayerWorlds playerWorlds = getBeLoadPlayerWorlds(event.getPlayer().getWorld());
+        if (playerWorlds!=null){
+            playerWorlds.setPlayerLocation(event.getPlayer(),event.getPlayer().getLocation());
+        }
     }
 }
