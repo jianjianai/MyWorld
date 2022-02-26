@@ -9,16 +9,17 @@ import net.minecraft.resources.MinecraftKey;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.level.progress.WorldLoadListener;
+import net.minecraft.server.level.progress.WorldLoadListenerLogger;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.entity.ai.village.VillageSiege;
 import net.minecraft.world.entity.npc.MobSpawnerCat;
 import net.minecraft.world.entity.npc.MobSpawnerTrader;
-import net.minecraft.world.level.EnumGamemode;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.MobSpawner;
-import net.minecraft.world.level.WorldSettings;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.WorldChunkManager;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.dimension.DimensionManager;
 import net.minecraft.world.level.dimension.WorldDimension;
 import net.minecraft.world.level.levelgen.ChunkGeneratorAbstract;
@@ -39,6 +40,7 @@ import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -57,7 +59,7 @@ public class v1_18_R1 implements WorldDataSupport{
     /**
      * 在指定路径加载世界，必须在主线程调用
      * */
-    public World loadWorld(WorldCreator creator, String WordName) {
+    public World loadWorld(WorldCreator creator, String WordName,LoadingProgress loadingProgress) {
         try {
             CraftServer craftServer = (CraftServer) Bukkit.getServer();
             DedicatedServer console = craftServer.getServer();
@@ -155,7 +157,24 @@ public class v1_18_R1 implements WorldDataSupport{
                     worldKey = ResourceKey.a(IRegistry.R, new MinecraftKey(name.toLowerCase(Locale.ENGLISH)));
                 }
 
-                WorldServer internal = new WorldServer(console, console.az, worldSession, worlddata, worldKey, dimensionmanager, craftServer.getServer().L.create(11), chunkgenerator, worlddata.A().g(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
+                WorldServer internal = new WorldServer(console, console.az, worldSession, worlddata, worldKey, dimensionmanager, new WorldLoadListenerLogger(11) {
+                    int b = (11 * 2 + 1) * (11 * 2 + 1);
+                    private int c;
+                    boolean g = true;
+                    public void a(ChunkCoordIntPair var0, @Nullable ChunkStatus var1) {
+                        super.a(var0,var1);
+                        if (var1 == ChunkStatus.o) {
+                            ++this.c;
+                        }
+                        if (g){
+                            loadingProgress.LoadingProgress(MathHelper.a(MathHelper.d((float)this.c * 100.0F / (float) b), 0, 100));
+                        }
+                    }
+                    public void b() {
+                        super.b();
+                        g = false;
+                    }
+                }, chunkgenerator, worlddata.A().g(), j, creator.environment() == World.Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
                 if (!worlds.containsKey(name.toLowerCase(Locale.ENGLISH))) {
                     return null;
                 } else {
