@@ -7,7 +7,7 @@ import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
 import cn.jja8.myWorld.bungeecord.veryUtil.ServerFind;
-import cn.jja8.patronSaint_2022_2_7_1713.bungeecord.command.CommandManger;
+import cn.jja8.patronSaint_2022_3_2_1244.bungeecord.command.CommandManger;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;

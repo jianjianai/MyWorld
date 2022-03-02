@@ -1,5 +1,6 @@
 package cn.jja8.myWorld.bukkit.basic.portalSupport;
 
+import net.minecraft.server.level.WorldServer;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -19,7 +20,7 @@ public class v1_18_R1 implements PortalTransmission{
             entity.teleport(ToWorld.getSpawnLocation());
         }
         try {
-            ((CraftEntity) entity).getHandle().b(((CraftWorld)ToWorld).getHandle());//调用原版的实体传送逻辑，传送到地狱之前玩家必须碰一下地狱门，地狱传送到主世界同理。
+            ((CraftEntity) entity).getHandle().b((WorldServer)((CraftWorld)ToWorld).getHandle());//调用原版的实体传送逻辑，传送到地狱之前玩家必须碰一下地狱门，地狱传送到主世界同理。
         }catch (Throwable ignored){
 
         }

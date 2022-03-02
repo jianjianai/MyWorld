@@ -8,7 +8,7 @@ import cn.jja8.myWorld.bungeecord.config.Lang;
 import cn.jja8.myWorld.bungeecord.config.PlayerDataConfig;
 import cn.jja8.myWorld.bungeecord.config.ServerConfig;
 import cn.jja8.myWorld.bungeecord.worker.PreciseExecution;
-import cn.jja8.patronSaint_2022_2_7_1713.allUsed.file.YamlConfig;
+import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
