@@ -76,6 +76,7 @@ public class MyWorldBukkit extends JavaPlugin{
     }
 
 
+
     @Override
     public void onEnable() {
         myWorldBukkit = this;
@@ -124,7 +125,7 @@ public class MyWorldBukkit extends JavaPlugin{
                 getLogger().severe("插件无法启用，可能暂时还不兼容当前服务端，您可以从网上下载兼容扩展来使插件兼容当前服务端。");
             }
             getLogger().severe("-------------------------------------------------------");
-            getLogger().severe("兼容版本：v1_12_R1,v1_16_R3,v1_17_R1,v1_18_R1");
+            getLogger().severe("兼容版本：v1_12_R1,v1_16_R3,v1_17_R1,v1_18_R2");
             getLogger().severe("当前服务端版本："+v);
             getLogger().severe("-------------------------------------------------------");
             getLogger().severe("如果您的服务器在兼容列表中，请自行排除上方报错！若有疑问，您可以前往 “PlugClub/插件实验室 - 820131534” 交流。");
