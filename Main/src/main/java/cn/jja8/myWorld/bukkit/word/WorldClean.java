@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -11,11 +12,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用于卸载不需要被继续加载的世界
  * */
 public class WorldClean  implements Listener {
+    WorldConfig worldConfig = MyWorldBukkit.getWorldConfig();
     List<PlayerWorlds> 空世界 = new ArrayList<>();
     List<PlayerWorlds> 过期空世界 = new ArrayList<>();
     List<PlayerWorlds> cleaningWorlds = new ArrayList<>();
@@ -34,39 +37,29 @@ public class WorldClean  implements Listener {
                 playerWorldsList.removeAll(过期空世界);
                 playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
-                    if (playerWord.getWorld()!=null){
-                        if (playerWord.getWorld().getPlayers().size()>0){
-                            return;
+                    boolean k = true;
+                    for (World value : playerWord.worldMap.values()) {
+                        if (value.getPlayers().size()>0){
+                            k = false;
+                            break;
                         }
                     }
-                    if (playerWord.getInfernalWorld()!=null){
-                        if (playerWord.getInfernalWorld().getPlayers().size()>0){
-                            return;
-                        }
+                    if (k){
+                        空世界.add(playerWord);
                     }
-                    if (playerWord.getEndWorld()!=null){
-                        if (playerWord.getEndWorld().getPlayers().size()>0){
-                            return;
-                        }
-                    }
-                    空世界.add(playerWord);
                 });
             }
-        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20, MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20);
+        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), worldConfig.无玩家世界最短卸载时间*20, worldConfig.无玩家世界最短卸载时间*20);
         //卸载过期世界
         new BukkitRunnable(){
             @Override
             public void run() {
                 if (cleaningWorlds.size()>0){
                     PlayerWorlds playerWorlds = cleaningWorlds.remove(0);
-                    try {
-                        MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
-                    }catch (PlayerWordMangaer.worldBusy worldBusy){
-                        cleaningWorlds.add(playerWorlds);
-                    }
+                    MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
                 }
             }
-        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20, MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20);
+        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), worldConfig.卸载空世界间隔时间*20, worldConfig.卸载空世界间隔时间*20);
     }
 
     @EventHandler

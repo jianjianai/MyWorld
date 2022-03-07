@@ -2,26 +2,78 @@ package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
+import cn.jja8.myWorld.bukkit.config.Lang;
+import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
  * 用于管理每个世界
  */
 public class PlayerWordMangaer implements Listener {
-    public static class LoadingPlayerWorlds extends Error {}
-    boolean worldBusy = false;
+    /**
+     * 加载进度接收
+     * */
+    public static class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
+        Lang lang = MyWorldBukkit.getLang();
+        String worldName;
+        int v =0;
+        long t = 0;
+        public LoadingProgress(String worldName) {
+            this.worldName = worldName;
+        }
+        @Override
+        public void LoadingProgress(int loading) {
+            try {
+                if (System.currentTimeMillis()-50<t){
+                    return;
+                }
+                t = System.currentTimeMillis();
+                Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
+                        player.spigot().sendMessage(
+                                ChatMessageType.ACTION_BAR,
+                                new TextComponent(lang.世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1|loading==0?v():loading+"%"))
+                        )
+                );
+            }catch (Exception|Error throwable){
+                throwable.printStackTrace();
+            }
+        }
+        private String v(){
+            String s = "/";
+            switch (v++%4){
+                case 0: s="/";break;
+                case 1: s="-";break;
+                case 2: s="\\\\";break;
+                case 3: s="|";break;
+            }
+            return s;
+        }
+        public void finish() {
+            Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
+                    player.spigot().sendMessage(
+                            ChatMessageType.ACTION_BAR,
+                            new TextComponent(lang.世界加载完成提示文本)
+                    )
+            );
+        }
+    }
+    Lang lang = MyWorldBukkit.getLang();
+    WorldConfig worldConfig =  MyWorldBukkit.getWorldConfig();
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
+    Map<String, PlayerWorlds> loadingMap = new HashMap<>();
+    Map<PlayerWorlds, List<Consumer<PlayerWorlds>>> loadedMap = new HashMap<>();
 
     public PlayerWordMangaer() {
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this,MyWorldBukkit.getMyWorldBukkit());
@@ -30,36 +82,69 @@ public class PlayerWordMangaer implements Listener {
     /**
      * 通过世界名称加载一个玩家世界
      * @param name 世界唯一名称。
-     * @return null 如果世界被其他服务器加载
+     * @param consumer 世界加载完成后调用， null 如果世界被其他服务器加载
      */
-    public PlayerWorlds loadPlayerWorlds(String name){
-        if (worldBusy){
-            throw new LoadingPlayerWorlds();
-        }
-        worldBusy =true;
-        PlayerWorlds playerWorlds = nameMap.get(name);
-        if (playerWorlds !=null){
-            worldBusy =false;
-            return playerWorlds;
-        }
-        try {
-            playerWorlds = new PlayerWorlds(name);
-        }catch (PlayerWorlds.LoadedByAnotherServer r){
-            worldBusy =false;
-            return null;
-        }
-        nameMap.put(name, playerWorlds);
-        if (playerWorlds.getWorld()!=null){
-            wordMap.put(playerWorlds.getWorld(), playerWorlds);
-        }
-        if (playerWorlds.getInfernalWorld()!=null){
-            wordMap.put(playerWorlds.getInfernalWorld(), playerWorlds);
-        }
-        if (playerWorlds.getEndWorld()!=null){
-            wordMap.put(playerWorlds.getEndWorld(), playerWorlds);
-        }
-        worldBusy =false;
-        return playerWorlds;
+    public void loadPlayerWorlds(String name,Consumer<PlayerWorlds> consumer){
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
+            //查找有没有已经被加载的
+            PlayerWorlds playerWorlds = getBeLoadPlayerWorlds(name);
+            if (playerWorlds !=null){
+                consumer.accept(playerWorlds);
+                return;
+            }
+            synchronized (PlayerWordMangaer.this){
+                playerWorlds = loadingMap.get(name);
+                if (playerWorlds!=null){
+                    loadedMap.computeIfAbsent(playerWorlds, k -> new ArrayList<>()).add(consumer);
+                    return;
+                }
+                playerWorlds = new PlayerWorlds();
+                loadedMap.computeIfAbsent(playerWorlds, k -> new ArrayList<>()).add(consumer);
+                loadingMap.put(name,playerWorlds);
+            }
+            playerWorlds.name = name;
+            //验证没被其他服务器加载------
+            playerWorlds.锁 = WorldData.worldDataSupport.getWorldDataLock(name);
+            if (playerWorlds.锁.isLocked()){
+                consumer.accept(null);
+                return;
+            }
+            playerWorlds.锁.locked(worldConfig.服务器名称);
+            playerWorlds.playerWordInform = new PlayerWordInform(name);
+            MyWorldBukkit.getMyWorldBukkit().getLogger().info("加载"+playerWorlds.getName()+"世界组。");
+
+            //加载世界-------
+            {
+                LoadingProgress loadingProgress = new LoadingProgress(name);
+                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldConfig.主世界生成器.getWordBuilder(name), name,loadingProgress));
+                loadingProgress.finish();
+            }
+            //地狱
+            if (worldConfig.地狱界生成器.启用){
+                String wordName = name+"_nether";
+                LoadingProgress loadingProgress = new LoadingProgress(wordName);
+                playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldConfig.地狱界生成器.getWordBuilder(wordName),wordName, loadingProgress));
+                loadingProgress.finish();
+            }
+            //末地
+            if (worldConfig.末地界生成器.启用){
+                String wordName = name+"_the_end";
+                LoadingProgress loadingProgress = new LoadingProgress(wordName);
+                playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldConfig.末地界生成器.getWordBuilder(wordName), wordName,loadingProgress));
+                loadingProgress.finish();
+            }
+            for (World value : playerWorlds.worldMap.values()) {
+                wordMap.put(value,playerWorlds);
+            }
+            nameMap.put(name, playerWorlds);
+            loadingMap.remove(name);
+            List<Consumer<PlayerWorlds>> list= loadedMap.remove(playerWorlds);
+            if (list!=null){
+                for (Consumer<PlayerWorlds> consumer1 : list) {
+                    consumer1.accept(playerWorlds);
+                }
+            }
+        });
      }
     /**
      * 从已加载的世界中获取世界
@@ -80,36 +165,28 @@ public class PlayerWordMangaer implements Listener {
     /**
      * 卸载一个玩家世界
      */
-     public void unloadPlayerWorlds(PlayerWorlds playerWord, boolean save){
+     public void unloadPlayerWorlds(PlayerWorlds playerWord, boolean save) {
          MyWorldBukkit.getMyWorldBukkit().getLogger().info("卸载"+playerWord.getName()+"世界组。"+(save?"并保存":"并不保存"));
-         World world = Bukkit.getWorld(MyWorldBukkit.getWorldConfig().主世界名称);
+         World world = Bukkit.getWorld(worldConfig.主世界名称);
          Consumer<Player> consumer = player -> {
              if (world==null){
-                 player.kickPlayer(MyWorldBukkit.getLang().世界卸载_找不到主世界.replaceAll("<世界>", MyWorldBukkit.getWorldConfig().主世界名称));
-                 return;
+                 player.kickPlayer(lang.世界卸载_找不到主世界.replaceAll("<世界>", worldConfig.主世界名称));
+             }else {
+                 player.teleport(world.getSpawnLocation());
              }
-             player.teleport(world.getSpawnLocation());
          };
-         if (playerWord.getWorld()!=null){
-             playerWord.getWorld().getPlayers().forEach(consumer);
-             WorldData.worldDataSupport.unloadWorld(playerWord.getWorld(),save);
-         }
-         if (playerWord.getInfernalWorld()!=null){
-             playerWord.getInfernalWorld().getPlayers().forEach(consumer);
-             WorldData.worldDataSupport.unloadWorld(playerWord.getInfernalWorld(),save);
-         }
-         if (playerWord.getEndWorld()!=null){
-             playerWord.getEndWorld().getPlayers().forEach(consumer);
-             WorldData.worldDataSupport.unloadWorld(playerWord.getEndWorld(),save);
+         for (World value : playerWord.worldMap.values()) {
+             for (Player player : value.getPlayers()) {
+                 consumer.accept(player);
+             }
+             WorldData.worldDataSupport.unloadWorld(value,save);
+             wordMap.remove(value);
          }
          if (save){
              playerWord.getPlayerWordInform().save();
          }
-         wordMap.remove(playerWord.getWorld());
-         wordMap.remove(playerWord.getEndWorld());
-         wordMap.remove(playerWord.getInfernalWorld());
          nameMap.remove(playerWord.getName());
-         playerWord.锁.unlock(MyWorldBukkit.getWorldConfig().服务器名称);
+         playerWord.锁.unlock(worldConfig.服务器名称);
      }
 
     /**
@@ -146,9 +223,11 @@ public class PlayerWordMangaer implements Listener {
         if (sj!=null){
             unloadPlayerWorlds(sj,false);
         }
-        WorldData.worldDataSupport.delWorld(worldName);
-        WorldData.worldDataSupport.delWorld(worldName+"_nether");
-        WorldData.worldDataSupport.delWorld(worldName+"_the_end");
+        MyWorldBukkit.getMyWorldBukkit().getServer().getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
+            WorldData.worldDataSupport.delWorld(worldName);
+            WorldData.worldDataSupport.delWorld(worldName+"_nether");
+            WorldData.worldDataSupport.delWorld(worldName+"_the_end");
+        });
     }
 
     @EventHandler
@@ -162,5 +241,12 @@ public class PlayerWordMangaer implements Listener {
             return;
         }
         form.setPlayerLocation(event.getPlayer(),event.getFrom());
+    }
+    @EventHandler
+    public void 玩家离开服务器(PlayerQuitEvent event){
+        PlayerWorlds playerWorlds = getBeLoadPlayerWorlds(event.getPlayer().getWorld());
+        if (playerWorlds!=null){
+            playerWorlds.setPlayerLocation(event.getPlayer(),event.getPlayer().getLocation());
+        }
     }
 }
