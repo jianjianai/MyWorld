@@ -19,11 +19,6 @@ import java.util.Objects;
  * 代表一个世界
  */
 public class PlayerWorlds {
-    public enum WorldType{
-        world,//主世界
-        infernal,//地狱
-        end//末地
-    }
 
     Map<String,World> worldMap = new HashMap<>();
     PlayerWordInform playerWordInform;
@@ -40,13 +35,13 @@ public class PlayerWorlds {
     public World getWorld(String type){
         return worldMap.get(type);
     }
-    public World getWorld(WorldType type) {
+    public World getWorld(PlayerWorldTypeAtName type) {
         return getWorld(type.toString());
     }
     public World putWorld(String type,World world){
         return worldMap.put(type,world);
     }
-    public World putWorld(WorldType type,World world){
+    public World putWorld(PlayerWorldTypeAtName type, World world){
         return putWorld(type.toString(),world);
     }
     public void setPlayerLocation(Player player, Location location) {
@@ -102,7 +97,7 @@ public class PlayerWorlds {
      * 将某玩家传送去出生点
      * */
     public void playerBackSpawn(Player player){
-        World world = getWorld(WorldType.world);
+        World world = getWorld(PlayerWorldTypeAtName.world);
         if (world==null){
             for (World s : worldMap.values()) {
                 world = s;

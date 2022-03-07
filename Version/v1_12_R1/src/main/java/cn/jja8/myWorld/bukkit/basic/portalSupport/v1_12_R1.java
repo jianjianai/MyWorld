@@ -2,6 +2,7 @@ package cn.jja8.myWorld.bukkit.basic.portalSupport;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
+import cn.jja8.myWorld.bukkit.word.PlayerWorldTypeAtName;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
@@ -253,7 +254,7 @@ public class v1_12_R1 implements PortalTransmission{
             return;
         }
         if (block.getType().equals(Material.ENDER_PORTAL)){//末地门
-            if(world==playerWorlds.getWorld(PlayerWorlds.WorldType.end)){//在末地
+            if(world==playerWorlds.getWorld(PlayerWorldTypeAtName.end)){//在末地
                 if(world_main!=null){
                     TpToWorld(entity, world_main,1,0);
                 }
@@ -263,7 +264,7 @@ public class v1_12_R1 implements PortalTransmission{
                 }
             }
         }else if (block.getType().equals(Material.PORTAL)){//地狱门
-            if(world==playerWorlds.getWorld(PlayerWorlds.WorldType.infernal)){//在地狱
+            if(world==playerWorlds.getWorld(PlayerWorldTypeAtName.infernal)){//在地狱
                 if(world_main!=null){
                     TpToWorld(entity, world_main,-1,0);
                 }

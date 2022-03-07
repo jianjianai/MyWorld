@@ -3,6 +3,9 @@ package cn.jja8.myWorld.bukkit.player;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.playerDataSupport.PlayerDataLock;
+import cn.jja8.myWorld.bukkit.config.Lang;
+import cn.jja8.myWorld.bukkit.config.PlayerDataConfig;
+import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.LivingEntity;
@@ -21,6 +24,9 @@ import java.util.*;
  * ”玩家数据“字段负责玩家数据的存储，如果需要使用其他保存方式可以在load阶段对他赋值。
  * */
 public class PlayerDataManager implements Listener {
+    PlayerDataConfig playerDataConfig = MyWorldBukkit.getPlayerDataConfig();
+    WorldConfig worldConfig = MyWorldBukkit.getWorldConfig();
+    Lang lang = MyWorldBukkit.getLang();
     //玩家和锁map
     Map<Player, PlayerDataLock> playerLockMap = new HashMap<>();
     //玩家和加载任务map
@@ -31,7 +37,7 @@ public class PlayerDataManager implements Listener {
         //事件监听器
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
         //自动保存
-        MyWorldBukkit.getMyWorldBukkit().getServer().getScheduler().runTaskTimerAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> new ArrayList<>(playerLockMap.keySet()).forEach(player -> PlayerData.playerDataSupport.saveData(player)), 20L * MyWorldBukkit.getPlayerDataConfig().自动保存时间, 20L * MyWorldBukkit.getPlayerDataConfig().自动保存时间);
+        MyWorldBukkit.getMyWorldBukkit().getServer().getScheduler().runTaskTimerAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> new ArrayList<>(playerLockMap.keySet()).forEach(player -> PlayerData.playerDataSupport.saveData(player)), 20L * playerDataConfig.自动保存时间, 20L * playerDataConfig.自动保存时间);
     }
     /**
      * 如果玩家没有加载完成，就加载完成后执行。如果已经加载完成就立即执行
@@ -63,12 +69,12 @@ public class PlayerDataManager implements Listener {
         PlayerDataLock lock = playerLockMap.remove(event.getPlayer());
         if (lock!=null){
             PlayerData.playerDataSupport.saveData(event.getPlayer());
-            lock.unlock(MyWorldBukkit.getWorldConfig().服务器名称);
+            lock.unlock(worldConfig.服务器名称);
         }
     }
     @EventHandler
     public void 玩家进入服务器(PlayerJoinEvent event){
-        if (MyWorldBukkit.getPlayerDataConfig().玩家数据加载前保持背包为空){
+        if (playerDataConfig.玩家数据加载前保持背包为空){
             event.getPlayer().getInventory().clear();
         }
         BukkitRunnable 加载 = new BukkitRunnable() {
@@ -77,11 +83,11 @@ public class PlayerDataManager implements Listener {
             public void run() {
                 PlayerDataLock lock = PlayerData.playerDataSupport.getPlayerDataLock(event.getPlayer());
                 if (lock.isLocked()) {
-                    event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(MyWorldBukkit.getLang().玩家数据加载_等待信息.replaceAll("<数>", String.valueOf(time))));
+                    event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(lang.玩家数据加载_等待信息.replaceAll("<数>", String.valueOf(time))));
                     time++;
                     return;
                 }
-                lock.locked(MyWorldBukkit.getWorldConfig().服务器名称);
+                lock.locked(worldConfig.服务器名称);
                 playerLockMap.put(event.getPlayer(), lock);
                 this.cancel();
                 playerLoadRunMap.remove(event.getPlayer());
@@ -97,11 +103,11 @@ public class PlayerDataManager implements Listener {
                         runnable.run();
                     }
                 }
-                event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(MyWorldBukkit.getLang().玩家数据加载_完成));
+                event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(lang.玩家数据加载_完成));
             }
         };
         playerLoadRunMap.put(event.getPlayer(),加载);
-        加载.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), 1, MyWorldBukkit.getPlayerDataConfig().玩家数据解锁检测间隙);
+        加载.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), 1, playerDataConfig.玩家数据解锁检测间隙);
 
     }
 
@@ -134,7 +140,7 @@ public class PlayerDataManager implements Listener {
     public void close() {
         new HashMap<>(playerLockMap).forEach((player, lockWork) -> {
             PlayerData.playerDataSupport.saveData(player);
-            lockWork.unlock(MyWorldBukkit.getWorldConfig().服务器名称);
+            lockWork.unlock(worldConfig.服务器名称);
         });
     }
 }

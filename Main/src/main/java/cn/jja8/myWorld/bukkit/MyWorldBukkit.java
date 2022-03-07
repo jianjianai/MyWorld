@@ -50,6 +50,7 @@ public class MyWorldBukkit extends JavaPlugin{
     public static TeamConfig getTeamConfig() {
         return teamConfig;
     }
+
     public static PlayerWordMangaer getPlayerWordMangaer() {
         return playerWordMangaer;
     }

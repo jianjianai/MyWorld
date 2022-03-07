@@ -2,6 +2,8 @@ package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
+import cn.jja8.myWorld.bukkit.config.Lang;
+import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -23,6 +25,7 @@ public class PlayerWordMangaer implements Listener {
      * 加载进度接收
      * */
     public static class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
+        Lang lang = MyWorldBukkit.getLang();
         String worldName;
         int v =0;
         long t = 0;
@@ -39,7 +42,7 @@ public class PlayerWordMangaer implements Listener {
                 Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
                         player.spigot().sendMessage(
                                 ChatMessageType.ACTION_BAR,
-                                new TextComponent(MyWorldBukkit.getLang().世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1|loading==0?v():loading+"%"))
+                                new TextComponent(lang.世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1|loading==0?v():loading+"%"))
                         )
                 );
             }catch (Exception|Error throwable){
@@ -60,11 +63,13 @@ public class PlayerWordMangaer implements Listener {
             Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
                     player.spigot().sendMessage(
                             ChatMessageType.ACTION_BAR,
-                            new TextComponent(MyWorldBukkit.getLang().世界加载完成提示文本)
+                            new TextComponent(lang.世界加载完成提示文本)
                     )
             );
         }
     }
+    Lang lang = MyWorldBukkit.getLang();
+    WorldConfig worldConfig =  MyWorldBukkit.getWorldConfig();
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
     Map<String, PlayerWorlds> loadingMap = new HashMap<>();
@@ -104,28 +109,28 @@ public class PlayerWordMangaer implements Listener {
                 consumer.accept(null);
                 return;
             }
-            playerWorlds.锁.locked(MyWorldBukkit.getWorldConfig().服务器名称);
+            playerWorlds.锁.locked(worldConfig.服务器名称);
             playerWorlds.playerWordInform = new PlayerWordInform(name);
             MyWorldBukkit.getMyWorldBukkit().getLogger().info("加载"+playerWorlds.getName()+"世界组。");
 
             //加载世界-------
             {
                 LoadingProgress loadingProgress = new LoadingProgress(name);
-                playerWorlds.putWorld(PlayerWorlds.WorldType.world,WorldData.worldDataSupport.loadWorldAsync(MyWorldBukkit.getWorldConfig().主世界生成器.getWordBuilder(name), name,loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldConfig.主世界生成器.getWordBuilder(name), name,loadingProgress));
                 loadingProgress.finish();
             }
             //地狱
-            if (MyWorldBukkit.getWorldConfig().地狱界生成器.启用){
+            if (worldConfig.地狱界生成器.启用){
                 String wordName = name+"_nether";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
-                playerWorlds.putWorld(PlayerWorlds.WorldType.infernal,WorldData.worldDataSupport.loadWorldAsync(MyWorldBukkit.getWorldConfig().地狱界生成器.getWordBuilder(wordName),wordName, loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldConfig.地狱界生成器.getWordBuilder(wordName),wordName, loadingProgress));
                 loadingProgress.finish();
             }
             //末地
-            if (MyWorldBukkit.getWorldConfig().末地界生成器.启用){
+            if (worldConfig.末地界生成器.启用){
                 String wordName = name+"_the_end";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
-                playerWorlds.putWorld(PlayerWorlds.WorldType.end,WorldData.worldDataSupport.loadWorldAsync(MyWorldBukkit.getWorldConfig().末地界生成器.getWordBuilder(wordName), wordName,loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldConfig.末地界生成器.getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
             }
             for (World value : playerWorlds.worldMap.values()) {
@@ -162,10 +167,10 @@ public class PlayerWordMangaer implements Listener {
      */
      public void unloadPlayerWorlds(PlayerWorlds playerWord, boolean save) {
          MyWorldBukkit.getMyWorldBukkit().getLogger().info("卸载"+playerWord.getName()+"世界组。"+(save?"并保存":"并不保存"));
-         World world = Bukkit.getWorld(MyWorldBukkit.getWorldConfig().主世界名称);
+         World world = Bukkit.getWorld(worldConfig.主世界名称);
          Consumer<Player> consumer = player -> {
              if (world==null){
-                 player.kickPlayer(MyWorldBukkit.getLang().世界卸载_找不到主世界.replaceAll("<世界>", MyWorldBukkit.getWorldConfig().主世界名称));
+                 player.kickPlayer(lang.世界卸载_找不到主世界.replaceAll("<世界>", worldConfig.主世界名称));
              }else {
                  player.teleport(world.getSpawnLocation());
              }
@@ -181,7 +186,7 @@ public class PlayerWordMangaer implements Listener {
              playerWord.getPlayerWordInform().save();
          }
          nameMap.remove(playerWord.getName());
-         playerWord.锁.unlock(MyWorldBukkit.getWorldConfig().服务器名称);
+         playerWord.锁.unlock(worldConfig.服务器名称);
      }
 
     /**

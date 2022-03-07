@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -11,11 +12,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用于卸载不需要被继续加载的世界
  * */
 public class WorldClean  implements Listener {
+    WorldConfig worldConfig = MyWorldBukkit.getWorldConfig();
     List<PlayerWorlds> 空世界 = new ArrayList<>();
     List<PlayerWorlds> 过期空世界 = new ArrayList<>();
     List<PlayerWorlds> cleaningWorlds = new ArrayList<>();
@@ -46,7 +49,7 @@ public class WorldClean  implements Listener {
                     }
                 });
             }
-        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20, MyWorldBukkit.getWorldConfig().无玩家世界最短卸载时间*20);
+        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), worldConfig.无玩家世界最短卸载时间*20, worldConfig.无玩家世界最短卸载时间*20);
         //卸载过期世界
         new BukkitRunnable(){
             @Override
@@ -56,7 +59,7 @@ public class WorldClean  implements Listener {
                     MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
                 }
             }
-        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20, MyWorldBukkit.getWorldConfig().卸载空世界间隔时间*20);
+        }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), worldConfig.卸载空世界间隔时间*20, worldConfig.卸载空世界间隔时间*20);
     }
 
     @EventHandler

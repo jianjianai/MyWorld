@@ -4,28 +4,58 @@ import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.bukkit.basic.Teams;
+import cn.jja8.myWorld.bukkit.config.Lang;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.UUID;
 
 
 /**
  * 主要用于拒绝玩家破坏其他团队的世界
  */
 public class WorldSecurity implements Listener {
-
+    UUID uuid = UUID.randomUUID();
+    Lang lang = MyWorldBukkit.getLang();
     public WorldSecurity(){
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
     }
 
     @EventHandler
     public void 玩家交互(PlayerInteractEvent event){
-        if (!isHasAuthority(event.getPlayer(),event.getPlayer().getWorld())){
-            event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(MyWorldBukkit.getLang().世界交互_无权限.replaceAll("<世界>",event.getPlayer().getWorld().getName())));
+        Player player = event.getPlayer();
+        if (!isHasAuthority(player,player.getWorld())){
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void 点击实体(PlayerInteractEntityEvent event){
+        Player player = event.getPlayer();
+        if (!isHasAuthority(player,player.getWorld())){
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void 实体伤害(EntityDamageByEntityEvent event){
+        Entity entity = event.getDamager();
+        if (!(entity instanceof Player)){
+            return;
+        }
+        Player player = (Player) entity;
+        if (!isHasAuthority(player,player.getWorld())){
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
             event.setCancelled(true);
         }
     }
