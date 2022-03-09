@@ -4,3 +4,11 @@ version: ${版本号}
 author: jianjianai , 钟小白Core
 api-version: 1.16
 softdepend: [patronSaint]
+
+permissions:
+  "MyWorld.admin":
+    description: "myWorld管理员权限"
+    default: op
+  "MyWorld.user":
+    description: "myWorld使用权限"
+    default: true

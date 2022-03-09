@@ -1,5 +1,6 @@
 package cn.jja8.myWorld.bukkit.word;
 
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.config.Lang;
@@ -25,7 +26,7 @@ public class PlayerWordMangaer implements Listener {
      * 加载进度接收
      * */
     public static class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
-        Lang lang = MyWorldBukkit.getLang();
+        Lang lang = ConfigBukkit.getLang();
         String worldName;
         int v =0;
         long t = 0;
@@ -68,8 +69,8 @@ public class PlayerWordMangaer implements Listener {
             );
         }
     }
-    Lang lang = MyWorldBukkit.getLang();
-    WorldConfig worldConfig =  MyWorldBukkit.getWorldConfig();
+    Lang lang = ConfigBukkit.getLang();
+    WorldConfig worldConfig =  ConfigBukkit.getWorldConfig();
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
     Map<String, PlayerWorlds> nameMap = new HashMap<>();
     Map<String, PlayerWorlds> loadingMap = new HashMap<>();

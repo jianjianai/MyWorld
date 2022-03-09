@@ -1,35 +1,29 @@
 package cn.jja8.myWorld.bukkit;
 
 
+import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.Portal;
 import cn.jja8.myWorld.bukkit.basic.Teams;
-import cn.jja8.myWorld.bukkit.command.Command;
-import cn.jja8.myWorld.bukkit.config.*;
-import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
+import cn.jja8.myWorld.bukkit.command.Command;
 import cn.jja8.myWorld.bukkit.player.PlayerDataManager;
 import cn.jja8.myWorld.bukkit.word.PlayerWordMangaer;
 import cn.jja8.myWorld.bukkit.word.PlayerWorldPortal;
 import cn.jja8.myWorld.bukkit.word.WorldClean;
 import cn.jja8.myWorld.bukkit.word.WorldSecurity;
-import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.bStats.Metrics;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 
 
 public class MyWorldBukkit extends JavaPlugin{
-    static FileConfig fileConfig = new FileConfig();
-    static Lang lang = new Lang();
-    static WorldConfig worldConfig = new WorldConfig();
-    static TeamConfig teamConfig = new TeamConfig();
-    static PlayerDataConfig playerDataConfig = new PlayerDataConfig();
+
     static PlayerWordMangaer playerWordMangaer = null;
     static Command command = null;
     static PlayerDataManager playerDataManager = null;
@@ -38,24 +32,8 @@ public class MyWorldBukkit extends JavaPlugin{
     static WorldClean worldClean = null;
     static PlayerWorldPortal playerWorldPortal = null;
 
-    public static FileConfig getFileConfig() {
-        return fileConfig;
-    }
-    public static Lang getLang() {
-        return lang;
-    }
-    public static WorldConfig getWorldConfig() {
-        return worldConfig;
-    }
-    public static TeamConfig getTeamConfig() {
-        return teamConfig;
-    }
-
     public static PlayerWordMangaer getPlayerWordMangaer() {
         return playerWordMangaer;
-    }
-    public static PlayerDataConfig getPlayerDataConfig(){
-        return playerDataConfig;
     }
     public static MyWorldBukkit getMyWorldBukkit() {
         return myWorldBukkit;
@@ -76,40 +54,10 @@ public class MyWorldBukkit extends JavaPlugin{
         return playerWorldPortal;
     }
 
-
-
     @Override
     public void onEnable() {
         myWorldBukkit = this;
-        //加载配置
-        try {
-            fileConfig = YamlConfig.loadFromFile(new File(getDataFolder(), "FileConfig.yml"), fileConfig);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {
-            lang = YamlConfig.loadFromFile(new File(getDataFolder(), "Lang.yml"), lang);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {
-            worldConfig = YamlConfig.loadFromFile(new File(getDataFolder(), "WorldConfig.yml"), worldConfig);
-            ArrayList<String> list = new ArrayList<>();
-            worldConfig.禁止玩家使用的世界名称列表.forEach(s -> list.add(s.toLowerCase()));
-            worldConfig.禁止玩家使用的世界名称列表 = list;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {
-            teamConfig = YamlConfig.loadFromFile(new File(getDataFolder(), "TeamConfig.yml"), teamConfig);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {
-            playerDataConfig = YamlConfig.loadFromFile(new File(getDataFolder(), "PlayerDataConfig.yml"), playerDataConfig);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        ConfigBukkit.load();
         //加载data
         boolean ok = true;
         try {

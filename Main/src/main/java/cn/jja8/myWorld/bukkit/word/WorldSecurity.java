@@ -1,10 +1,12 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
-import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
+import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
+import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.config.Lang;
+import cn.jja8.myWorld.bukkit.config.Permission;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.World;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -24,7 +27,8 @@ import java.util.UUID;
  */
 public class WorldSecurity implements Listener {
     UUID uuid = UUID.randomUUID();
-    Lang lang = MyWorldBukkit.getLang();
+    Lang lang = ConfigBukkit.getLang();
+    Permission permission = ConfigBukkit.getPermission();
     public WorldSecurity(){
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
     }
@@ -50,6 +54,25 @@ public class WorldSecurity implements Listener {
     @EventHandler
     public void 实体伤害(EntityDamageByEntityEvent event){
         Entity entity = event.getDamager();
+        Entity entity1 = event.getEntity();
+        if (entity instanceof Player){
+            Player player = (Player) entity;
+            if (!isHasAuthority(player,player.getWorld())){
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
+                event.setCancelled(true);
+            }
+        }else if (entity1 instanceof Player){
+            Player player = (Player) entity1;
+            if (!isHasAuthority(player,player.getWorld())){
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void 实体捡起物品(EntityPickupItemEvent event){
+        Entity entity = event.getEntity();
         if (!(entity instanceof Player)){
             return;
         }
@@ -65,6 +88,9 @@ public class WorldSecurity implements Listener {
      * 判断一个玩家在某世界是否有权限,只有信任的玩家有权限。
      */
     private boolean isHasAuthority(Player player, World world){
+        if (player.hasPermission(permission.管理员权限)){
+            return true;
+        }
         PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(world);
         //如果玩家不在玩家的世界
         if (世界==null){

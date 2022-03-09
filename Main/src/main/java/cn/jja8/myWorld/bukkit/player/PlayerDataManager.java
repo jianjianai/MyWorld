@@ -1,5 +1,6 @@
 package cn.jja8.myWorld.bukkit.player;
 
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.playerDataSupport.PlayerDataLock;
@@ -24,9 +25,9 @@ import java.util.*;
  * ”玩家数据“字段负责玩家数据的存储，如果需要使用其他保存方式可以在load阶段对他赋值。
  * */
 public class PlayerDataManager implements Listener {
-    PlayerDataConfig playerDataConfig = MyWorldBukkit.getPlayerDataConfig();
-    WorldConfig worldConfig = MyWorldBukkit.getWorldConfig();
-    Lang lang = MyWorldBukkit.getLang();
+    PlayerDataConfig playerDataConfig = ConfigBukkit.getPlayerDataConfig();
+    WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
+    Lang lang = ConfigBukkit.getLang();
     //玩家和锁map
     Map<Player, PlayerDataLock> playerLockMap = new HashMap<>();
     //玩家和加载任务map

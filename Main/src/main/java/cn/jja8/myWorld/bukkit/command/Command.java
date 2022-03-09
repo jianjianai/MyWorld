@@ -4,9 +4,11 @@ import cn.jja8.myWorld.all.basic.teamSupport.Status;
 import cn.jja8.myWorld.all.basic.teamSupport.Team;
 import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
 import cn.jja8.myWorld.all.veryUtil.StringTool;
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.config.Lang;
+import cn.jja8.myWorld.bukkit.config.Permission;
 import cn.jja8.myWorld.bukkit.config.TeamConfig;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
@@ -23,16 +25,17 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Command {
-    WorldConfig worldConfig = MyWorldBukkit.getWorldConfig();
-    Lang lang = MyWorldBukkit.getLang();
-    TeamConfig teamConfig = MyWorldBukkit.getTeamConfig();
+    WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
+    Lang lang = ConfigBukkit.getLang();
+    TeamConfig teamConfig = ConfigBukkit.getTeamConfig();
+    Permission permission = ConfigBukkit.getPermission();
 
-    public static Pattern p = Pattern.compile(MyWorldBukkit.getFileConfig().名称合法验证);
+    public static Pattern p = Pattern.compile(ConfigBukkit.getFileConfig().名称合法验证);
     //<被邀请的玩家,团队>
     Map<Player, Team> 邀请map = new HashMap<>();
 
     public Command() {
-        CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld");
+        CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w","t","World"},permission.使用权限);
         commandManger.setDefaulCommand(this::返回世界);
         commandManger.addCommand(new String[]{"创建团队","NewTeam"},this::创建团队);
         commandManger.addCommand(new String[]{"解散团队","DisbandOurTeam"}, this::解散团队);

@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bukkit.basic;
 
-import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.basic.playerDataSupport.PlayerDataSupport;
 import org.bukkit.Bukkit;
 
@@ -19,7 +19,7 @@ public class PlayerData {
             String v = Bukkit.getServer().getClass().getName().split("\\.")[3];
             Class<?> cl = Class.forName("cn.jja8.myWorld.bukkit.basic.playerDataSupport."+v);
             Constructor<?> cn = cl.getConstructor(File.class);
-            playerDataSupport = (PlayerDataSupport) cn.newInstance(new File(MyWorldBukkit.getFileConfig().玩家数据文件路径));
+            playerDataSupport = (PlayerDataSupport) cn.newInstance(new File(ConfigBukkit.getFileConfig().玩家数据文件路径));
         }
     }
 }
