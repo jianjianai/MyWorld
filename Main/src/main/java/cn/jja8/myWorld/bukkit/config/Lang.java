@@ -1,6 +1,8 @@
 package cn.jja8.myWorld.bukkit.config;
 
 
+import it.unimi.dsi.fastutil.ints.Int2ByteMaps;
+
 import java.util.ArrayList;
 
 public class Lang {
@@ -72,6 +74,18 @@ public class Lang {
     public   String 查询信息_团队世界信息 = "该团队的世界是：<世界>";
     public   String 查询信息_团队没有世界 = "你加入的团队还没有世界";
     public   ArrayList<String> 查询信息_长信息列表 = new ArrayList<>();
+    public String nuLoadWorld_世界没有加载 = "<世界>没有被加载，不用卸载哦。";
+    public String nuLoadWorld_卸载完成="<世界>卸载完成。";
+    public String nuLoadAllWorld_卸载 = "正在卸载<世界>";
+    public String nuLoadAllWorld_卸载完成="所以世界已经卸载完成。";
+    public String nuLoadAllWorld_未指定世界名="未指定世界名";
+    public String loadWorld_未指定世界名="未指定世界名";
+    public String loadWorld_世界不存在="<世界>世界不存在。";
+    public String loadWorld_加载完成 ="加载完成";
+    public String goTo_未指定世界名="未指定世界名";
+    public String goTo_世界没有加载="<世界>世界没有被加载。";
+    public String goTo_传送成功="传送成功";
+
     public Lang(){
         查询信息_长信息列表.add("你所在的团队是：<团队>");
         查询信息_长信息列表.add("<团队世界信息>");
