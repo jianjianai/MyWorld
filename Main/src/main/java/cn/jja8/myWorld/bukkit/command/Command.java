@@ -35,7 +35,7 @@ public class Command {
     Map<Player, Team> 邀请map = new HashMap<>();
 
     public Command() {
-        CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w","t","World"},permission.使用权限);
+        CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"},permission.使用权限);
         commandManger.setDefaulCommand(this::返回世界);
         commandManger.addCommand(new String[]{"创建团队","NewTeam"},this::创建团队);
         commandManger.addCommand(new String[]{"解散团队","DisbandOurTeam"}, this::解散团队);

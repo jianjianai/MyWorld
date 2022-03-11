@@ -27,7 +27,7 @@ public class myWordCommand{
     Map<ProxiedPlayer, Team> 邀请map = new HashMap<>();
 
     public myWordCommand() {
-        CommandManger commandManger = new CommandManger(MyWorldBungeecord.getMyWorldBungeecord(),"myWorld",new String[]{"myWorld:myWorld","my","mw","m","w","t","World"});
+        CommandManger commandManger = new CommandManger(MyWorldBungeecord.getMyWorldBungeecord(),"myWorld",new String[]{"myWorld:myWorld","my","mw","m","w"});
         commandManger.addCommand(new String[]{"创建团队", "NewTeam"}, (commandSender, strings) -> 直接不管(commandSender,"NewTeam",strings));
         commandManger.addCommand(new String[]{"添加信任","TrustHim"},(commandSender, strings) -> 直接不管(commandSender,"TrustHim",strings));
         commandManger.addCommand(new String[]{"取消信任","DistrustHim"}, (commandSender, strings) -> 直接不管(commandSender,"DistrustHim",strings));
