@@ -138,7 +138,7 @@ public class v1_12_R1 implements WorldDataSupport{
                             if (l > i + 50L) {
                                 int i1 = (short1 * 2 + 1) * (short1 * 2 + 1);
                                 int j1 = (j + short1) * (short1 * 2 + 1) + k + 1;
-                                loadingProgress.LoadingProgress(j1 * 100 / i1);
+                                loadingProgress.loadingProgress(j1 * 100 / i1);
                                 if (t++%20==0){
                                     System.out.println("Preparing spawn area for " + name + ", " + j1 * 100 / i1 + "%");
                                 }

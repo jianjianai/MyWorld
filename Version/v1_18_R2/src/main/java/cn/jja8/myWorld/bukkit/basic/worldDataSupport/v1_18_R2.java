@@ -167,7 +167,7 @@ public class v1_18_R2 implements WorldDataSupport{
                             ++this.c;
                         }
                         if (g){
-                            loadingProgress.LoadingProgress(MathHelper.a(MathHelper.d((float)this.c * 100.0F / (float) b), 0, 100));
+                            loadingProgress.loadingProgress(MathHelper.a(MathHelper.d((float)this.c * 100.0F / (float) b), 0, 100));
                         }
                     }
                     public void b() {
