@@ -5,6 +5,7 @@ import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -15,7 +16,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -33,9 +38,11 @@ public class PlayerWordMangaer implements Listener {
         long t = 0;
         public LoadingProgress(String worldName) {
             this.worldName = worldName;
+            loadingProgress(-1);
+
         }
         @Override
-        public void LoadingProgress(int loading) {
+        public void loadingProgress(int loading) {
             try {
                 if (System.currentTimeMillis()-50<t){
                     return;
@@ -118,21 +125,21 @@ public class PlayerWordMangaer implements Listener {
             //加载世界-------
             {
                 LoadingProgress loadingProgress = new LoadingProgress(name);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldConfig.主世界生成器.getWordBuilder(name), name,loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldBuilder(name,worldConfig.主世界生成器).getWordBuilder(name), name,loadingProgress));
                 loadingProgress.finish();
             }
             //地狱
             if (worldConfig.地狱界生成器.启用){
                 String wordName = name+"_nether";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldConfig.地狱界生成器.getWordBuilder(wordName),wordName, loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldBuilder(wordName,worldConfig.地狱界生成器).getWordBuilder(wordName),wordName, loadingProgress));
                 loadingProgress.finish();
             }
             //末地
             if (worldConfig.末地界生成器.启用){
                 String wordName = name+"_the_end";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldConfig.末地界生成器.getWordBuilder(wordName), wordName,loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldBuilder(wordName,worldConfig.末地界生成器).getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
             }
             for (World value : playerWorlds.worldMap.values()) {
@@ -148,10 +155,47 @@ public class PlayerWordMangaer implements Listener {
             }
         });
      }
-//     private WorldConfig.WorldBuilder getWorldBuilder(String worldName){
-//        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(worldName,"WorldBuilder");
-//
-//     }
+     private WorldConfig.WorldBuilder worldBuilder(String worldName, WorldConfig.WorldBuilder def){
+        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(worldName,"WorldBuilder");
+        if (inputStream!=null){
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            try {
+                for(int i;(i=inputStream.read())!=-1;){
+                    byteArrayOutputStream.write(i);
+                }
+            }catch (IOException ioException){
+                ioException.printStackTrace();
+            }
+            try {
+                inputStream.close();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            try {
+                String s = new String(byteArrayOutputStream.toByteArray(),StandardCharsets.UTF_8);
+                try {
+                    byteArrayOutputStream.close();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+                return YamlConfig.loadFromString(s,WorldConfig.WorldBuilder.class);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        OutputStream outputStream = WorldData.worldDataSupport.getCustomDataOutputStream(worldName,"WorldBuilder");
+         try {
+             outputStream.write(YamlConfig.saveToString(def).getBytes(StandardCharsets.UTF_8));
+         } catch (IOException exception) {
+             exception.printStackTrace();
+         }
+         try {
+             outputStream.close();
+         } catch (IOException exception) {
+             exception.printStackTrace();
+         }
+         return def;
+     }
 
     /**
      * 从已加载的世界中获取世界

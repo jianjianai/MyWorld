@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -35,6 +36,14 @@ public class WorldSecurity implements Listener {
 
     @EventHandler
     public void 玩家交互(PlayerInteractEvent event){
+        Player player = event.getPlayer();
+        if (!isHasAuthority(player,player.getWorld())){
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void 玩家丢东西(PlayerDropItemEvent event){
         Player player = event.getPlayer();
         if (!isHasAuthority(player,player.getWorld())){
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,uuid, new TextComponent(lang.世界交互_无权限.replaceAll("<世界>",player.getWorld().getName())));
@@ -82,6 +91,7 @@ public class WorldSecurity implements Listener {
             event.setCancelled(true);
         }
     }
+
 
 
     /**
