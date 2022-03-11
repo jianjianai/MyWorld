@@ -14,11 +14,11 @@ public class WorldConfig {
     public ArrayList<String> 禁止玩家使用的世界名称列表 =new ArrayList<>();
     public String 服务器名称 = "没有配置服务器名称，请到WorldConfig.yml中完成配置。";
     public boolean 创建世界后传送到世界 = true;
-    public WordBuilder 主世界生成器 = new WordBuilder();
-    public WordBuilder 地狱界生成器 = new WordBuilder();
-    public WordBuilder 末地界生成器 = new WordBuilder();
+    public WorldBuilder 主世界生成器 = new WorldBuilder();
+    public WorldBuilder 地狱界生成器 = new WorldBuilder();
+    public WorldBuilder 末地界生成器 = new WorldBuilder();
 
-    public static class WordBuilder{
+    public static class WorldBuilder {
         public boolean 启用 = true;
         public String 世界生成器 = "MyWorld";
         public String 世界生成器参数 = "";
