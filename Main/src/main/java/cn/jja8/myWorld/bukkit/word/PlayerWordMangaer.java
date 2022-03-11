@@ -164,6 +164,19 @@ public class PlayerWordMangaer implements Listener {
     }
 
     /**
+     * 被加载的世界名称集合
+     * */
+    public Set<String> getWorldNames(){
+        return nameMap.keySet();
+    }
+    /**
+     * 获取被加载的世界集合
+     * */
+    public Collection<PlayerWorlds> getWorlds(){
+        return nameMap.values();
+    }
+
+    /**
      * 卸载一个玩家世界
      */
      public void unloadPlayerWorlds(PlayerWorlds playerWord, boolean save) {

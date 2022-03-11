@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class Command {
+public class UserCommand {
     WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
     Lang lang = ConfigBukkit.getLang();
     TeamConfig teamConfig = ConfigBukkit.getTeamConfig();
@@ -34,7 +34,7 @@ public class Command {
     //<被邀请的玩家,团队>
     Map<Player, Team> 邀请map = new HashMap<>();
 
-    public Command() {
+    public UserCommand() {
         CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"},permission.使用权限);
         commandManger.setDefaulCommand(this::返回世界);
         commandManger.addCommand(new String[]{"创建团队","NewTeam"},this::创建团队);
