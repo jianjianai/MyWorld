@@ -23,7 +23,7 @@ public class PlayerWorlds {
     Map<String,World> worldMap = new HashMap<>();
     PlayerWordInform playerWordInform;
     String name;
-    WorldDataLock 锁;
+    WorldDataLock lock;
 
     protected PlayerWorlds() {}
     public String getName() {

@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -105,12 +106,12 @@ public class PlayerWordMangaer implements Listener {
             }
             playerWorlds.name = name;
             //验证没被其他服务器加载------
-            playerWorlds.锁 = WorldData.worldDataSupport.getWorldDataLock(name);
-            if (playerWorlds.锁.isLocked()){
+            playerWorlds.lock = WorldData.worldDataSupport.getWorldDataLock(name);
+            if (playerWorlds.lock.isLocked()){
                 consumer.accept(null);
                 return;
             }
-            playerWorlds.锁.locked(worldConfig.服务器名称);
+            playerWorlds.lock.locked(worldConfig.服务器名称);
             playerWorlds.playerWordInform = new PlayerWordInform(name);
             MyWorldBukkit.getMyWorldBukkit().getLogger().info("加载"+playerWorlds.getName()+"世界组。");
 
@@ -147,6 +148,11 @@ public class PlayerWordMangaer implements Listener {
             }
         });
      }
+//     private WorldConfig.WorldBuilder getWorldBuilder(String worldName){
+//        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(worldName,"WorldBuilder");
+//
+//     }
+
     /**
      * 从已加载的世界中获取世界
      * @return 如果不是玩家世界返回null
@@ -200,7 +206,7 @@ public class PlayerWordMangaer implements Listener {
              playerWord.getPlayerWordInform().save();
          }
          nameMap.remove(playerWord.getName());
-         playerWord.锁.unlock(worldConfig.服务器名称);
+         playerWord.lock.unlock(worldConfig.服务器名称);
      }
 
     /**
