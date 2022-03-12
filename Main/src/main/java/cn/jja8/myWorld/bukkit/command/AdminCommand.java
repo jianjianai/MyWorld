@@ -26,12 +26,22 @@ public class AdminCommand {
 
             @Override
             public List<String> TabCompletion(CommandSender commandSender, String[] strings) {
-                return nuLoadWorld_tab(commandSender,strings);
+                return loadWorlds(commandSender,strings);
             }
         });
         commandManger.addCommand("nuLoadAllWorld",this::nuLoadAllWorld);
         commandManger.addCommand("LoadWorld",this::loadWorld);
-        commandManger.addCommand("goTo",this::goTo);
+        commandManger.addCommand("goTo", new CommandImplement() {
+            @Override
+            public void command(CommandSender commandSender, String[] strings) {
+                goTo(commandSender,strings);
+            }
+
+            @Override
+            public List<String> TabCompletion(CommandSender commandSender, String[] strings) {
+                return loadWorlds(commandSender,strings);
+            }
+        });
     }
 
     private void goTo(CommandSender commandSender, String[] strings) {
@@ -53,6 +63,10 @@ public class AdminCommand {
     private void loadWorld(CommandSender commandSender, String[] strings) {
         if (strings.length<1){
             commandSender.sendMessage(lang.loadWorld_未指定世界名);
+            return;
+        }
+        if(strings[0].contains("_nether")|strings[0].contains("_the_end")){
+            commandSender.sendMessage(lang.loadWorld_世界名不合法);
             return;
         }
         if (!MyWorldBukkit.getPlayerWordMangaer().isWorldExistence(strings[0])){
@@ -85,7 +99,7 @@ public class AdminCommand {
         MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
         commandSender.sendMessage(lang.nuLoadWorld_卸载完成.replaceAll("<世界>",strings[0]));
     }
-    private List<String> nuLoadWorld_tab(CommandSender commandSender, String[] strings) {
+    private List<String> loadWorlds(CommandSender commandSender, String[] strings) {
         if (strings.length==1){
             return new ArrayList<>(MyWorldBukkit.getPlayerWordMangaer().getWorldNames());
         }
