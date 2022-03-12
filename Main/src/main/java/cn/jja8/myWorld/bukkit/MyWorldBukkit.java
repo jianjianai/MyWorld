@@ -5,6 +5,7 @@ import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.Portal;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
+import cn.jja8.myWorld.bukkit.command.AdminCommand;
 import cn.jja8.myWorld.bukkit.command.UserCommand;
 import cn.jja8.myWorld.bukkit.player.PlayerDataManager;
 import cn.jja8.myWorld.bukkit.word.PlayerWordMangaer;
@@ -26,6 +27,7 @@ public class MyWorldBukkit extends JavaPlugin{
 
     static PlayerWordMangaer playerWordMangaer = null;
     static UserCommand userCommand = null;
+    static AdminCommand adminCommand = null;
     static PlayerDataManager playerDataManager = null;
     static MyWorldBukkit myWorldBukkit = null;
     static WorldSecurity worldSecurity = null;
@@ -41,8 +43,11 @@ public class MyWorldBukkit extends JavaPlugin{
     public static PlayerDataManager getPlayerDataManager() {
         return playerDataManager;
     }
-    public static UserCommand getCommand() {
+    public static UserCommand getUserCommand() {
         return userCommand;
+    }
+    public static AdminCommand getAdminCommand() {
+        return adminCommand;
     }
     public static WorldSecurity getWorldSecurity() {
         return worldSecurity;
@@ -88,11 +93,13 @@ public class MyWorldBukkit extends JavaPlugin{
         getLogger().warning("当前非正式版本，若有bug您可以前往 “PlugClub/插件实验室 - 820131534” 交流和反馈。");
         //加载管理器
         playerWordMangaer = new PlayerWordMangaer();
-        userCommand = new UserCommand();
         playerDataManager = new PlayerDataManager();
         worldSecurity = new WorldSecurity();
         worldClean = new WorldClean();
         playerWorldPortal = new PlayerWorldPortal();
+
+        userCommand = new UserCommand();
+        adminCommand = new AdminCommand();
 
         new Metrics(this,14206);
     }
