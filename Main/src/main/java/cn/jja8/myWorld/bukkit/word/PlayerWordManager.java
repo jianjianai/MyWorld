@@ -185,7 +185,9 @@ public class PlayerWordManager implements Listener {
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }
-                return YamlConfig.loadFromString(s,WorldConfig.WorldBuilder.class);
+                if (s.length()>5){
+                    return YamlConfig.loadFromString(s,WorldConfig.WorldBuilder.class);
+                }
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
