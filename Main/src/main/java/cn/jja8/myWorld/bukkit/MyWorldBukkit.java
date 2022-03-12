@@ -8,7 +8,7 @@ import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.command.AdminCommand;
 import cn.jja8.myWorld.bukkit.command.UserCommand;
 import cn.jja8.myWorld.bukkit.player.PlayerDataManager;
-import cn.jja8.myWorld.bukkit.word.PlayerWordMangaer;
+import cn.jja8.myWorld.bukkit.word.PlayerWordManager;
 import cn.jja8.myWorld.bukkit.word.PlayerWorldPortal;
 import cn.jja8.myWorld.bukkit.word.WorldClean;
 import cn.jja8.myWorld.bukkit.word.WorldSecurity;
@@ -25,7 +25,7 @@ import java.util.Random;
 
 public class MyWorldBukkit extends JavaPlugin{
 
-    static PlayerWordMangaer playerWordMangaer = null;
+    static PlayerWordManager playerWordManager = null;
     static UserCommand userCommand = null;
     static AdminCommand adminCommand = null;
     static PlayerDataManager playerDataManager = null;
@@ -34,8 +34,8 @@ public class MyWorldBukkit extends JavaPlugin{
     static WorldClean worldClean = null;
     static PlayerWorldPortal playerWorldPortal = null;
 
-    public static PlayerWordMangaer getPlayerWordMangaer() {
-        return playerWordMangaer;
+    public static PlayerWordManager getPlayerWordMangaer() {
+        return playerWordManager;
     }
     public static MyWorldBukkit getMyWorldBukkit() {
         return myWorldBukkit;
@@ -92,7 +92,7 @@ public class MyWorldBukkit extends JavaPlugin{
         getLogger().info("若有疑问，您可以前往 “PlugClub/插件实验室 - 820131534” 交流。");
         getLogger().warning("当前非正式版本，若有bug您可以前往 “PlugClub/插件实验室 - 820131534” 交流和反馈。");
         //加载管理器
-        playerWordMangaer = new PlayerWordMangaer();
+        playerWordManager = new PlayerWordManager();
         playerDataManager = new PlayerDataManager();
         worldSecurity = new WorldSecurity();
         worldClean = new WorldClean();
@@ -131,9 +131,9 @@ public class MyWorldBukkit extends JavaPlugin{
 
     @Override
     public void onDisable() {
-        if (playerWordMangaer != null) {
+        if (playerWordManager != null) {
             getLogger().info("正在保存世界..");
-            playerWordMangaer.close();
+            playerWordManager.close();
         }
         if (playerDataManager != null) {
             getLogger().info("正在保存玩家数据..");
