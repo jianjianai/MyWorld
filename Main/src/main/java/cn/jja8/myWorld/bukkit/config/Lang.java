@@ -85,6 +85,7 @@ public class Lang {
     public String goTo_未指定世界名="未指定世界名";
     public String goTo_世界没有加载="<世界>世界没有被加载。";
     public String goTo_传送成功="传送成功";
+    public String loadWorld_世界名不合法 = "世界名不合法";
 
     public Lang(){
         查询信息_长信息列表.add("你所在的团队是：<团队>");

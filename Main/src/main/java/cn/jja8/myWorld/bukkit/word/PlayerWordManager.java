@@ -127,24 +127,25 @@ public class PlayerWordManager implements Listener {
             MyWorldBukkit.getMyWorldBukkit().getLogger().info("加载"+playerWorlds.getName()+"世界组。");
 
             //加载世界-------
-            WorldConfig.WorldBuilder worldBuilder = worldBuilder(name,worldConfig.主世界生成器);
+            String wordName = name;
+            WorldConfig.WorldBuilder worldBuilder = worldBuilder(wordName,worldConfig.主世界生成器);
             if(worldBuilder.启用){
-                LoadingProgress loadingProgress = new LoadingProgress(name);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(name), name,loadingProgress));
+                LoadingProgress loadingProgress = new LoadingProgress(wordName);
+                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
             }
             //地狱
-            worldBuilder = worldBuilder(name,worldConfig.地狱界生成器);
+            wordName = name+"_nether";
+            worldBuilder = worldBuilder(wordName,worldConfig.地狱界生成器);
             if (worldBuilder.启用){
-                String wordName = name+"_nether";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
                 playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(wordName),wordName, loadingProgress));
                 loadingProgress.finish();
             }
             //末地
-            worldBuilder = worldBuilder(name,worldConfig.末地界生成器);
+            wordName = name+"_the_end";
+            worldBuilder = worldBuilder(wordName,worldConfig.末地界生成器);
             if (worldBuilder.启用){
-                String wordName = name+"_the_end";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
                 playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
@@ -185,9 +186,7 @@ public class PlayerWordManager implements Listener {
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }
-                if (s.length()>5){
-                    return YamlConfig.loadFromString(s,WorldConfig.WorldBuilder.class);
-                }
+                return YamlConfig.loadFromString(s,WorldConfig.WorldBuilder.class);
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
