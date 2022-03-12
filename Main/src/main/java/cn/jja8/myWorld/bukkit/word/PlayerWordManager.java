@@ -27,11 +27,12 @@ import java.util.function.Consumer;
 /**
  * 用于管理每个世界
  */
-public class PlayerWordMangaer implements Listener {
+public class PlayerWordManager implements Listener {
     /**
      * 加载进度接收
      * */
     public static class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
+        UUID uuid = UUID.randomUUID();
         Lang lang = ConfigBukkit.getLang();
         String worldName;
         int v =0;
@@ -51,6 +52,7 @@ public class PlayerWordMangaer implements Listener {
                 Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
                         player.spigot().sendMessage(
                                 ChatMessageType.ACTION_BAR,
+                                uuid,
                                 new TextComponent(lang.世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1|loading==0?v():loading+"%"))
                         )
                 );
@@ -72,6 +74,7 @@ public class PlayerWordMangaer implements Listener {
             Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
                     player.spigot().sendMessage(
                             ChatMessageType.ACTION_BAR,
+                            uuid,
                             new TextComponent(lang.世界加载完成提示文本)
                     )
             );
@@ -84,9 +87,10 @@ public class PlayerWordMangaer implements Listener {
     Map<String, PlayerWorlds> loadingMap = new HashMap<>();
     Map<PlayerWorlds, List<Consumer<PlayerWorlds>>> loadedMap = new HashMap<>();
 
-    public PlayerWordMangaer() {
+    public PlayerWordManager() {
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this,MyWorldBukkit.getMyWorldBukkit());
     }
+
 
     /**
      * 通过世界名称加载一个玩家世界
@@ -101,7 +105,7 @@ public class PlayerWordMangaer implements Listener {
                 consumer.accept(playerWorlds);
                 return;
             }
-            synchronized (PlayerWordMangaer.this){
+            synchronized (PlayerWordManager.this){
                 playerWorlds = loadingMap.get(name);
                 if (playerWorlds!=null){
                     loadedMap.computeIfAbsent(playerWorlds, k -> new ArrayList<>()).add(consumer);
