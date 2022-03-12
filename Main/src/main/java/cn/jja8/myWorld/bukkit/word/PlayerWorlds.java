@@ -105,6 +105,7 @@ public class PlayerWorlds {
             }
         }
         if (world==null){
+            player.sendMessage("你的世界组中没有任何世界，请联系管理员！");
             throw new Error("至少要开启一个世界才能去玩家的世界。");
         }
         player.teleport(world.getSpawnLocation());

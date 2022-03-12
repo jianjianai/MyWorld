@@ -123,23 +123,26 @@ public class PlayerWordMangaer implements Listener {
             MyWorldBukkit.getMyWorldBukkit().getLogger().info("加载"+playerWorlds.getName()+"世界组。");
 
             //加载世界-------
-            {
+            WorldConfig.WorldBuilder worldBuilder = worldBuilder(name,worldConfig.主世界生成器);
+            if(worldBuilder.启用){
                 LoadingProgress loadingProgress = new LoadingProgress(name);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldBuilder(name,worldConfig.主世界生成器).getWordBuilder(name), name,loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.world,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(name), name,loadingProgress));
                 loadingProgress.finish();
             }
             //地狱
-            if (worldConfig.地狱界生成器.启用){
+            worldBuilder = worldBuilder(name,worldConfig.地狱界生成器);
+            if (worldBuilder.启用){
                 String wordName = name+"_nether";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldBuilder(wordName,worldConfig.地狱界生成器).getWordBuilder(wordName),wordName, loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(wordName),wordName, loadingProgress));
                 loadingProgress.finish();
             }
             //末地
-            if (worldConfig.末地界生成器.启用){
+            worldBuilder = worldBuilder(name,worldConfig.末地界生成器);
+            if (worldBuilder.启用){
                 String wordName = name+"_the_end";
                 LoadingProgress loadingProgress = new LoadingProgress(wordName);
-                playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldBuilder(wordName,worldConfig.末地界生成器).getWordBuilder(wordName), wordName,loadingProgress));
+                playerWorlds.putWorld(PlayerWorldTypeAtName.end,WorldData.worldDataSupport.loadWorldAsync(worldBuilder.getWordBuilder(wordName), wordName,loadingProgress));
                 loadingProgress.finish();
             }
             for (World value : playerWorlds.worldMap.values()) {
