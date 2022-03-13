@@ -1,8 +1,8 @@
 package cn.jja8.myWorld.bukkit.command;
 
-import cn.jja8.myWorld.all.basic.teamSupport.Status;
-import cn.jja8.myWorld.all.basic.teamSupport.Team;
-import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
 import cn.jja8.myWorld.all.veryUtil.StringTool;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
@@ -377,12 +377,12 @@ public class UserCommand {
             player.sendMessage(lang.创建团队_已经在团队中了.replaceAll("<团队>", 团队.getTeamName()));
             return;
         }
-        团队 = Teams.teamManager.getTeamFromTeamName(strings[0]);
+        团队 = Teams.datasheetManager.getTeamFromTeamName(strings[0]);
         if (团队 != null) {
             player.sendMessage(lang.创建团队_团队名称被占用.replaceAll("<团队>", 团队.getTeamName()));
             return;
         }
-        Team team = Teams.teamManager.newTeam(strings[0]);
+        Team team = Teams.datasheetManager.newTeam(strings[0]);
         teamPlayer.SetTeam(team);
         teamPlayer.setStatus(Status.leader);
         player.sendMessage(lang.创建团队_创建成功);
@@ -430,7 +430,7 @@ public class UserCommand {
             player.sendMessage(lang.创建世界_不是团长);
             return;
         }
-        if (Teams.teamManager.getTeamFromWorldName(strings[0])!=null){
+        if (Teams.datasheetManager.getTeamFromWorldName(strings[0])!=null){
             player.sendMessage(lang.创建世界_世界名称被他人占用);
             return;
         }
@@ -483,9 +483,9 @@ public class UserCommand {
         return teamPlayer.getStatus()==Status.leader;
     }
     private static TeamPlayer getTeamPlayerNotNull(Player player){
-        TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
+        TeamPlayer teamPlayer = Teams.datasheetManager.getTamePlayer(player.getUniqueId());
         if (teamPlayer==null){
-            teamPlayer = Teams.teamManager.newTamePlayer(player.getUniqueId(),player.getName());
+            teamPlayer = Teams.datasheetManager.newTamePlayer(player.getUniqueId(),player.getName());
         }
         return teamPlayer;
     }
