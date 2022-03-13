@@ -1,7 +1,8 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.all.basic.teamSupport.Team;
-import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -111,7 +113,7 @@ public class WorldSecurity implements Listener {
             return true;
         }
         //判断玩家团队
-        TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
+        TeamPlayer teamPlayer = Teams.datasheetManager.getTamePlayer(player.getUniqueId());
         if (teamPlayer==null){
             return false;
         }
@@ -119,6 +121,10 @@ public class WorldSecurity implements Listener {
         if (team==null){
             return false;
         }
-        return 世界.getName().equals(team.getWorldName());
+        Worlds worlds = team.getWorlds();
+        if (worlds==null){
+            return false;
+        }
+        return 世界.getName().equals(worlds.getWorldsName());
     }
 }

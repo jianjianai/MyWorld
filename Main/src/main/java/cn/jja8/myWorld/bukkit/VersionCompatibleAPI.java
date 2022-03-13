@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bukkit;
 
-import cn.jja8.myWorld.all.basic.teamSupport.TeamManager;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.DatasheetManager;
 import cn.jja8.myWorld.bukkit.basic.PlayerData;
 import cn.jja8.myWorld.bukkit.basic.Portal;
 import cn.jja8.myWorld.bukkit.basic.Teams;
@@ -54,8 +54,8 @@ public class VersionCompatibleAPI {
      * 插件默认的TeamManager基本支持所有版本，并且使用的sqlite
      * 您可在你插件的Load阶段调用此接口
      * */
-    public static void regPortalTeam(TeamManager teamManager){
-        Teams.teamManager = teamManager;
+    public static void regPortalTeam(DatasheetManager datasheetManager){
+        Teams.datasheetManager = datasheetManager;
     }
 
 

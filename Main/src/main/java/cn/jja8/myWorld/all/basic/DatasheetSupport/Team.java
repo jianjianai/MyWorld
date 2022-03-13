@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.all.basic.teamSupport;
+package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,13 +13,13 @@ public interface Team {
      * */
     void setTeamName(String teamName);
     /**
-     * 获取团队的世界名称
+     * 获取世界组
      * */
-    String getWorldName();
+    Worlds getWorlds();
     /**
-     * 设置团队的世界名称
+     * 设置团队的世界组
      * */
-    void setWorldName(String teamName);
+    void setWorlds(Worlds worlds);
     /**
      * 获取团队的uuid
      * */

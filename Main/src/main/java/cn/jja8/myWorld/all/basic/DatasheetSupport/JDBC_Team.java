@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.all.basic.teamSupport;
+package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,30 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class JDBC_Team implements Team{
-    JDBC_TeamManger teamManger;
+public class JDBC_Team implements Team {
+    JDBC_DatasheetManger teamManger;
     UUID TeamUUID;
 
-
-    private JDBC_Team(JDBC_TeamManger teamManger, UUID teamUUID) {
+    JDBC_Team(JDBC_DatasheetManger teamManger, UUID teamUUID) {
         this.teamManger = teamManger;
         TeamUUID = teamUUID;
     }
 
-    static JDBC_Team get(JDBC_TeamManger teamManger, UUID teamUUID){
-        try (Connection connection = teamManger.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("select UUID from Team where UUID=?")){
-                preparedStatement.setString(1,teamUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return new JDBC_Team(teamManger,teamUUID);
-                }
-            }
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-        return null;
-    }
     @Override
     public String getTeamName() {
         try (Connection connection = teamManger.getConnection()){
@@ -64,11 +49,6 @@ public class JDBC_Team implements Team{
         }
     }
 
-    /**
-     * 获取团队中的全部玩家
-     *
-     * @param status 特定的Status的玩家。 null 不指定Status。
-     */
     @Override
     public List<TeamPlayer> getPlayers(Status status) {
         try (Connection connection = teamManger.getConnection()){
@@ -97,7 +77,6 @@ public class JDBC_Team implements Team{
         }
         return null;
     }
-
     @Override
     public UUID getUUID() {
         return TeamUUID;
@@ -117,13 +96,13 @@ public class JDBC_Team implements Team{
     }
 
     @Override
-    public String getWorldName() {
+    public Worlds getWorlds() {
         try (Connection connection = teamManger.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldName from Team where UUID=?")){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID from Team where UUID=?")){
                 preparedStatement.setString(1,TeamUUID.toString());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()){
-                    return resultSet.getString(1);
+                    return new JDBC_Worlds(teamManger,UUID.fromString(resultSet.getString(1)));
                 }
             }
         } catch (SQLException sqlException) {
@@ -133,10 +112,11 @@ public class JDBC_Team implements Team{
     }
 
     @Override
-    public void setWorldName(String teamName) {
+    public void setWorlds(Worlds worlds) {
+        UUID worldsUUID = worlds.getUUID();
         try (Connection connection = teamManger.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("update Team set WorldName=? where UUID=?")){
-                preparedStatement.setString(1,teamName);
+            try (PreparedStatement preparedStatement = connection.prepareStatement("update Team set WorldsUUID=? where UUID=?")){
+                preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.setString(2,TeamUUID.toString());
                 preparedStatement.executeUpdate();
             }
@@ -144,4 +124,5 @@ public class JDBC_Team implements Team{
             sqlException.printStackTrace();
         }
     }
+
 }

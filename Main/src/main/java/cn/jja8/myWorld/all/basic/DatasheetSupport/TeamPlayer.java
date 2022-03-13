@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.all.basic.teamSupport;
+package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
 import java.util.UUID;
 
@@ -25,5 +25,9 @@ public interface TeamPlayer {
      * 设置玩家名称
      * */
     void setName(String name);
+    /**
+     * 删除TeamPlayer
+     * */
+    void delete();
 
 }

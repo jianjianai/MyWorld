@@ -1,17 +1,17 @@
 package cn.jja8.myWorld.bungeecord.basic;
 
-import cn.jja8.myWorld.all.basic.teamSupport.JDBC_TeamManger;
-import cn.jja8.myWorld.all.basic.teamSupport.TeamManager;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.old.JDBC_DatasheetManger;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.DatasheetManager;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 
 import java.sql.SQLException;
 
 public class Teams {
-    public static TeamManager teamManager = null;
+    public static DatasheetManager datasheetManager = null;
     public static void load(){
-        if (teamManager==null){
+        if (datasheetManager ==null){
             try {
-                teamManager = new JDBC_TeamManger(MyWorldBungeecord.getFileConfig().团队数据库URL,null,null);
+                datasheetManager = new JDBC_DatasheetManger(MyWorldBungeecord.getFileConfig().团队数据库URL,null,null);
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
                 for (int i = 0; i < 10; i++) {
@@ -22,6 +22,6 @@ public class Teams {
         }
     }
     public static void unLoad(){
-        teamManager.close();
+        datasheetManager.close();
     }
 }

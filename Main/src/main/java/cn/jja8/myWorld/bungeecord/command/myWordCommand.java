@@ -1,8 +1,8 @@
 package cn.jja8.myWorld.bungeecord.command;
 
-import cn.jja8.myWorld.all.basic.teamSupport.Status;
-import cn.jja8.myWorld.all.basic.teamSupport.Team;
-import cn.jja8.myWorld.all.basic.teamSupport.TeamPlayer;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
@@ -217,9 +217,9 @@ public class myWordCommand{
         return teamPlayer.getStatus()==Status.leader;
     }
     private static TeamPlayer getTeamPlayerNotNull(ProxiedPlayer player){
-        TeamPlayer teamPlayer = Teams.teamManager.getTamePlayer(player.getUniqueId());
+        TeamPlayer teamPlayer = Teams.datasheetManager.getTamePlayer(player.getUniqueId());
         if (teamPlayer==null){
-            teamPlayer = Teams.teamManager.newTamePlayer(player.getUniqueId(),player.getName());
+            teamPlayer = Teams.datasheetManager.newTamePlayer(player.getUniqueId(),player.getName());
         }
         return teamPlayer;
     }
