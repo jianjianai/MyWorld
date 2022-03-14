@@ -29,4 +29,15 @@ public interface Worlds {
      * @return null 世界组不属于任何团队
      * */
     Team getTeam();
+    /**
+     * 获取世界组的某自定义数据
+     * @return null 没有这个自定义数据
+     * */
+    WorldsData getWorldsData(String dataName);
+    /**
+     * 创建一个新自定义数据
+     * @return null 这个数据已经存在
+     * */
+    WorldsData newWorldsData(String dataName);
+
 }

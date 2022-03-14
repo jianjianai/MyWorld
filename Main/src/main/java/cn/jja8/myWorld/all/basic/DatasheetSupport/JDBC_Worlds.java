@@ -99,4 +99,41 @@ public class JDBC_Worlds implements Worlds{
         }
         return null;
     }
+
+    @Override
+    public WorldsData getWorldsData(String dataName) {
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUD,DataName from WorldsData where WorldsUUID=? and DataName=?")){
+                preparedStatement.setString(1,worldsUUID.toString());
+                preparedStatement.setString(2,dataName);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()){
+                    return new JDBC_WorldsData(datasheetManger,resultSet.getString("WorldsUUD"),resultSet.getString("DataName"));
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public WorldsData newWorldsData(String dataName) {
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("insert into WorldsData(WorldsUUID,DataName) values(?,?)")){
+                preparedStatement.setString(1,worldsUUID.toString());
+                preparedStatement.setString(2,dataName);
+                int up = preparedStatement.executeUpdate();
+                if (up==1){
+                    return new JDBC_WorldsData(datasheetManger,worldsUUID.toString(),dataName);
+                }
+            }
+        } catch (SQLException sqlException) {
+            if (sqlException.getErrorCode()==19){
+                return null;
+            }
+            sqlException.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -39,6 +39,9 @@ public class JDBC_DatasheetManger implements DatasheetManager {
             statement.execute("create table if not exists World(WorldsUUID varchar(36) not null,WorldName varchar not null);");
             statement.execute("create index if not exists World_WorldName_index on World (WorldName);");
             statement.execute("create unique index if not exists World_WorldName_index on World (WorldName);");
+            //WorldSdata
+            statement.execute("create table if not exists WorldsData(WorldsUUID varchar(36) not null,DataName varchar not null,Data blob);");
+            statement.execute("create unique index if not exists WorldsUUID_WorldTrust_uindex on WorldSdata(WorldsUUID,DataName);");
         }
     }
     Connection getConnection() throws SQLException {
