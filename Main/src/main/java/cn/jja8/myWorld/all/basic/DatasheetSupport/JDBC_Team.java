@@ -22,9 +22,10 @@ public class JDBC_Team implements Team {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select TeamName from Team where UUID=?")){
                 preparedStatement.setString(1,TeamUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return resultSet.getString(1);
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return resultSet.getString(1);
+                    }
                 }
             }
         } catch (SQLException sqlException) {
@@ -56,18 +57,21 @@ public class JDBC_Team implements Team {
             if (status==null){
                 try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerUUID from TeamPlayer where TeamUUID=?")){
                     preparedStatement.setString(1,TeamUUID.toString());
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()){
-                        playerList.add(new JDBC_TeamPlayer(teamManger,UUID.fromString(resultSet.getString(1))));
+                    try (ResultSet resultSet = preparedStatement.executeQuery();){
+
+                        while (resultSet.next()){
+                            playerList.add(new JDBC_TeamPlayer(teamManger,UUID.fromString(resultSet.getString(1))));
+                        }
                     }
                 }
             }else {
                 try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerUUID from TeamPlayer where Status=? and TeamUUID=?")){
                     preparedStatement.setString(1,status.toString());
                     preparedStatement.setString(2,TeamUUID.toString());
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()){
-                        playerList.add(new JDBC_TeamPlayer(teamManger,UUID.fromString(resultSet.getString(1))));
+                    try (ResultSet resultSet = preparedStatement.executeQuery();){
+                        while (resultSet.next()){
+                            playerList.add(new JDBC_TeamPlayer(teamManger,UUID.fromString(resultSet.getString(1))));
+                        }
                     }
                 }
             }
@@ -100,9 +104,10 @@ public class JDBC_Team implements Team {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID from Team where UUID=?")){
                 preparedStatement.setString(1,TeamUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return new JDBC_Worlds(teamManger,UUID.fromString(resultSet.getString(1)));
+                try ( ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return new JDBC_Worlds(teamManger,UUID.fromString(resultSet.getString(1)));
+                    }
                 }
             }
         } catch (SQLException sqlException) {

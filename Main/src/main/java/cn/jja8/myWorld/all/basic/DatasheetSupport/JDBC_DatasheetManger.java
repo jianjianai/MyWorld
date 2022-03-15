@@ -39,7 +39,7 @@ public class JDBC_DatasheetManger implements DatasheetManager {
             statement.execute("create table if not exists World(WorldsUUID varchar(36) not null,WorldName varchar not null);");
             statement.execute("create index if not exists World_WorldName_index on World (WorldName);");
             statement.execute("create unique index if not exists World_WorldName_index on World (WorldName);");
-            //WorldSdata
+            //WorldsData
             statement.execute("create table if not exists WorldsData(WorldsUUID varchar(36) not null,DataName varchar not null,Data blob);");
             statement.execute("create unique index if not exists WorldsUUID_WorldTrust_uindex on WorldSdata(WorldsUUID,DataName);");
         }
@@ -53,12 +53,13 @@ public class JDBC_DatasheetManger implements DatasheetManager {
         try (Connection connection = getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select UUID from Team where TeamName=?")){
                 preparedStatement.setString(1,teamName);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    try {
-                        return new JDBC_Team(this,UUID.fromString(resultSet.getString(1)));
-                    }catch (IllegalArgumentException illegalArgumentException){
-                        illegalArgumentException.printStackTrace();
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        try {
+                            return new JDBC_Team(this,UUID.fromString(resultSet.getString(1)));
+                        }catch (IllegalArgumentException illegalArgumentException){
+                            illegalArgumentException.printStackTrace();
+                        }
                     }
                 }
             }
@@ -73,12 +74,13 @@ public class JDBC_DatasheetManger implements DatasheetManager {
         try (Connection connection = getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID from Worlds where WorldsName=?")){
                 preparedStatement.setString(1,worldsName);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    try {
-                        return new JDBC_Worlds(this,UUID.fromString(resultSet.getString(1)));
-                    }catch (IllegalArgumentException illegalArgumentException){
-                        illegalArgumentException.printStackTrace();
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        try {
+                            return new JDBC_Worlds(this,UUID.fromString(resultSet.getString(1)));
+                        }catch (IllegalArgumentException illegalArgumentException){
+                            illegalArgumentException.printStackTrace();
+                        }
                     }
                 }
             }
@@ -93,9 +95,10 @@ public class JDBC_DatasheetManger implements DatasheetManager {
         try (Connection connection = getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerUUID from TeamPlayer where PlayerUUID=?")){
                 preparedStatement.setString(1,uuid.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return new JDBC_TeamPlayer(this,UUID.fromString(resultSet.getString(1)));
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return new JDBC_TeamPlayer(this,UUID.fromString(resultSet.getString(1)));
+                    }
                 }
             }
         } catch (SQLException sqlException) {
