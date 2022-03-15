@@ -5,6 +5,16 @@ import java.util.UUID;
 
 public interface Worlds {
     /**
+     * 尝试得到这个世界的锁
+     * @return null 这个世界已经被上锁
+     * */
+    WorldLock getWorldLock(String lockServerName);
+    /**
+     * 获取上锁服务器名称
+     * @return null 没被上锁
+     * */
+    String getLockServerName();
+    /**
      * 获取世界组里的全部世界
      * */
     List<String> getWorldsList();

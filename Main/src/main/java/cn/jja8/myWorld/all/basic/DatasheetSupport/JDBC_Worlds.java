@@ -140,4 +140,24 @@ public class JDBC_Worlds implements Worlds{
         }
         return null;
     }
+
+    @Override
+    public WorldLock getWorldLock(String lockServerName) {
+        Connection connection;
+        PreparedStatement preparedStatement;
+        try {
+            connection = datasheetManger.getConnection();
+            preparedStatement = connection.prepareStatement("select ");
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public String getLockServerName() {
+        return null;
+    }
 }
