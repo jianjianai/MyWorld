@@ -143,21 +143,50 @@ public class JDBC_Worlds implements Worlds{
 
     @Override
     public WorldLock getWorldLock(String lockServerName) {
-        Connection connection;
-        PreparedStatement preparedStatement;
-        try {
-            connection = datasheetManger.getConnection();
-            preparedStatement = connection.prepareStatement("select ");
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("update Worlds set LockServerName=? where WorldsUUID=? and LockServerName=?")){
+                preparedStatement.setString(1,lockServerName);
+                preparedStatement.setString(2,worldsUUID.toString());
+                preparedStatement.setString(3,null);
+                int i = preparedStatement.executeUpdate();
+                if (i>0){
+                    return new JDBC_WorldLock(datasheetManger,worldsUUID,lockServerName);
+                }else {
+                    return null;
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
-
+        return null;
     }
 
     @Override
     public String getLockServerName() {
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select LockServerName from Worlds where WorldsUUID=?")){
+                preparedStatement.setString(1,worldsUUID.toString());
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return resultSet.getString(1);
+                    }
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
         return null;
+    }
+
+    @Override
+    public void unAllLock(String lockServerName) {
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("update Worlds set LockServerName=? where LockServerName=?")){
+                preparedStatement.setString(1,null);
+                preparedStatement.setString(2,lockServerName);
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 }

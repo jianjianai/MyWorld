@@ -15,6 +15,8 @@ public interface PlayerDataSupport {
     void loadData(Player player);
     /**
      * 获得这个玩家的锁
+     * @return null 此玩家已经被锁
+     * @param serverName 上锁服务器名称
      * */
-    PlayerDataLock getPlayerDataLock(Player player);
+    PlayerDataLock getPlayerDataLock(Player player,String serverName);
 }

@@ -5,8 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -41,17 +39,21 @@ public interface WorldDataSupport {
     /**
      * 获取某世界的锁
      * */
-    WorldDataLock getWorldDataLock(String WorldName);
+    WorldDataLock getWorldDataLock(String WorldName,String serverName);
+    /**
+     * 获取上锁服务器的名称
+     * @return null 没有被锁
+     * */
+    String gitLockServerName();
     /**
      * 获取某世界的自定义数据输入流
      * @return 如果没有，返回null
      * */
-    InputStream getCustomDataInputStream(String WorldName,String dataName);
+    byte[] getCustomDataByte(String WorldName,String dataName);
     /**
      * 获取某世界的自定义数据输出流
-     * @return 不可以是null
      * */
-    OutputStream getCustomDataOutputStream(String WorldName,String dataName);
+    void setCustomDataByte(String WorldName,String dataName,byte[] bytes);
 
     /**
      * 删除掉指定世界
