@@ -15,6 +15,11 @@ public interface Worlds {
      * */
     String getLockServerName();
     /**
+     * 强行释放某服务器的全部锁,请不要在正常情况下调用此方法。
+     * 仅用于bc检查到服务器不在线的情况下释放锁。
+     * */
+    void unAllLock(String lockServerName);
+    /**
      * 获取世界组里的全部世界
      * */
     List<String> getWorldsList();

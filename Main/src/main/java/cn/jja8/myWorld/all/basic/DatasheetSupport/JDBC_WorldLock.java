@@ -1,29 +1,32 @@
 package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class JDBC_WorldLock implements WorldLock{
-    Connection lockConnection;
-    ResultSet lockResultSet;
+    JDBC_DatasheetManger datasheetManger;
+    UUID worldsUUID;
+    String lockServerName;
 
-    public JDBC_WorldLock(Connection lockConnection, ResultSet lockResultSet) {
-        this.lockConnection = lockConnection;
-        this.lockResultSet = lockResultSet;
+    public JDBC_WorldLock(JDBC_DatasheetManger datasheetManger, UUID worldsUUID, String lockServerName) {
+        this.datasheetManger = datasheetManger;
+        this.worldsUUID = worldsUUID;
+        this.lockServerName = lockServerName;
     }
 
     @Override
     public void unLock() {
-        try {
-            lockResultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            lockConnection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("update Worlds set LockServerName=? where WorldsUUID=? and LockServerName=?")){
+                preparedStatement.setBytes(1,null);
+                preparedStatement.setString(2,worldsUUID.toString());
+                preparedStatement.setString(3,lockServerName);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
     }
 }
