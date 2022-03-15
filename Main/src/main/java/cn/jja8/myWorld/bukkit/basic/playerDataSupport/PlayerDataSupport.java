@@ -6,14 +6,6 @@ import org.bukkit.entity.Player;
  * */
 public interface PlayerDataSupport {
     /**
-     * 保存某玩家数据到公共的数据库中
-     * */
-    void saveData(Player player) ;
-    /**
-     * 从公共的数据库中加载某玩家的数据
-     * */
-    void loadData(Player player);
-    /**
      * 获得这个玩家的锁
      * @return null 此玩家已经被锁
      * @param serverName 上锁服务器名称
