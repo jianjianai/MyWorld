@@ -33,7 +33,7 @@ public class JDBC_DatasheetManger implements DatasheetManager {
             statement.execute("create table if not exists TeamPlayer(PlayerUUID varchar(36) not null constraint TeamPlayer_pk primary key,PlayerName varchar,TeamUUID varchar(36),Status varchar);");
             statement.execute("create index if not exists TeamPlayer_TeamUUID_uindex on TeamPlayer (TeamUUID);");
             //Worlds
-            statement.execute("create table if not exists Worlds(WorldsUUID varchar(36) not null,WorldsName varchar not null);");
+            statement.execute("create table if not exists Worlds(WorldsUUID varchar(36) not null,WorldsName varchar not null,LockServerName varchar);");
             statement.execute("create unique index if not exists Worlds_WorldsName_index on Worlds(WorldsName);");
             //World
             statement.execute("create table if not exists World(WorldsUUID varchar(36) not null,WorldName varchar not null);");
