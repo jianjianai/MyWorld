@@ -25,14 +25,15 @@ public class JDBC_TeamPlayer implements TeamPlayer {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select Status from TeamPlayer where PlayerUUID=?")){
                 preparedStatement.setString(1,PlayerUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    String sta = resultSet.getString(1);
-                    if (sta!=null){
-                        try {
-                            return Status.valueOf(sta);
-                        }catch (IllegalArgumentException illegalArgumentException){
-                            illegalArgumentException.printStackTrace();
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        String sta = resultSet.getString(1);
+                        if (sta!=null){
+                            try {
+                                return Status.valueOf(sta);
+                            }catch (IllegalArgumentException illegalArgumentException){
+                                illegalArgumentException.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -61,14 +62,15 @@ public class JDBC_TeamPlayer implements TeamPlayer {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select TeamUUID from TeamPlayer where PlayerUUID=?")){
                 preparedStatement.setString(1,PlayerUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    String sta = resultSet.getString(1);
-                    if (sta!=null){
-                        try {
-                            return new JDBC_Team(teamManger,UUID.fromString(sta));
-                        }catch (IllegalArgumentException illegalArgumentException){
-                            illegalArgumentException.printStackTrace();
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        String sta = resultSet.getString(1);
+                        if (sta!=null){
+                            try {
+                                return new JDBC_Team(teamManger,UUID.fromString(sta));
+                            }catch (IllegalArgumentException illegalArgumentException){
+                                illegalArgumentException.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -97,9 +99,10 @@ public class JDBC_TeamPlayer implements TeamPlayer {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select PlayerName from TeamPlayer where PlayerUUID=?")){
                 preparedStatement.setString(1,PlayerUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return resultSet.getString(1);
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return resultSet.getString(1);
+                    }
                 }
             }
         } catch (SQLException sqlException) {

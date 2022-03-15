@@ -21,12 +21,13 @@ public class JDBC_Worlds implements Worlds{
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldName from World where WorldsUUID=?")){
                 preparedStatement.setString(1, worldsUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                ArrayList<String> worldList = new ArrayList<>();
-                while (resultSet.next()){
-                    worldList.add(resultSet.getString(1));
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    ArrayList<String> worldList = new ArrayList<>();
+                    while (resultSet.next()){
+                        worldList.add(resultSet.getString(1));
+                    }
+                    return worldList;
                 }
-                return worldList;
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -52,9 +53,10 @@ public class JDBC_Worlds implements Worlds{
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsName from Worlds where WorldsUUID=?")){
                 preparedStatement.setString(1, worldsUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return resultSet.getString(1);
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return resultSet.getString(1);
+                    }
                 }
             }
         } catch (SQLException sqlException) {
@@ -89,9 +91,10 @@ public class JDBC_Worlds implements Worlds{
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select UUID from Team where WorldsUUID=?")){
                 preparedStatement.setString(1,worldsUUID.toString());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return new JDBC_Team(datasheetManger,UUID.fromString(resultSet.getString(1)));
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return new JDBC_Team(datasheetManger,UUID.fromString(resultSet.getString(1)));
+                    }
                 }
             }
         } catch (SQLException sqlException) {
@@ -106,9 +109,10 @@ public class JDBC_Worlds implements Worlds{
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUD,DataName from WorldsData where WorldsUUID=? and DataName=?")){
                 preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.setString(2,dataName);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()){
-                    return new JDBC_WorldsData(datasheetManger,resultSet.getString("WorldsUUD"),resultSet.getString("DataName"));
+                try (ResultSet resultSet = preparedStatement.executeQuery();){
+                    if (resultSet.next()){
+                        return new JDBC_WorldsData(datasheetManger,resultSet.getString("WorldsUUD"),resultSet.getString("DataName"));
+                    }
                 }
             }
         } catch (SQLException sqlException) {
