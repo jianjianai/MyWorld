@@ -6,6 +6,7 @@ package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 public interface WorldDataSupport {
     /**
      * 获取某世界的锁
+     * @return null 世界已经被其他服务器上锁
      * */
     WorldDataLock getWorldDataLock(String WorldName,String serverName);
     /**

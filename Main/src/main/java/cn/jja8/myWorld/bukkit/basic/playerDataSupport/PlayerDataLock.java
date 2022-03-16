@@ -12,8 +12,7 @@ public interface PlayerDataLock {
      * */
     void loadData(Player player);
     /**
-     * 解锁，解锁服务器名称必须等于上锁服务器，否则不能解锁。
-     * @return true解锁成功 false没有解锁
+     * 解锁，并且释放资源
      * */
-    boolean unlock(String serverName);
+    void unlock();
 }
