@@ -1,16 +1,14 @@
 package cn.jja8.myWorld.bukkit.basic.playerDataSupport;
 
-import org.bukkit.entity.Player;
-
 public interface PlayerDataLock {
     /**
-     * 保存某玩家数据到公共的数据库中
+     * 保存玩家数据到公共的数据库中
      * */
-    void saveData(Player player) ;
+    void saveData() ;
     /**
-     * 从公共的数据库中加载某玩家的数据
+     * 从公共的数据库中加载玩家的数据
      * */
-    void loadData(Player player);
+    void loadData();
     /**
      * 解锁，并且释放资源
      * */
