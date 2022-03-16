@@ -12,7 +12,9 @@ repositories {
 }
 
 dependencies {
-    implementation project("Main")
+    implementation project("Main:All")
+    implementation project("Main:Bukkit")
+    implementation project("Main:Bungeecord")
     implementation project("Version:v1_17_R1")
     implementation project("Version:v1_18_R2")
     implementation project("Version:v1_12_R1")

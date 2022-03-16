@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly project(":Main")
+    compileOnly project(":Main:Bukkit")
     implementation fileTree(dir:'libs/implentation',includes:['*jar'])
     compileOnly fileTree(dir:'libs/compileonly',includes:['*jar'])
 }

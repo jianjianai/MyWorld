@@ -1,6 +1,5 @@
 package cn.jja8.myWorld.bukkit.basic.portalSupport;
 
-import net.minecraft.server.level.WorldServer;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;

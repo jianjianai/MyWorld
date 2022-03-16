@@ -1,6 +1,5 @@
 package cn.jja8.myWorld.bukkit.basic.playerDataSupport;
 
-import cn.jja8.myWorld.all.veryUtil.FileLock;
 import net.minecraft.nbt.NBTCompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;

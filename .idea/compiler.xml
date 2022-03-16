@@ -2,7 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
-      <module name="MyWorld.main" target="17" />
       <module name="MyWorld.Version.v1_18_R1.main" target="17" />
       <module name="MyWorld.Version.v1_18_R1.test" target="17" />
     </bytecodeTargetLevel>

@@ -1,6 +1,16 @@
 rootProject.name = 'MyWorld'
-include 'Main'
-findProject(':Main')?.name = 'Main'
+
+include 'Main:Bungeecord'
+findProject(':Main:Bungeecord')?.name = 'Bungeecord'
+
+include 'Main:All'
+findProject(':Main:All')?.name = 'All'
+
+include 'Main:Bukkit'
+findProject(':Main:Bukkit')?.name = 'Bukkit'
+
+include 'Main:Bukkit'
+findProject(':Main:Bukkit')?.name = 'Bukkit'
 
 include 'Version:v1_17_R1'
 findProject(':Version:v1_17_R1')?.name = 'v1_17_R1'
