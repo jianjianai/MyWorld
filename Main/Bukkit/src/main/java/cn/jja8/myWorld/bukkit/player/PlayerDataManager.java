@@ -38,7 +38,7 @@ public class PlayerDataManager implements Listener {
         //事件监听器
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
         //自动保存
-        MyWorldBukkit.getMyWorldBukkit().getServer().getScheduler().runTaskTimerAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> new ArrayList<>(playerLockMap.keySet()).forEach(player -> PlayerData.playerDataSupport.saveData(player)), 20L * playerDataConfig.自动保存时间, 20L * playerDataConfig.自动保存时间);
+        MyWorldBukkit.getMyWorldBukkit().getServer().getScheduler().runTaskTimerAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> new ArrayList<>(playerLockMap.values()).forEach(lock ->lock.saveData() ), 20L * playerDataConfig.自动保存时间, 20L * playerDataConfig.自动保存时间);
     }
     /**
      * 如果玩家没有加载完成，就加载完成后执行。如果已经加载完成就立即执行
@@ -69,8 +69,8 @@ public class PlayerDataManager implements Listener {
         //如果有成功获得锁就保存数据，并解锁。
         PlayerDataLock lock = playerLockMap.remove(event.getPlayer());
         if (lock!=null){
-            PlayerData.playerDataSupport.saveData(event.getPlayer());
-            lock.unlock(worldConfig.服务器名称);
+            lock.saveData();
+            lock.unlock();
         }
     }
     @EventHandler
@@ -82,17 +82,16 @@ public class PlayerDataManager implements Listener {
             int time = 0;
             @Override
             public void run() {
-                PlayerDataLock lock = PlayerData.playerDataSupport.getPlayerDataLock(event.getPlayer());
-                if (lock.isLocked()) {
+                PlayerDataLock lock = PlayerData.playerDataSupport.getPlayerDataLock(event.getPlayer(),worldConfig.服务器名称);
+                if (lock==null) {
                     event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(lang.玩家数据加载_等待信息.replaceAll("<数>", String.valueOf(time))));
                     time++;
                     return;
                 }
-                lock.locked(worldConfig.服务器名称);
                 playerLockMap.put(event.getPlayer(), lock);
                 this.cancel();
                 playerLoadRunMap.remove(event.getPlayer());
-                PlayerData.playerDataSupport.loadData(event.getPlayer());
+                lock.loadData();
                 //加载完成任务
                 Queue<Runnable> queue = playerLoadFinishedToRunMap.get(event.getPlayer());
                 if (queue!=null){
@@ -140,8 +139,8 @@ public class PlayerDataManager implements Listener {
 
     public void close() {
         new HashMap<>(playerLockMap).forEach((player, lockWork) -> {
-            PlayerData.playerDataSupport.saveData(player);
-            lockWork.unlock(worldConfig.服务器名称);
+            lockWork.saveData();
+            lockWork.unlock();
         });
     }
 }

@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="对大量接口重新设计" />
+    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="对大量接口重新设计">
+      <change afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/PlayerLock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataAndLock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/v1_16_R3_old.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/PlayerDataLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/PlayerDataLock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/v1_16_R3.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/v1_16_R3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/v1_16_R3_old.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataSupport.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataSupport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/v1_16_R3.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/v1_16_R3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/player/PlayerDataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/player/PlayerDataManager.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,6 +97,9 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Users\四叶草\Desktop\java项目\MyWorld\Main\Bukkit" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.jja8.myWorld.bukkit.basic.worldDataSupport" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.MyWorld [clean]">
@@ -208,6 +221,7 @@
       <workItem from="1647264923584" duration="16077000" />
       <workItem from="1647440138645" duration="4380000" />
       <workItem from="1647521832936" duration="630000" />
+      <workItem from="1647522536805" duration="2976000" />
     </task>
     <task id="LOCAL-00001" summary="没有改什么">
       <created>1647080218597</created>
@@ -279,7 +293,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647444579947</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="对大量接口重新设计">
+      <created>1647522602610</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1647522602632</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
