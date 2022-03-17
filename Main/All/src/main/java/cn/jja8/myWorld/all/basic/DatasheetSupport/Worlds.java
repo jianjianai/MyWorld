@@ -22,7 +22,7 @@ public interface Worlds {
     /**
      * 获取世界组里的全部世界
      * */
-    List<String> getWorldsList();
+    List<String> getWorldList();
     /**
      * 给世界组添加一个世界
      * */

@@ -38,7 +38,8 @@ public class JDBC_DatasheetManger implements DatasheetManager {
             //World
             statement.execute("create table if not exists World(WorldsUUID varchar(36) not null,WorldName varchar not null);");
             statement.execute("create index if not exists World_WorldName_index on World (WorldName);");
-            statement.execute("create unique index if not exists World_WorldName_index on World (WorldName);");
+            statement.execute("create index if not exists World_WorldsUUID_index on World (WorldsUUID);");
+            statement.execute("create unique index if not exists World_WorldsUUID_WorldName_index on World (WorldsUUID,WorldName);");
             //WorldsData
             statement.execute("create table if not exists WorldsData(WorldsUUID varchar(36) not null,DataName varchar not null,Data blob);");
             statement.execute("create unique index if not exists WorldsUUID_WorldTrust_uindex on WorldSdata(WorldsUUID,DataName);");
@@ -133,7 +134,7 @@ public class JDBC_DatasheetManger implements DatasheetManager {
     @Override
     public TeamPlayer newTamePlayer(UUID uuid, String name) {
         try (Connection connection = getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("insert into TeamPlayer(PlayerUUID,PlayerName,Status) values(?,?,"+Status.player+")")){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("insert into TeamPlayer(PlayerUUID,PlayerName,Status) values(?,?,'"+Status.player+"')")){
                 preparedStatement.setString(1,uuid.toString());
                 preparedStatement.setString(2,name);
                 int up = preparedStatement.executeUpdate();

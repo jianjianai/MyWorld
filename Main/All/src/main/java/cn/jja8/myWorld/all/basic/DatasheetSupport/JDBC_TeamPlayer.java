@@ -45,7 +45,7 @@ public class JDBC_TeamPlayer implements TeamPlayer {
     }
 
     @Override
-    public void SetTeam(Team team) {
+    public void setTeam(Team team) {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set TeamUUID=? where PlayerUUID=?")){
                 preparedStatement.setString(1,team==null?null:team.getUUID().toString());

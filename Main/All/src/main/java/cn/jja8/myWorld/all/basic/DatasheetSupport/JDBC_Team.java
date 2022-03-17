@@ -106,7 +106,10 @@ public class JDBC_Team implements Team {
                 preparedStatement.setString(1,TeamUUID.toString());
                 try ( ResultSet resultSet = preparedStatement.executeQuery();){
                     if (resultSet.next()){
-                        return new JDBC_Worlds(teamManger,UUID.fromString(resultSet.getString(1)));
+                        String uu = resultSet.getString(1);
+                        if (uu!=null) {
+                            return new JDBC_Worlds(teamManger,UUID.fromString(uu));
+                        }
                     }
                 }
             }

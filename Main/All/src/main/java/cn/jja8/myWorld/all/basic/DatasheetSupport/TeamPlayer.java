@@ -12,7 +12,7 @@ public interface TeamPlayer {
     /**
      * 所在玩家所在的团队
      * */
-    void SetTeam(Team team);
+    void setTeam(Team team);
     /**
      * 设置玩家所在团队的Status
      * */

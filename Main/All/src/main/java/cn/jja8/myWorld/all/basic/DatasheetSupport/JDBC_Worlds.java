@@ -17,7 +17,7 @@ public class JDBC_Worlds implements Worlds{
     }
 
     @Override
-    public List<String> getWorldsList() {
+    public List<String> getWorldList() {
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldName from World where WorldsUUID=?")){
                 preparedStatement.setString(1, worldsUUID.toString());
@@ -106,12 +106,12 @@ public class JDBC_Worlds implements Worlds{
     @Override
     public WorldsData getWorldsData(String dataName) {
         try (Connection connection = datasheetManger.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUD,DataName from WorldsData where WorldsUUID=? and DataName=?")){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID,DataName from WorldsData where WorldsUUID=? and DataName=?")){
                 preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.setString(2,dataName);
                 try (ResultSet resultSet = preparedStatement.executeQuery();){
                     if (resultSet.next()){
-                        return new JDBC_WorldsData(datasheetManger,resultSet.getString("WorldsUUD"),resultSet.getString("DataName"));
+                        return new JDBC_WorldsData(datasheetManger,resultSet.getString("WorldsUUID"),resultSet.getString("DataName"));
                     }
                 }
             }
