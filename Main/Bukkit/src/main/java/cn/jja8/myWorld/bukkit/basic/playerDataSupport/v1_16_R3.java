@@ -1,35 +1,51 @@
 package cn.jja8.myWorld.bukkit.basic.playerDataSupport;
 
-import cn.jja8.myWorld.all.veryUtil.FileLock;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R3.NBTCompressedStreamTools;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public class v1_16_R3 implements PlayerDataSupport{
-    File dataFile;
-    public v1_16_R3(File dataFile){
-        this.dataFile = dataFile;
-        dataFile.mkdirs();
-    }
-    public static class PlayerDataLock_v1_16_R3{
-        File playerDataFile;
-        FileLock fileLock;
+public class v1_16_R3 extends LockAndDataFileSupport{
 
-        public PlayerDataLock_v1_16_R3(File playerDataFile, FileLock fileLock) {
-            this.playerDataFile = playerDataFile;
-            this.fileLock = fileLock;
-        }
+    public v1_16_R3(File dataFile) {
+        super(dataFile);
     }
 
     @Override
-    public PlayerDataLock getPlayerDataLock(Player player, String serverName) {
-        File playerDataFile = new File(dataFile, player.getUniqueId() +".dat");
-        File playerLockFile = new File(dataFile, player.getUniqueId() +".lock");
-        FileLock fileLock = FileLock.getFileLock(playerLockFile,serverName);
-        if (fileLock!=null){
-            return new v1_16_R3_old.Lock(playerDataFile,fileLock);
+    LockAndDataFile getLockAndDataFile(File playerDataFile, Player player) {
+        return new LockAndDataFile(playerDataFile,player);
+    }
+
+    public static class LockAndDataFile extends cn.jja8.myWorld.bukkit.basic.playerDataSupport.LockAndDataFile {
+        Player player;
+        public LockAndDataFile(File playerDataFile, Player player) {
+            super(playerDataFile);
+            this.player = player;
+        }
+        @Override
+        public void saveToOutputStream(OutputStream outputStream){
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            ((CraftPlayer)player).getHandle().saveData(nbttagcompound);
+            try {
+                NBTCompressedStreamTools.a(nbttagcompound,outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void loadFromInputStream(InputStream inputStream) {
+            try {
+                ((CraftPlayer)player).getHandle().loadData(NBTCompressedStreamTools.a(inputStream));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 }
