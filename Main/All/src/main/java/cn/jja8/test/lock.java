@@ -7,6 +7,11 @@ import java.io.File;
 public class lock {
     public static void main(String[] args) throws InterruptedException {
         File file = new File("C:/myWorld/asd.lock");
+        System.out.println("--------------------------------------------------------");
+        System.out.println(FileLock.getLockServerName(file));
+        System.out.println("--------------------------------------------------------");
+
+
         FileLock fileLock = FileLock.getFileLock(file ,"6666");
 
         new Thread(() -> {

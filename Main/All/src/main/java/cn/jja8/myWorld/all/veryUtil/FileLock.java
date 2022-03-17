@@ -9,13 +9,14 @@ public class FileLock {
     FileOutputStream fileOutputStream;
     FileChannel channel;
     java.nio.channels.FileLock fileLock;
-    File file;
+    File file,file1;
 
-    public FileLock(FileOutputStream fileOutputStream, FileChannel channel, java.nio.channels.FileLock fileLock, File file) {
+    public FileLock(FileOutputStream fileOutputStream, FileChannel channel, java.nio.channels.FileLock fileLock, File file,File file1) {
         this.fileOutputStream = fileOutputStream;
         this.channel = channel;
         this.fileLock = fileLock;
         this.file = file;
+        this.file1 = file1;
     }
 
     public void unLock(){
@@ -41,6 +42,7 @@ public class FileLock {
             ioException1.printStackTrace();
         }
         file.delete();
+        file1.delete();
     }
 
     /**
@@ -48,94 +50,87 @@ public class FileLock {
      * @return null 文件已经被锁
      * **/
     public static FileLock getFileLock(File file,String LockServerName){
-        FileOutputStream fileOutputStream = null;
-        FileChannel channel = null;
-        java.nio.channels.FileLock fileLock;
+        File pr = file.getParentFile();
+        pr.mkdirs();
         try {
-            File parent = file.getParentFile();
-            if (!parent.exists()) {
-                parent.mkdirs();
-            }
             file.createNewFile();
+        }catch (IOException ioException){
+            ioException.printStackTrace();
+            return null;
+        }
+        File file1 = new File(pr,file.getName()+".inf");
+        FileOutputStream fileOutputStream = null;
+        FileChannel ch = null;
+        java.nio.channels.FileLock lock = null;
+        try {
             fileOutputStream = new FileOutputStream(file);
-            channel = fileOutputStream.getChannel();
-            try {
-                fileLock = channel.tryLock(0,10,false);
-            }catch (Exception exception){
-                return null;
+            ch = fileOutputStream.getChannel();
+            lock = ch.tryLock();
+        } catch (OverlappingFileLockException ignored) {
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (lock!=null){
+            try (FileOutputStream fileOutputStream1 = new FileOutputStream(file1);){
+                fileOutputStream1.write(LockServerName.getBytes(StandardCharsets.UTF_8));
+                return new FileLock(fileOutputStream,ch,lock,file,file1);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            if (fileLock!=null){
-                fileOutputStream.write(new byte[10]);
-                fileOutputStream.write(LockServerName.getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.flush();
-                return new FileLock(fileOutputStream,channel,fileLock,file);
-            }else {
-                try {
-                    channel.close();
-                }catch (IOException  ioException1){
-                    ioException1.printStackTrace();
-                }
-                try {
-                    fileOutputStream.close();
-                }catch (IOException  ioException1){
-                    ioException1.printStackTrace();
-                }
-            }
-        }catch (IOException exception){
-            exception.printStackTrace();
+        }
+        //关闭
+        if (ch!=null) {
             try {
-                if (channel!=null){
-                    channel.close();
-                }
-            }catch (IOException  ioException1){
-                ioException1.printStackTrace();
+                ch.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+        if (fileOutputStream!=null) {
             try {
-                if (fileOutputStream!=null){
-                    fileOutputStream.close();
-                }
-            }catch (IOException  ioException1){
-                ioException1.printStackTrace();
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return null;
-
     }
     /**
      * 获得上锁服务器名称
      * @return null 没被上锁
      * */
     public static String getLockServerName(File file){
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        if (!file.isFile()) {
+        File pr = file.getParentFile();
+        File file1 = new File(pr,file.getName()+".inf");
+        if (!file1.isFile()){
             return null;
         }
+        if (!file.isFile()){
+            return null;
+        }
+        java.nio.channels.FileLock lock = null;
+        try (
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                FileChannel ch = fileOutputStream.getChannel();
+        ){
+            lock = ch.lock();
+        } catch (OverlappingFileLockException ignored) {
 
-        try (FileInputStream fileInputStream = new FileInputStream(file);
-             FileChannel channel = fileInputStream.getChannel()){
-            java.nio.channels.FileLock fileLock = null;
-            try {
-                fileLock = channel.tryLock(0,10,true);
-            }catch (OverlappingFileLockException overlappingFileLockException){
-                try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();){
-                    int i;
-                    fileInputStream.skip(10);
-                    while ((i=fileInputStream.read())!=-1){
-                        byteArrayOutputStream.write(i);
-                    }
-                    return new String(byteArrayOutputStream.toByteArray(),StandardCharsets.UTF_8);
-                }catch (IOException ioException){
-                    ioException.printStackTrace();
-                }
-            } catch (Exception exception){
-                exception.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (lock != null) {
+            return null;
+        }
+        try (FileInputStream fileInputStream = new FileInputStream(file1);
+             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ){
+            int i;
+            while ((i=fileInputStream.read())!=-1){
+                byteArrayOutputStream.write(i);
             }
-            if (fileLock!=null){
-                fileLock.close();
-            }
+            return new String(byteArrayOutputStream.toByteArray(),StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
