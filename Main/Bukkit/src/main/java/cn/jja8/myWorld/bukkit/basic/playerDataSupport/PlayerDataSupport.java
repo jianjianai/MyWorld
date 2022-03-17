@@ -11,4 +11,10 @@ public interface PlayerDataSupport {
      * @param serverName 上锁服务器名称
      * */
     PlayerDataLock getPlayerDataLock(Player player,String serverName);
+
+    /**
+     * 获取占有玩家锁的服务器名称
+     * @return null 没有服务器占有锁
+     * */
+    String getPlayerDataLockServerName(Player player);
 }
