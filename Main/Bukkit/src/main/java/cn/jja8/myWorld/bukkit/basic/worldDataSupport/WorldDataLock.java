@@ -12,7 +12,7 @@ public interface WorldDataLock {
      * 卸载当前世界，并且解锁释放资源
      * @param save 是否保存这个世界的数据。true是，false否。
      * */
-    boolean unloadWorldAndUnlock(boolean save);
+    void unloadWorldAndUnlock(boolean save);
     /**
      * 加载当前世界
      * */
@@ -37,11 +37,11 @@ public interface WorldDataLock {
      * 获取某世界的自定义数据输
      * @return 如果没有，返回null
      * */
-    byte[] getCustomDataByte(String WorldName,String dataName);
+    byte[] getCustomDataByte(String dataName);
     /**
      * 获取某世界的自定义数据
      * */
-    void setCustomDataByte(String WorldName,String dataName,byte[] bytes);
+    void setCustomDataByte(String dataName,byte[] bytes);
 
     /**
      * 删除掉当前世界，并且解锁释放资源
