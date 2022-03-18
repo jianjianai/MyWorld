@@ -9,10 +9,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public interface WorldDataLock {
     /**
-     * 卸载当前世界，并且解锁释放资源
+     * 解锁，并且解锁释放资源
+     * */
+    void unlock();
+    /**
+     * 卸载当前世界
      * @param save 是否保存这个世界的数据。true是，false否。
      * */
-    void unloadWorldAndUnlock(boolean save);
+    void unloadWorld(boolean save);
     /**
      * 加载当前世界
      * */
@@ -44,7 +48,7 @@ public interface WorldDataLock {
     void setCustomDataByte(String dataName,byte[] bytes);
 
     /**
-     * 删除掉当前世界，并且解锁释放资源
+     * 删除掉当前世界
      * */
-    void delWorldAndUnlock();
+    void delWorld();
 }
