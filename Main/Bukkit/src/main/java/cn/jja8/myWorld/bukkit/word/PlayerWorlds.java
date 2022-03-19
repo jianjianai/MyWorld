@@ -1,18 +1,25 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.bukkit.basic.WorldData;
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
+import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
+import cn.jja8.myWorld.bukkit.config.Lang;
+import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
-
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 
 /**
@@ -20,12 +27,19 @@ import java.util.Objects;
  */
 public class PlayerWorlds {
 
-    Map<String,World> worldMap = new HashMap<>();
+    WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
+
     PlayerWordInform playerWordInform;
     String name;
-    WorldDataLock lock;
 
-    protected PlayerWorlds() {}
+    Map<String, WorldDataLock> worldLockMap = new HashMap<>();
+    Map<String,World> loadedWorldMap = new HashMap<>();
+
+    public PlayerWorlds(PlayerWordInform playerWordInform, String name) {
+        this.playerWordInform = playerWordInform;
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -33,47 +47,45 @@ public class PlayerWorlds {
         return playerWordInform;
     }
     public World getWorld(String type){
-        return worldMap.get(type);
+        重新写
     }
     public World getWorld(PlayerWorldTypeAtName type) {
-        return getWorld(type.toString());
+        重新写
     }
-    public World putWorld(String type,World world){
-        return worldMap.put(type,world);
+    public void putWorld(String type, WorldDataLock world, WorldCreator worldCreator){
+        Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
+           World world1 = world.loadWorldAsync(worldCreator,new LoadingProgress(type));
+           worldLockMap.put(type,world);
+           loadedWorldMap.put(type,world1);
+        });
     }
-    public World putWorld(PlayerWorldTypeAtName type, World world){
-        return putWorld(type.toString(),world);
+    public void putWorld(PlayerWorldTypeAtName type,WorldDataLock world){
+        byte[] bytes = world.getCustomDataByte("worldCreator");
+        WorldCreator worldCreator = null;
+        if (bytes!=null) {
+            try {
+                worldCreator = YamlConfig.loadFromString(new String(bytes, StandardCharsets.UTF_8),WorldConfig.WorldBuilder.class).getWordBuilder(type.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (worldCreator==null) {
+            switch (type){
+                case world:worldCreator=worldConfig.主世界生成器.getWordBuilder(type.toString());break;
+                case end:worldCreator=worldConfig.末地界生成器.getWordBuilder(type.toString());break;
+                case infernal:worldCreator=worldConfig.地狱界生成器.getWordBuilder(type.toString());break;
+            }
+        }
+        putWorld(type.toString(),world,worldCreator);
     }
     public void setPlayerLocation(Player player, Location location) {
-        World world = location.getWorld();
-        if (!worldMap.containsValue(world)){
-            throw new Error("不可以保存玩家世界以外的位置。"+ Objects.requireNonNull(world).getName()+"不是玩家世界"+getName()+"中的世界。");
-        }
-        OutputStream outputStream = WorldData.worldDataSupport.getCustomDataOutputStream(name, "location/"+player.getUniqueId());
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-        YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        yamlConfiguration.set("location",location);
-        try {
-            outputStreamWriter.write(yamlConfiguration.saveToString());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {outputStreamWriter.close(); } catch (IOException ignored) { }
-        try { outputStream.close(); } catch (IOException ignored) { }
+        重新写
     }
     /**
      * @return null 没有这个玩家的位置
      * */
     public Location getPlayerLocation(Player player) {
-        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(name,"location/"+player.getUniqueId());
-        if (inputStream==null){
-            return null;
-        }
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream,StandardCharsets.UTF_8);
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(inputStreamReader);
-        try { inputStreamReader.close(); } catch (IOException ignored) { }
-        try { inputStream.close(); } catch (IOException ignored) { }
-        return yamlConfiguration.getLocation("location",null);
+        重新写
     }
 
     /**
@@ -99,7 +111,7 @@ public class PlayerWorlds {
     public void playerBackSpawn(Player player){
         World world = getWorld(PlayerWorldTypeAtName.world);
         if (world==null){
-            for (World s : worldMap.values()) {
+            for (World s : worldLockMap.values()) {
                 world = s;
                 break;
             }
@@ -109,5 +121,60 @@ public class PlayerWorlds {
             throw new Error("至少要开启一个世界才能去玩家的世界。");
         }
         player.teleport(world.getSpawnLocation());
+    }
+
+
+
+    /**
+     * 加载进度接收
+     * */
+    public static class LoadingProgress implements cn.jja8.myWorld.bukkit.basic.worldDataSupport.LoadingProgress {
+        UUID uuid = UUID.randomUUID();
+        Lang lang = ConfigBukkit.getLang();
+        String worldName;
+        int v =0;
+        long t = 0;
+        public LoadingProgress(String worldName) {
+            this.worldName = worldName;
+            loadingProgress(-1);
+
+        }
+        @Override
+        public void loadingProgress(int loading) {
+            try {
+                if (System.currentTimeMillis()-50<t){
+                    return;
+                }
+                t = System.currentTimeMillis();
+                Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
+                        player.spigot().sendMessage(
+                                ChatMessageType.ACTION_BAR,
+                                uuid,
+                                new TextComponent(lang.世界加载提示文本.replaceAll("<世界>",worldName).replaceAll("<数>",loading==-1|loading==0?v():loading+"%"))
+                        )
+                );
+            }catch (Exception|Error throwable){
+                throwable.printStackTrace();
+            }
+        }
+        private String v(){
+            String s = "/";
+            switch (v++%4){
+                case 0: s="/";break;
+                case 1: s="-";break;
+                case 2: s="\\\\";break;
+                case 3: s="|";break;
+            }
+            return s;
+        }
+        public void finish() {
+            Bukkit.getOnlinePlayers().forEach((Consumer<Player>) player ->
+                    player.spigot().sendMessage(
+                            ChatMessageType.ACTION_BAR,
+                            uuid,
+                            new TextComponent(lang.世界加载完成提示文本)
+                    )
+            );
+        }
     }
 }

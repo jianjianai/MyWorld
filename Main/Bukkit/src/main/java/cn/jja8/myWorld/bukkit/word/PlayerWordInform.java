@@ -1,9 +1,9 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.bukkit.basic.WorldData;
+import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.*;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,34 +13,23 @@ import java.util.List;
  */
 public class PlayerWordInform {
     private final List<String> BeTrustList;
-    private final String playerWorldName;
-    public PlayerWordInform(String playerWorldName) {
-        this.playerWorldName = playerWorldName;
-        InputStream inputStream = WorldData.worldDataSupport.getCustomDataInputStream(playerWorldName,"PlayerWordInform");
-        if (inputStream==null){
+    private final WorldDataLock worldDataLock;
+    public PlayerWordInform(WorldDataLock worldDataLock) {
+        this.worldDataLock = worldDataLock;
+        byte[] bytes = worldDataLock.getCustomDataByte("PlayerWordInform");
+        if (bytes==null){
             BeTrustList = new ArrayList<>();
             return;
         }
-        InputStreamReader inputStreamReader =new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(inputStreamReader);
-        try { inputStreamReader.close(); } catch (IOException ignored) { }
-        try { inputStream.close(); } catch (IOException ignored) { }
+
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new StringReader(new String(bytes,StandardCharsets.UTF_8)));
         BeTrustList = yamlConfiguration.getStringList("trustList");
     }
 
     public void save() {
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
         yamlConfiguration.set("trustList", BeTrustList);
-
-        OutputStream outputStream = WorldData.worldDataSupport.getCustomDataOutputStream(playerWorldName,"PlayerWordInform");
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream,StandardCharsets.UTF_8);
-        try {
-            outputStreamWriter.write(yamlConfiguration.saveToString());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {outputStreamWriter.close(); } catch (IOException ignored) {  }
-        try { outputStream.close(); } catch (IOException ignored) {  }
+        worldDataLock.setCustomDataByte("PlayerWordInform",yamlConfiguration.saveToString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**

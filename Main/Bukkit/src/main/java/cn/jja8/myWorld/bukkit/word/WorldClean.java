@@ -38,7 +38,7 @@ public class WorldClean  implements Listener {
                 playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
                     boolean k = true;
-                    for (World value : playerWord.worldMap.values()) {
+                    for (World value : playerWord.worldLockMap.values()) {
                         if (value.getPlayers().size()>0){
                             k = false;
                             break;

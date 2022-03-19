@@ -17,11 +17,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class v1_16_R3 extends WorldDataAndLockSupport{
-    File allWordFile;
     public v1_16_R3(File allWordFile){
         super(allWordFile);
-        this.allWordFile = allWordFile;
-        allWordFile.mkdirs();
     }
 
     @Override
