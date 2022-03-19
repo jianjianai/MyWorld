@@ -30,6 +30,7 @@ public abstract class WorldDataAndLock implements WorldDataLock{
     @Override
     public void setCustomDataByte(String dataName, byte[] bytes) {
         File file = new File(getWorldDataFile(),dataName+".data");
+        file.getParentFile().mkdirs();
         try {
             file.createNewFile();
         } catch (IOException e) {

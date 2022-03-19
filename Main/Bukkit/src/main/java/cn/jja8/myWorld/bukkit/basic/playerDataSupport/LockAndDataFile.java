@@ -37,12 +37,12 @@ public abstract class LockAndDataFile implements PlayerDataLock{
     }
 
     /**
-     * 将玩家的数据保存到给定流中，可不用关闭流
+     * 将玩家的数据保存到给定流中，实现的类可不用关闭流
      * */
     public abstract void saveToOutputStream(OutputStream outputStream);
 
     /**
-     * 从给定流中加载玩家数据，可不用关闭流
+     * 从给定流中加载玩家数据，实现的类可不用关闭流
      * */
     public abstract void loadFromInputStream(InputStream inputStream);
 }

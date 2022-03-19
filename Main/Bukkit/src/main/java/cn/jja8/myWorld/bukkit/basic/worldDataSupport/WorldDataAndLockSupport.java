@@ -8,6 +8,7 @@ public abstract class WorldDataAndLockSupport implements WorldDataSupport{
     File allWorldFile;
     public WorldDataAndLockSupport(File allWorldFile) {
         this.allWorldFile = allWorldFile;
+        allWorldFile.mkdirs();
     }
 
     @Override
