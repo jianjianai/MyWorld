@@ -3,12 +3,9 @@ package cn.jja8.myWorld.bukkit.word;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldsData;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
-import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
-import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.Data.String.LocationToString;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -18,7 +15,6 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,13 +35,29 @@ public class PlayerWorlds {
     Worlds worlds;
 
     Map<String, WorldDataLock> worldLockMap = new HashMap<>();
-    Map<String,World> loadedWorldMap = new HashMap<>();
+    Map<String,World> typeWorldMap = new HashMap<>();
 
     public PlayerWorlds(PlayerWordManager playerWordManager, PlayerWordInform playerWordInform, String name,Worlds worlds) {
         this.playerWordManager = playerWordManager;
         this.playerWordInform = playerWordInform;
         this.name = name;
         this.worlds = worlds;
+    }
+
+    /**
+     * 卸载全部世界，并释放资源
+     * */
+    public void unLoad(boolean save){
+        for (WorldDataLock value : worldLockMap.values()) {
+            value.unloadWorld(save);
+            value.unlock();
+        }
+        worldLockMap=null;
+        typeWorldMap=null;
+        if (save) {
+            playerWordInform.save();
+        }
+        playerWordInform = null;
     }
 
     public String getName() {
@@ -55,7 +67,7 @@ public class PlayerWorlds {
         return playerWordInform;
     }
     public World getWorld(String type){
-        return loadedWorldMap.get(type);
+        return typeWorldMap.get(type);
     }
     public World getWorld(PlayerWorldTypeAtName type) {
         return getWorld(type.toString());
@@ -71,7 +83,7 @@ public class PlayerWorlds {
         }
         loadingProgress.finish();
         worldLockMap.put(type,world);
-        loadedWorldMap.put(type,world1);
+        typeWorldMap.put(type,world1);
         playerWordManager.wordMap.put(world1,this);
         return world1;
     }
@@ -124,7 +136,7 @@ public class PlayerWorlds {
     public void playerBackSpawn(Player player){
         World world = getWorld(PlayerWorldTypeAtName.world);
         if (world==null){
-            for (World s : loadedWorldMap.values()) {
+            for (World s : typeWorldMap.values()) {
                 world = s;
                 break;
             }
