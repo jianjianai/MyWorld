@@ -4,18 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="完成一点世界锁实现">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="完成了世界加载的实现">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/LockAndDataFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/LockAndDataFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataAndLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataAndLock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataAndLockSupport.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/WorldDataAndLockSupport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/v1_16_R3.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/worldDataSupport/v1_16_R3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWordInform.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWordInform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWordManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWordManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorldPortal.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorldPortal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorldTypeAtName.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorldTypeAtName.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorlds.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorlds.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/WorldClean.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/WorldClean.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +55,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -224,8 +218,7 @@
       <workItem from="1647440138645" duration="4380000" />
       <workItem from="1647521832936" duration="630000" />
       <workItem from="1647522536805" duration="2976000" />
-      <workItem from="1647598009719" duration="1042000" />
-      <workItem from="1647663342738" duration="4893000" />
+      <workItem from="1647598009719" duration="64000" />
     </task>
     <task id="LOCAL-00001" summary="没有改什么">
       <created>1647080218597</created>
@@ -304,14 +297,7 @@
       <option name="project" value="LOCAL" />
       <updated>1647522602632</updated>
     </task>
-    <task id="LOCAL-00012" summary="完成一点世界锁实现">
-      <created>1647599057255</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1647599057255</updated>
-    </task>
-    <option name="localTasksCounter" value="13" />
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -333,7 +319,6 @@
     <MESSAGE value="修复旧世界迁移问题" />
     <MESSAGE value="对数据库进行了重新设计" />
     <MESSAGE value="对大量接口重新设计" />
-    <MESSAGE value="完成一点世界锁实现" />
-    <option name="LAST_COMMIT_MESSAGE" value="完成一点世界锁实现" />
+    <option name="LAST_COMMIT_MESSAGE" value="对大量接口重新设计" />
   </component>
 </project>

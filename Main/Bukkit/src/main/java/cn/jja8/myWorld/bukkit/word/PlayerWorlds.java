@@ -1,11 +1,15 @@
 package cn.jja8.myWorld.bukkit.word;
 
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldsData;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
+import cn.jja8.patronSaint_2022_3_2_1244.bukkit.Data.String.LocationToString;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -29,15 +33,19 @@ public class PlayerWorlds {
 
     WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
 
+    PlayerWordManager playerWordManager;
     PlayerWordInform playerWordInform;
     String name;
+    Worlds worlds;
 
     Map<String, WorldDataLock> worldLockMap = new HashMap<>();
     Map<String,World> loadedWorldMap = new HashMap<>();
 
-    public PlayerWorlds(PlayerWordInform playerWordInform, String name) {
+    public PlayerWorlds(PlayerWordManager playerWordManager, PlayerWordInform playerWordInform, String name,Worlds worlds) {
+        this.playerWordManager = playerWordManager;
         this.playerWordInform = playerWordInform;
         this.name = name;
+        this.worlds = worlds;
     }
 
     public String getName() {
@@ -47,45 +55,50 @@ public class PlayerWorlds {
         return playerWordInform;
     }
     public World getWorld(String type){
-        重新写
+        return loadedWorldMap.get(type);
     }
     public World getWorld(PlayerWorldTypeAtName type) {
-        重新写
+        return getWorld(type.toString());
     }
-    public void putWorld(String type, WorldDataLock world, WorldCreator worldCreator){
-        Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-           World world1 = world.loadWorldAsync(worldCreator,new LoadingProgress(type));
-           worldLockMap.put(type,world);
-           loadedWorldMap.put(type,world1);
-        });
-    }
-    public void putWorld(PlayerWorldTypeAtName type,WorldDataLock world){
-        byte[] bytes = world.getCustomDataByte("worldCreator");
-        WorldCreator worldCreator = null;
-        if (bytes!=null) {
-            try {
-                worldCreator = YamlConfig.loadFromString(new String(bytes, StandardCharsets.UTF_8),WorldConfig.WorldBuilder.class).getWordBuilder(type.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    /**
+     * 不允许在主线程调用，会柱塞线程
+     * */
+    public World putWorld(String type, WorldDataLock world, WorldCreator worldCreator){
+        World world1;
+        LoadingProgress loadingProgress =  new LoadingProgress(type);
+        synchronized (PlayerWorlds.class){
+             world1 = world.loadWorldAsync(worldCreator,loadingProgress);
         }
-        if (worldCreator==null) {
-            switch (type){
-                case world:worldCreator=worldConfig.主世界生成器.getWordBuilder(type.toString());break;
-                case end:worldCreator=worldConfig.末地界生成器.getWordBuilder(type.toString());break;
-                case infernal:worldCreator=worldConfig.地狱界生成器.getWordBuilder(type.toString());break;
-            }
-        }
-        putWorld(type.toString(),world,worldCreator);
+        loadingProgress.finish();
+        worldLockMap.put(type,world);
+        loadedWorldMap.put(type,world1);
+        playerWordManager.wordMap.put(world1,this);
+        return world1;
     }
-    public void setPlayerLocation(Player player, Location location) {
-        重新写
+    /**
+     * 不允许在主线程调用，会柱塞线程
+     * */
+    public World putWorld(PlayerWorldTypeAtName type,WorldDataLock world, WorldCreator worldCreator){
+        return putWorld(type.toString(),world,worldCreator);
+    }
+    public void setPlayerLeaveLocation(Player player, Location location) {
+        String dataName = "location/"+player.getUniqueId();
+        WorldsData worldsData = worlds.getWorldsData(dataName);
+        if (worldsData==null){
+            worldsData = worlds.newWorldsData(dataName);
+        }
+        worldsData.setData(LocationToString.totring(location).getBytes(StandardCharsets.UTF_8));
     }
     /**
      * @return null 没有这个玩家的位置
      * */
     public Location getPlayerLocation(Player player) {
-        重新写
+        String dataName = "location/"+player.getUniqueId();
+        WorldsData worldsData = worlds.getWorldsData(dataName);
+        if (worldsData==null){
+            return null;
+        }
+        return LocationToString.load(new String(worldsData.getData(),StandardCharsets.UTF_8));
     }
 
     /**
@@ -111,7 +124,7 @@ public class PlayerWorlds {
     public void playerBackSpawn(Player player){
         World world = getWorld(PlayerWorldTypeAtName.world);
         if (world==null){
-            for (World s : worldLockMap.values()) {
+            for (World s : loadedWorldMap.values()) {
                 world = s;
                 break;
             }

@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldsData;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.StringReader;
@@ -13,10 +13,10 @@ import java.util.List;
  */
 public class PlayerWordInform {
     private final List<String> BeTrustList;
-    private final WorldDataLock worldDataLock;
-    public PlayerWordInform(WorldDataLock worldDataLock) {
-        this.worldDataLock = worldDataLock;
-        byte[] bytes = worldDataLock.getCustomDataByte("PlayerWordInform");
+    private final WorldsData worldsData;
+    public PlayerWordInform(WorldsData worldsData) {
+        this.worldsData = worldsData;
+        byte[] bytes = worldsData.getData();
         if (bytes==null){
             BeTrustList = new ArrayList<>();
             return;
@@ -29,7 +29,7 @@ public class PlayerWordInform {
     public void save() {
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
         yamlConfiguration.set("trustList", BeTrustList);
-        worldDataLock.setCustomDataByte("PlayerWordInform",yamlConfiguration.saveToString().getBytes(StandardCharsets.UTF_8));
+        worldsData.setData(yamlConfiguration.saveToString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
