@@ -2,8 +2,6 @@ package cn.jja8.myWorld.bungeecord.basic;
 
 
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
-import cn.jja8.myWorld.bungeecord.basic.worldDataSupport.FileWorldAndLock;
-import cn.jja8.myWorld.bungeecord.basic.worldDataSupport.WorldDataSupport;
 
 import java.io.File;
 

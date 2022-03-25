@@ -5,11 +5,13 @@ package cn.jja8.myWorld.bungeecord.basic.worldDataSupport;
  * */
 public interface WorldDataSupport {
     /**
-     * 获取某世界的锁
+     * 获取上锁服务器的名称
+     * @return null 没有被锁
      * */
-    WorldDataLock getWorldDataLock(String WorldName);
+    String gitLockServerName(String worldName);
+
     /**
      * 返回这个世界是否存在
      * */
-    boolean isWorldExistence(String name);
+    boolean isWorldExistence(String worldName);
 }

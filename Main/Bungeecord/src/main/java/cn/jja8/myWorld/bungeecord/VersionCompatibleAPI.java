@@ -4,7 +4,6 @@ package cn.jja8.myWorld.bungeecord;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.DatasheetManager;
 import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
-import cn.jja8.myWorld.bungeecord.basic.worldDataSupport.WorldDataSupport;
 
 /**
  * 版本兼容的api，用于使插件兼容更多游戏版本。

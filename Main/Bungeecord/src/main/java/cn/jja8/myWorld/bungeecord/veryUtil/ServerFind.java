@@ -3,7 +3,6 @@ package cn.jja8.myWorld.bungeecord.veryUtil;
 import cn.jja8.myWorld.all.veryUtil.PingServer;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
-import cn.jja8.myWorld.bungeecord.basic.worldDataSupport.WorldDataLock;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import net.md_5.bungee.api.config.ServerInfo;
