@@ -32,13 +32,13 @@ public class WorldClean  implements Listener {
                 过期空世界 = 空世界;
                 空世界 = new ArrayList<>();
                 //扫描空世界
-                List<PlayerWorlds> playerWorldsList = new ArrayList<>(MyWorldBukkit.getPlayerWordMangaer().nameMap.values());
+                List<PlayerWorlds> playerWorldsList = new ArrayList<>(MyWorldBukkit.getPlayerWordMangaer().getWorlds());
                 playerWorldsList.removeAll(空世界);
                 playerWorldsList.removeAll(过期空世界);
                 playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
                     boolean k = true;
-                    for (World value : playerWord.worldLockMap.values()) {
+                    for (World value : playerWord.typeWorldMap.values()) {
                         if (value.getPlayers().size()>0){
                             k = false;
                             break;
@@ -56,7 +56,7 @@ public class WorldClean  implements Listener {
             public void run() {
                 if (cleaningWorlds.size()>0){
                     PlayerWorlds playerWorlds = cleaningWorlds.remove(0);
-                    MyWorldBukkit.getPlayerWordMangaer().unloadPlayerWorlds(playerWorlds,true);
+                    playerWorlds.unLoad(true);
                 }
             }
         }.runTaskTimer(MyWorldBukkit.getMyWorldBukkit(), worldConfig.卸载空世界间隔时间*20, worldConfig.卸载空世界间隔时间*20);

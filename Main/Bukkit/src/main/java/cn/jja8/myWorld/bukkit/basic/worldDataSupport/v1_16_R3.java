@@ -28,7 +28,8 @@ public class v1_16_R3 extends WorldDataAndLockSupport{
 
     @Override
     public boolean isWorldExistence(String worldName) {
-        return false;
+        File folder = new File(super.allWorldFile, worldName);
+        return folder.exists();
     }
 
     public static class WorldDataAndLock extends cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataAndLock {

@@ -3,31 +3,21 @@ package cn.jja8.myWorld.bukkit.word;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
-import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
 import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * 用于管理每个世界
@@ -212,16 +202,50 @@ public class PlayerWordManager implements Listener {
      * 关闭世界管理器
      */
     public void close() {
-        new HashMap<>(nameMap).forEach((s, playerWord) -> unloadPlayerWorlds(playerWord,true));
-        nameMap = new HashMap<>();
+        ArrayList<PlayerWorlds> arrayList = new ArrayList(worldsMap.values());
+        for (PlayerWorlds playerWorlds : arrayList) {
+            playerWorlds.unLoad(true);
+        }
         wordMap = new HashMap<>();
+        worldsMap = new HashMap<>();
     }
 
     /**
      * 删除世界
      */
-    public void delPlayerWorlds(Worlds worlds) {
-        重新写
+    public void delPlayerWorlds(Worlds worlds) throws NoWorldLocks {
+        PlayerWorlds po = worldsMap.get(worlds);
+        if(po!=null){
+            po.unLoad(false);
+        }
+        List<String> worldNames = worlds.getWorldList();
+        List<String> worldNames1 = new ArrayList<>(worldNames);//用于删除掉没有被创建的世界
+        for (String worldName : worldNames) {
+            if (!WorldData.worldDataSupport.isWorldExistence(worldName)) {
+                worldNames1.remove(worldName);
+            }
+        }
+        List<WorldDataLock> worldDataLocks = new ArrayList<>();//获取所有存在世界的锁
+        for (String s : worldNames1) {
+            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(s,worldConfig.服务器名称);
+            if (worldDataLock!=null) {
+                worldDataLocks.add(worldDataLock);
+            }
+        }
+        //无法获取全部的锁就抛出异常
+        if (worldDataLocks.size()!=worldNames1.size()){
+            for (WorldDataLock worldDataLock : worldDataLocks) {
+                worldDataLock.unlock();
+            }
+            throw new NoWorldLocks("无法获取需要删除全部世界的锁");
+        }
+        //删除全部世界
+        for (WorldDataLock worldDataLock : worldDataLocks) {
+            worldDataLock.delWorld();
+            worldDataLock.unlock();
+        }
+        //删除世界库中的世界
+        worlds.delete();
     }
 
     @EventHandler
@@ -234,13 +258,13 @@ public class PlayerWordManager implements Listener {
         if (form==to){
             return;
         }
-        form.setPlayerLocation(event.getPlayer(),event.getFrom());
+        form.setPlayerLeaveLocation(event.getPlayer(),event.getFrom());
     }
     @EventHandler
     public void 玩家离开服务器(PlayerQuitEvent event){
         PlayerWorlds playerWorlds = getBeLoadPlayerWorlds(event.getPlayer().getWorld());
         if (playerWorlds!=null){
-            playerWorlds.setPlayerLocation(event.getPlayer(),event.getPlayer().getLocation());
+            playerWorlds.setPlayerLeaveLocation(event.getPlayer(),event.getPlayer().getLocation());
         }
     }
 }
