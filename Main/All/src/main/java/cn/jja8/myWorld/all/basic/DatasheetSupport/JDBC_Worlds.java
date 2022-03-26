@@ -73,6 +73,10 @@ public class JDBC_Worlds implements Worlds{
     @Override
     public void delete() {
         try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("update Team set WorldsUUID=null where WorldsUUID=?")){
+                preparedStatement.setString(1,worldsUUID.toString());
+                preparedStatement.executeUpdate();
+            }
             try (PreparedStatement preparedStatement = connection.prepareStatement("delete from Worlds where WorldsUUID=?")){
                 preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.executeUpdate();

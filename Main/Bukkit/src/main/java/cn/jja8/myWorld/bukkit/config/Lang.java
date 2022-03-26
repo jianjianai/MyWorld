@@ -4,6 +4,7 @@ package cn.jja8.myWorld.bukkit.config;
 import java.util.ArrayList;
 
 public class Lang {
+    public   String 世界卸载主世界配置错误 = "主世界不存在，只能将你踢出游戏。请联系管理员在WorldConfig中正确设置主世界。";
     public   String 添加信任_世界不存在 ="你所在的团队没有世界";
     public   String 取消信任_世界不存在 = "你所在的团队没有世界";
     public   String 信任列表_团队没有世界 = "你所在的团队没有世界";

@@ -6,15 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="修复因为没有重写hashCode和equals方法产生的错误">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_DatasheetManger.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_DatasheetManger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Team.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_TeamPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_TeamPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_WorldLock.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Worlds.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Worlds.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_WorldsData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_WorldsData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/WorldLock.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/Worlds.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/Worlds.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/LockAndDataFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/LockAndDataFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/config/Lang.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/config/Lang.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWordManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWordManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorlds.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/word/PlayerWorlds.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -342,7 +337,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648294782866</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="修复因为没有重写hashCode和equals方法产生的错误">
+      <created>1648297518568</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1648297518568</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
