@@ -1,5 +1,8 @@
 package cn.jja8.myWorld.all.veryUtil;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -44,9 +47,10 @@ public class PingServer {
         }
     }
     /**
-     * 发送数据包格式为：数据包长度 + 内容
+     * ping服务器并返回结果
+     * @return null 服务器没有正确返回结果
      * */
-    public static String connect(SocketAddress socketAddress) throws IOException {
+    public static PingR ping(SocketAddress socketAddress) throws IOException {
         try (Socket socket = new Socket()) {
             socket.setSoTimeout(9000);
             socket.connect(socketAddress, 9000);
@@ -79,8 +83,32 @@ public class PingServer {
                 int length = readVarInt(in);
                 byte[] data = new byte[length];
                 in.readFully(data);
-                return new String(data, StandardCharsets.UTF_8);
+
+                JSONObject jsonObject = JSON.parseObject(new String(data, StandardCharsets.UTF_8)).getJSONObject("players");
+                if (jsonObject.isEmpty()){
+                    return null;
+                }
+                int online = jsonObject.getIntValue("online");
+                int max = jsonObject.getIntValue("max");
+                return new PingR(online,max);
             }
+        }
+    }
+
+    public static class PingR{
+        int online;
+        int max;
+        public PingR(int online, int max) {
+            this.online = online;
+            this.max = max;
+        }
+
+        public int getOnline() {
+            return online;
+        }
+
+        public int getMax() {
+            return max;
         }
     }
 }

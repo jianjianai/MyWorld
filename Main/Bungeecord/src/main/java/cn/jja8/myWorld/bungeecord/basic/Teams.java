@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bungeecord.basic;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.old.JDBC_DatasheetManger;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.JDBC_DatasheetManger;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.DatasheetManager;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 

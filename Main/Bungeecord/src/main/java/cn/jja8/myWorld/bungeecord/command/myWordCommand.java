@@ -3,6 +3,7 @@ package cn.jja8.myWorld.bungeecord.command;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 import cn.jja8.myWorld.bungeecord.basic.Teams;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
@@ -67,7 +68,7 @@ public class myWordCommand{
             commandSender.sendMessage(new TextComponent(lang.创建世界_还没创建团队));
             return;
         }
-        if (team.getWorldName()!=null){
+        if (team.getWorlds()!=null){
             commandSender.sendMessage(new TextComponent(lang.创建世界_团队已经有世界了));
             return;
         }
@@ -75,11 +76,13 @@ public class myWordCommand{
             commandSender.sendMessage(new TextComponent(lang.创建世界_不是团长));
             return;
         }
-        if (WorldData.worldDataSupport.isWorldExistence(strings[0])){
+        Worlds words = Teams.datasheetManager.newWorlds(strings[0]);
+        if (words==null) {
             commandSender.sendMessage(new TextComponent(lang.创建世界_世界名称被他人占用));
             return;
         }
-        ServerInfo serverInfo = ServerFind.getWorldBeLoadServer(strings[0]);
+        team.setWorlds(words);
+        ServerInfo serverInfo = ServerFind.getWorldBeLoadServer(words);
         if (serverInfo==null){
             serverInfo = ServerFind.getLoadWorldServer();
         }
@@ -108,7 +111,7 @@ public class myWordCommand{
             proxiedPlayer.sendMessage(new TextComponent(lang.接受邀请_已经有团队.replaceAll("<团队>", 团队.getTeamName())));
             return;
         }
-        teamPlayer.SetTeam(邀请团队);
+        teamPlayer.setTeam(邀请团队);
         teamPlayer.setStatus(Status.player);
         proxiedPlayer.sendMessage(new TextComponent(lang.接受邀请_接受成功.replaceAll("<团队>", 邀请团队.getTeamName())));
     }
@@ -148,12 +151,12 @@ public class myWordCommand{
             commandSender.sendMessage(new TextComponent(lang.去出生点_还没创建团队));
             return;
         }
-        String worldName = team.getWorldName();
-        if (worldName==null){
+        Worlds worlds = team.getWorlds();
+        if (worlds==null){
             commandSender.sendMessage(new TextComponent(lang.去出生点_还没创建世界));
             return;
         }
-        ServerInfo serverInfo = ServerFind.getWorldBeLoadServer(worldName);
+        ServerInfo serverInfo = ServerFind.getWorldBeLoadServer(worlds);
         if (serverInfo==null){
             serverInfo = ServerFind.getLoadWorldServer();
         }
@@ -178,12 +181,12 @@ public class myWordCommand{
             commandSender.sendMessage(new TextComponent(lang.返回世界_还没创建团队));
             return;
         }
-        String worldName = team.getWorldName();
-        if (worldName==null){
+        Worlds worlds = team.getWorlds();
+        if (worlds==null){
             commandSender.sendMessage(new TextComponent(lang.返回世界_还没创建世界));
             return;
         }
-        ServerInfo serverInfo = ServerFind.getWorldBeLoadServer(worldName);
+        ServerInfo serverInfo = ServerFind.getWorldBeLoadServer(worlds);
         if (serverInfo==null){
             serverInfo = ServerFind.getLoadWorldServer();
         }

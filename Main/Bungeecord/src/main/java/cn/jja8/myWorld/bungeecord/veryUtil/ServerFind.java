@@ -1,10 +1,9 @@
 package cn.jja8.myWorld.bungeecord.veryUtil;
 
+import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
 import cn.jja8.myWorld.all.veryUtil.PingServer;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.io.IOException;
@@ -41,15 +40,14 @@ public class ServerFind {
                 return null;
             }
             try {
-                String s = PingServer.connect(minPlayerServer.getSocketAddress());
-                JSONObject jsonObject = JSON.parseObject(s).getJSONObject("players");
-                if (jsonObject.isEmpty()){
-                    MyWorldBungeecord.getMyWorldBungeecord().getLogger().warning("ping服务器"+minPlayerServer.getName()+"没有正常返回在线玩家数：\n"+s);
+                PingServer.PingR ret = PingServer.ping(minPlayerServer.getSocketAddress());
+                if (ret==null){
+                    MyWorldBungeecord.getMyWorldBungeecord().getLogger().warning("ping服务器"+minPlayerServer.getName()+"没有正常返回在线玩家数：\n"+minPlayerServer.getSocketAddress());
                     serverInfoList.remove(minPlayerServer);
                     continue;
                 }
-                int online = jsonObject.getIntValue("online");
-                int max = jsonObject.getIntValue("max");
+                int online = ret.getOnline();
+                int max = ret.getMax();
                 if (online+MyWorldBungeecord.getServerConfig().子服务器预留可加入玩家数>max){
                     serverInfoList.remove(minPlayerServer);
                     continue;
@@ -65,16 +63,17 @@ public class ServerFind {
      * 获得正在使用某个世界的服务器
      * @return null 这个世界没有被服务器使用
      * */
-    public static ServerInfo getWorldBeLoadServer(String worldName){
-        WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldName);
-        if (!worldDataLock.isLocked()){
-            return null;
+    public static ServerInfo getWorldBeLoadServer(Worlds worlds){
+        for (String s : worlds.getWorldList()) {
+            String servername = WorldData.worldDataSupport.gitLockServerName(s);
+            if (servername!=null){
+                ServerInfo serverInfo = MyWorldBungeecord.getMyWorldBungeecord().getProxy().getServerInfo(servername);
+                if (serverInfo==null){
+                    throw new Error(worlds.getWorldsName()+"世界被"+servername+"服务器上锁了，但是在群组中未找到"+servername+"服务器。（请检查子服务器的配置文件中名称是否和bc中相同。）");
+                }
+                return serverInfo;
+            }
         }
-        String name = worldDataLock.gitLockName();
-        ServerInfo serverInfo = MyWorldBungeecord.getMyWorldBungeecord().getProxy().getServerInfo(name);
-        if (serverInfo==null){
-            throw new Error(worldName+"世界被"+name+"服务器上锁了，但是在群组中未找到"+name+"服务器。（请检查子服务器的配置文件中名称是否和bc中相同。）");
-        }
-        return serverInfo;
+        return null;
     }
 }
