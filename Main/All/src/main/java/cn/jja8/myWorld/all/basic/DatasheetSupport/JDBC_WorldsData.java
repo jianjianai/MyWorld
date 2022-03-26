@@ -43,4 +43,18 @@ public class JDBC_WorldsData implements WorldsData{
             sqlException.printStackTrace();
         }
     }
+
+    @Override
+    public int hashCode() {
+        return (worldsUUID+dataName).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof JDBC_WorldsData) {
+            JDBC_WorldsData i = (JDBC_WorldsData)obj;
+            return worldsUUID.equals(i.worldsUUID)&&dataName.equals(i.worldsUUID);
+        }
+        return false;
+    }
 }

@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="完成了全部的修改，但是没有测试" />
+    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="修复因为没有重写hashCode和equals方法产生的错误">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_DatasheetManger.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_DatasheetManger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Team.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_TeamPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_TeamPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_WorldLock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Worlds.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_Worlds.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_WorldsData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/JDBC_WorldsData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/WorldLock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/Worlds.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/All/src/main/java/cn/jja8/myWorld/all/basic/DatasheetSupport/Worlds.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/LockAndDataFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Bukkit/src/main/java/cn/jja8/myWorld/bukkit/basic/playerDataSupport/LockAndDataFile.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,6 +75,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="jianjianai" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -106,7 +122,7 @@
       <recent name="cn.jja8.myWorld.bukkit.basic.worldDataSupport" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.MyWorld [clean]">
+  <component name="RunManager" selected="Gradle.MyWorld [jar]">
     <configuration name="lock (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="cn.jja8.test.lock" />
       <module name="MyWorld.Main.All.main" />
@@ -198,8 +214,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.MyWorld [clean]" />
         <item itemvalue="Gradle.MyWorld [jar]" />
+        <item itemvalue="Gradle.MyWorld [clean]" />
         <item itemvalue="Gradle.MyWorld [dependencies]" />
         <item itemvalue="应用程序.lock (1)" />
         <item itemvalue="应用程序.lock" />
@@ -319,7 +335,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648294329591</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="完成了全部的修改，但是没有测试">
+      <created>1648294782866</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1648294782866</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -341,7 +364,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="jianjianai_noTest" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
         <entry key="da5619e6-a0d9-42f5-b61c-4eb393771e29">
@@ -379,6 +414,7 @@
     <MESSAGE value="对大量接口重新设计" />
     <MESSAGE value="完成了世界加载" />
     <MESSAGE value="完成了全部的修改，但是没有测试" />
-    <option name="LAST_COMMIT_MESSAGE" value="完成了全部的修改，但是没有测试" />
+    <MESSAGE value="修复因为没有重写hashCode和equals方法产生的错误" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复因为没有重写hashCode和equals方法产生的错误" />
   </component>
 </project>

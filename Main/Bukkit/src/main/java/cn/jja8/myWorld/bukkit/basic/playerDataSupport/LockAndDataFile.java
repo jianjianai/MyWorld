@@ -20,6 +20,11 @@ public abstract class LockAndDataFile implements PlayerDataLock{
 
     @Override
     public void saveData() {
+        try {
+            playerDataFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try (FileOutputStream fileOutputStream = new FileOutputStream(playerDataFile)){
             saveToOutputStream(fileOutputStream);
         } catch (IOException e) {
@@ -29,10 +34,12 @@ public abstract class LockAndDataFile implements PlayerDataLock{
     }
     @Override
     public void loadData() {
-        try (FileInputStream inputStream = new FileInputStream(playerDataFile)){
-            loadFromInputStream(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (playerDataFile.exists()){
+            try (FileInputStream inputStream = new FileInputStream(playerDataFile)){
+                loadFromInputStream(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
