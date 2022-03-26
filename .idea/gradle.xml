@@ -12,11 +12,11 @@
             <option value="$PROJECT_DIR$/Main" />
             <option value="$PROJECT_DIR$/Main/All" />
             <option value="$PROJECT_DIR$/Main/Bukkit" />
+            <option value="$PROJECT_DIR$/Main/Bukkit/Version" />
+            <option value="$PROJECT_DIR$/Main/Bukkit/Version/v1_12_R1" />
+            <option value="$PROJECT_DIR$/Main/Bukkit/Version/v1_17_R1" />
+            <option value="$PROJECT_DIR$/Main/Bukkit/Version/v1_18_R2" />
             <option value="$PROJECT_DIR$/Main/Bungeecord" />
-            <option value="$PROJECT_DIR$/Version" />
-            <option value="$PROJECT_DIR$/Version/v1_12_R1" />
-            <option value="$PROJECT_DIR$/Version/v1_17_R1" />
-            <option value="$PROJECT_DIR$/Version/v1_18_R2" />
           </set>
         </option>
       </GradleProjectSettings>

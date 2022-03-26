@@ -4,6 +4,11 @@ package cn.jja8.myWorld.bukkit.config;
 import java.util.ArrayList;
 
 public class Lang {
+    public   String 添加信任_世界不存在 ="你所在的团队没有世界";
+    public   String 取消信任_世界不存在 = "你所在的团队没有世界";
+    public   String 信任列表_团队没有世界 = "你所在的团队没有世界";
+    public   String 删除世界_世界被其他服务器加载 = "世界被其他服务器加载";
+    public   String 删除世界_世界不存在 = "团队没有世界";
     public   String 世界加载完成提示文本 = "完成";
     public   String 世界加载提示文本 = "服务器可能卡顿几秒钟，正在加载世界<世界>..<数>";
     public   String 查询信息_还没有团队 = "你现在还没有加入团队";
@@ -12,7 +17,6 @@ public class Lang {
     public   String 返回世界_没有团队 = "你还没有加入团队。";
     public   String 返回世界_传送成功 = "已回到上次的位置。";
     public   String 删除团队_没有删除世界 = "在删除团队之前，请先删除世界。";
-    public   String 世界卸载_找不到主世界 = "您所在的世界已被卸载，找不到主世界<世界>，只能将您踢出游戏。如果您是服主，可以在配置文件中修改主世界名称。";
     public   String 世界交互_无权限 = "你没有<世界>的交互权限";
     public   String 创建世界_名称禁止使用 = "<世界>名称被禁止使用";
     public   String 创建世界_世界已经存在 = "<世界>世界已经存在服务器中了，请换一个名称。";
@@ -20,7 +24,6 @@ public class Lang {
     public   String 删除世界_删除确认 = "请添加一条参数”yes“来确认你确认要删除世界。";
     public   String 删除世界_玩家没有团队 = "你没有团队";
     public   String 删除世界_不是团长 = "只有团长才可以删除。";
-    public   String 删除世界_世界未加载 = "世界没有加载时无法删除，请先进入你所在团队的世界。";
     public   String 玩家数据加载_完成 = "欢迎！";
     public   String 玩家数据加载_等待信息 = "正在加载你的数据，请稍等..<数>";
     public   String 去出生点_世界被其他服务器加载 = "世界已经被其他服务器加载，（这个信息如果bc服务器配置正常是不会出现的）";
@@ -84,6 +87,8 @@ public class Lang {
     public String goTo_世界没有加载="<世界>世界没有被加载。";
     public String goTo_传送成功="传送成功";
     public String loadWorld_世界名不合法 = "世界名不合法";
+    public String goTo_世界不存在="<世界>世界不存在。";
+    public String nuLoadWorld_世界不存在="<世界>世界不存在。";
 
     public Lang(){
         查询信息_长信息列表.add("你所在的团队是：<团队>");

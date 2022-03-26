@@ -12,11 +12,11 @@ findProject(':Main:Bukkit')?.name = 'Bukkit'
 include 'Main:Bukkit'
 findProject(':Main:Bukkit')?.name = 'Bukkit'
 
-include 'Version:v1_17_R1'
-findProject(':Version:v1_17_R1')?.name = 'v1_17_R1'
+include 'Main:Bukkit:Version:v1_17_R1'
+findProject(':Main:Bukkit:Version:v1_17_R1')?.name = 'v1_17_R1'
 
-include 'Version:v1_18_R2'
-findProject(':Version:v1_18_R2')?.name = 'v1_18_R2'
+include 'Main:Bukkit:Version:v1_18_R2'
+findProject(':Main:Bukkit:Version:v1_18_R2')?.name = 'v1_18_R2'
 
-include 'Version:v1_12_R1'
-findProject(':Version:v1_12_R1')?.name = 'v1_12_R1'
+include 'Main:Bukkit:Version:v1_12_R1'
+findProject(':Main:Bukkit:Version:v1_12_R1')?.name = 'v1_12_R1'
