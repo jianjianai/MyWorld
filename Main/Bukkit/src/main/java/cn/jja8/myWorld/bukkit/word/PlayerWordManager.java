@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldsData;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
@@ -46,7 +47,11 @@ public class PlayerWordManager implements Listener {
             }
 
             String worldsName = worlds.getWorldsName();
-            PlayerWordInform playerWordInform = new PlayerWordInform(worlds.getWorldsData("playerWordInform"));
+            WorldsData worldsData = worlds.getWorldsData("playerWordInform");
+            if (worldsData==null){
+                worldsData = worlds.newWorldsData("playerWordInform");
+            }
+            PlayerWordInform playerWordInform = new PlayerWordInform(worldsData);
             PlayerWorlds playerWorlds = new PlayerWorlds(this,playerWordInform,worldsName,worlds);
 
             List<String> worldList = worlds.getWorldList();
@@ -76,6 +81,7 @@ public class PlayerWordManager implements Listener {
                 byte[] bytes = worldDataLock.getCustomDataByte("WorldType");
                 if (bytes==null){
                     worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.unknown.toString());
+                    continue;
                 }
                 worldTypeMap.put(worldDataLock,new String(bytes,StandardCharsets.UTF_8));
             }
@@ -86,6 +92,7 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
+                        worldDataLock.setCustomDataByte("WorldType",PlayerWorldTypeAtName.world.toString().getBytes(StandardCharsets.UTF_8));
                         worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.world.toString());
                         worldDataLockNameMap.put(worldDataLock,worldname);
                         worlds.putWorld(worldname);
@@ -99,6 +106,7 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
+                        worldDataLock.setCustomDataByte("WorldType",PlayerWorldTypeAtName.infernal.toString().getBytes(StandardCharsets.UTF_8));
                         worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.infernal.toString());
                         worldDataLockNameMap.put(worldDataLock,worldname);
                         worlds.putWorld(worldname);
@@ -112,6 +120,7 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
+                        worldDataLock.setCustomDataByte("WorldType",PlayerWorldTypeAtName.end.toString().getBytes(StandardCharsets.UTF_8));
                         worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.end.toString());
                         worldDataLockNameMap.put(worldDataLock,worldname);
                         worlds.putWorld(worldname);

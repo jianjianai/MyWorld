@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 
@@ -28,13 +29,14 @@ import java.util.function.Consumer;
 public class PlayerWorlds {
 
     WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
+    Lang lang = ConfigBukkit.getLang();
 
     PlayerWordManager playerWordManager;
     PlayerWordInform playerWordInform;
     String name;
     Worlds worlds;
 
-    Map<String, WorldDataLock> worldLockMap = new HashMap<>();
+    Map<World, WorldDataLock> worldLockMap = new HashMap<>();
     Map<String,World> typeWorldMap = new HashMap<>();
 
     public PlayerWorlds(PlayerWordManager playerWordManager, PlayerWordInform playerWordInform, String name,Worlds worlds) {
@@ -48,10 +50,27 @@ public class PlayerWorlds {
      * 卸载全部世界，并释放资源
      * */
     public void unLoad(boolean save){
-        for (WorldDataLock value : worldLockMap.values()) {
-            value.unloadWorld(save);
-            value.unlock();
+        World mainWord = Bukkit.getWorld(worldConfig.主世界名称);
+        if (mainWord==null){
+            worldLockMap.forEach((world, worldDataLock) -> {
+                for (Player player : world.getPlayers()) {
+                    player.kickPlayer(lang.世界卸载主世界配置错误);
+                }
+                worldDataLock.unloadWorld(save);
+                worldDataLock.unlock();
+                playerWordManager.wordMap.remove(world);
+            });
+        }else {
+            worldLockMap.forEach((world, worldDataLock) -> {
+                for (Player player : world.getPlayers()) {
+                    player.teleport(mainWord.getSpawnLocation());
+                }
+                worldDataLock.unloadWorld(save);
+                worldDataLock.unlock();
+                playerWordManager.wordMap.remove(world);
+            });
         }
+        playerWordManager.worldsMap.remove(worlds);
         worldLockMap=null;
         typeWorldMap=null;
         if (save) {
@@ -77,12 +96,12 @@ public class PlayerWorlds {
      * */
     public World putWorld(String type, WorldDataLock world, WorldCreator worldCreator){
         World world1;
-        LoadingProgress loadingProgress =  new LoadingProgress(type);
+        LoadingProgress loadingProgress =  new LoadingProgress(worldCreator.name());
         synchronized (PlayerWorlds.class){
              world1 = world.loadWorldAsync(worldCreator,loadingProgress);
         }
         loadingProgress.finish();
-        worldLockMap.put(type,world);
+        worldLockMap.put(world1,world);
         typeWorldMap.put(type,world1);
         playerWordManager.wordMap.put(world1,this);
         return world1;
