@@ -140,4 +140,19 @@ public class JDBC_TeamPlayer implements TeamPlayer {
     public String toString() {
         return getName();
     }
+
+
+    @Override
+    public int hashCode() {
+        return PlayerUUID.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof JDBC_TeamPlayer) {
+            return PlayerUUID.equals(((JDBC_TeamPlayer)obj).PlayerUUID);
+        }
+        return false;
+
+    }
 }

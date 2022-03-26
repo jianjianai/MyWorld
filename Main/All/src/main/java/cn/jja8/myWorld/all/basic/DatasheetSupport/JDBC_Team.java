@@ -133,4 +133,17 @@ public class JDBC_Team implements Team {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return TeamUUID.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof JDBC_Team) {
+            return TeamUUID.equals(((JDBC_Team)obj).TeamUUID);
+        }
+        return false;
+
+    }
 }
