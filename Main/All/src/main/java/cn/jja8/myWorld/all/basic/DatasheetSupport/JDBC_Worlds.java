@@ -85,6 +85,10 @@ public class JDBC_Worlds implements Worlds{
                 preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.executeUpdate();
             }
+            try (PreparedStatement preparedStatement = connection.prepareStatement("delete from WorldsData where WorldsUUID=?")){
+                preparedStatement.setString(1,worldsUUID.toString());
+                preparedStatement.executeUpdate();
+            }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
