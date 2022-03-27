@@ -40,7 +40,6 @@ import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -210,7 +209,7 @@ public class v1_18_R2 extends WorldDataAndLockSupport{
                         int b = (11 * 2 + 1) * (11 * 2 + 1);
                         private int c;
                         boolean g = true;
-                        public void a(ChunkCoordIntPair var0, @Nullable ChunkStatus var1) {
+                        public void a(ChunkCoordIntPair var0,ChunkStatus var1) {
                             super.a(var0,var1);
                             if (var1 == ChunkStatus.o) {
                                 ++this.c;
