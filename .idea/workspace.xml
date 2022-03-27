@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="测试并且修正大量bug" />
+    <list default="true" id="2bc3a570-2d55-434f-8e88-837be8a12cc0" name="变更" comment="测试并且修复了大量bug">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,6 +81,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="项目" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -336,7 +339,21 @@
       <option name="project" value="LOCAL" />
       <updated>1648302480799</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="测试并且修复了大量bug">
+      <created>1648305782752</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1648305782752</updated>
+    </task>
+    <task id="LOCAL-00018" summary="测试并且修复了大量bug">
+      <created>1648305878039</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1648305878039</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -439,6 +456,7 @@
     <MESSAGE value="修复因为没有重写hashCode和equals方法产生的错误" />
     <MESSAGE value="squash! 修复1.17和1.18的bug" />
     <MESSAGE value="测试并且修正大量bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="测试并且修正大量bug" />
+    <MESSAGE value="测试并且修复了大量bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="测试并且修复了大量bug" />
   </component>
 </project>
