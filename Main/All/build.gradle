@@ -19,7 +19,7 @@ dependencies {
     compileOnly fileTree(dir:'libs/compileonly',includes:['*jar'])
 }
 
+
 test {
     useJUnitPlatform()
 }
-
