@@ -9,6 +9,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public interface WorldDataLock {
     /**
+     * 获取世界名称
+     * */
+    String getWorldName();
+    /**
      * 解锁，并且解锁释放资源
      * */
     void unlock();
