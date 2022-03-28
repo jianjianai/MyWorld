@@ -8,8 +8,10 @@ import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
+import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
+import cn.jja8.myWorld.bukkit.word.name.WorldCustomDataName;
+import cn.jja8.myWorld.bukkit.word.name.WorldsDataName;
 import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
-import com.esotericsoftware.yamlbeans.YamlException;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
@@ -20,7 +22,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 /**
  * 用于管理每个世界
@@ -48,63 +49,7 @@ public class PlayerWordManager implements Listener {
                 return po;
             }
 
-            String worldsName = worlds.getWorldsName();
-            WorldsData worldsData = worlds.getWorldsData("playerWordInform");
-            if (worldsData==null){
-                worldsData = worlds.newWorldsData("playerWordInform");
-            }
-            PlayerWordInform playerWordInform = new PlayerWordInform(worldsData);
-            List<String> worldList = worlds.getWorldList();
-            Map<WorldDataLock,String> worldDataLockNameMap = new HashMap<>();
-            //加载所有世界的锁
-            for (String s : worldList) {
-                WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(s,worldConfig.服务器名称);
-                if (worldDataLock!=null) {
-                    worldDataLockNameMap.put(worldDataLock,s);
-                }
-            }
-            //判断世界全部上锁
-            if (worldDataLockNameMap.size()<worldList.size()){
-                for (WorldDataLock worldDataLock : worldDataLockNameMap.keySet()) {
-                    worldDataLock.unlock();
-                }
-                return null;
-            }
-
-            //获取全部世界的类型
-            Map<WorldDataLock,String> worldTypeMap = new HashMap<>();//最后用于加载到PlayerWorlds的map
-            worldDataLockNameMap.forEach((worldDataLock, s) -> {
-                byte[] bytes = worldDataLock.getCustomDataByte("WorldType");
-                if (bytes==null){
-                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning(worldsName+"中"+s+"世界没有世界类型，将不会被加载。");
-                    worldDataLock.unlock();
-                    return;
-                }
-                worldTypeMap.put(worldDataLock,new String(bytes,StandardCharsets.UTF_8));
-            });
-
-            Map<World, WorldDataLock> worldLockMap = new HashMap<>();
-            Map<String,World> typeWorldMap = new HashMap<>();
-            //将全部世界加载到PlayerWorlds
-            worldTypeMap.forEach((worldDataLock, s) -> {
-                byte[] bytes = worldDataLock.getCustomDataByte("WorldCreator");
-                WorldConfig.WorldBuilder worldBuilder;
-                try {
-                    worldBuilder = YamlConfig.loadFromString(new String(bytes,StandardCharsets.UTF_8),WorldConfig.WorldBuilder.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    worldBuilder = worldConfig.主世界生成器;
-                }
-                World world1;
-                WorldCreator worldCreator = worldBuilder.getWordBuilder(worldDataLockNameMap.get(worldDataLock));
-                PlayerWorlds.LoadingProgress loadingProgress =  new PlayerWorlds.LoadingProgress(worldCreator.name());
-                synchronized (PlayerWorlds.class){
-                    world1 = worldDataLock.loadWorldAsync(worldCreator,loadingProgress);
-                }
-                loadingProgress.finish();
-                typeWorldMap.put(s,world1);
-                worldLockMap.put(world1,worldDataLock);
-            });
+            不急慢慢写
             PlayerWorlds playerWorlds = new PlayerWorlds(this,playerWordInform,worldsName,worlds,worldLockMap,typeWorldMap);
             worldsMap.put(worlds,playerWorlds);
 

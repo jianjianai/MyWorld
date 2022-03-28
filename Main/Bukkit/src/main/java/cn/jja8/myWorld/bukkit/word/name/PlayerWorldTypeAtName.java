@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.bukkit.word;
+package cn.jja8.myWorld.bukkit.word.name;
 
 public enum PlayerWorldTypeAtName {
     world,//主世界

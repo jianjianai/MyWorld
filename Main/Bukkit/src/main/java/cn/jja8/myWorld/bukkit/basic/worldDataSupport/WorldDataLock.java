@@ -24,14 +24,14 @@ public interface WorldDataLock {
     /**
      * 加载当前世界
      * */
-    World loadWorld(WorldCreator creator,LoadingProgress loadingProgress);
+    World loadWorld(LoadingProgress loadingProgress);
     /**
      * 异步加载世界,此方法可在异步调用,如果没有被实现，就会调用loadWorld(),并等待加载完成
      * */
-    default World loadWorldAsync(WorldCreator creator, LoadingProgress loadingProgress){
-        Bukkit.getLogger().warning("异步加载世界方式未被实现，将在主线程加载世界："+creator.name());
+    default World loadWorldAsync(LoadingProgress loadingProgress){
+        Bukkit.getLogger().warning("异步加载世界方式未被实现，将在主线程加载世界");
         AtomicReference<World> world = new AtomicReference<>();
-        Bukkit.getServer().getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> world.set(loadWorld(creator, loadingProgress)));
+        Bukkit.getServer().getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> world.set(loadWorld(loadingProgress)));
         while (world.get()==null){
             try {
                 Thread.sleep(20);

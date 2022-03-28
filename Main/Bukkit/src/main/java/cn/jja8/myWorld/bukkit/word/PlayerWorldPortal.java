@@ -2,6 +2,7 @@ package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Portal;
+import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

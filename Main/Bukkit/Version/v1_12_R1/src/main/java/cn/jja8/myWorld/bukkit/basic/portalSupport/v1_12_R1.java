@@ -2,7 +2,7 @@ package cn.jja8.myWorld.bukkit.basic.portalSupport;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
-import cn.jja8.myWorld.bukkit.word.PlayerWorldTypeAtName;
+import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;

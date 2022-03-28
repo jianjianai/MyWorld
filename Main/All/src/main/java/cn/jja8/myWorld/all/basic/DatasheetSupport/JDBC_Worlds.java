@@ -36,7 +36,7 @@ public class JDBC_Worlds implements Worlds{
     }
 
     @Override
-    public void putWorld(String worldName) {
+    public void addWorld(String worldName) {
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("insert into World(WorldsUUID,WorldName) values(?,?)")){
                 preparedStatement.setString(1, worldsUUID.toString());

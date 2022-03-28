@@ -21,7 +21,7 @@ public interface Worlds {
     /**
      * 给世界组添加一个世界
      * */
-    void putWorld(String worldName);
+    void addWorld(String worldName);
     /**
      * 获取世界组名称
      * */
@@ -50,4 +50,13 @@ public interface Worlds {
      * */
     WorldsData newWorldsData(String dataName);
 
+    /**
+     * 删除一个世界
+     * */
+    void removeWorld(String worldName);
+
+    /**
+     * 返回是否包含这个世界
+     * */
+    boolean containsWorld(String worldName);
 }
