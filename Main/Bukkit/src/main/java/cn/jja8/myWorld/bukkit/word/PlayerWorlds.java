@@ -16,10 +16,8 @@ import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 
@@ -36,14 +34,16 @@ public class PlayerWorlds {
     String name;
     Worlds worlds;
 
-    Map<World, WorldDataLock> worldLockMap = new HashMap<>();
-    Map<String,World> typeWorldMap = new HashMap<>();
+    Map<World, WorldDataLock> worldLockMap;
+    Map<String,World> typeWorldMap;
 
-    public PlayerWorlds(PlayerWordManager playerWordManager, PlayerWordInform playerWordInform, String name,Worlds worlds) {
+    public PlayerWorlds(PlayerWordManager playerWordManager, PlayerWordInform playerWordInform, String name,Worlds worlds,Map<World, WorldDataLock> worldLockMap,Map<String,World> typeWorldMap) {
         this.playerWordManager = playerWordManager;
         this.playerWordInform = playerWordInform;
         this.name = name;
         this.worlds = worlds;
+        this.worldLockMap = worldLockMap;
+        this.typeWorldMap = typeWorldMap;
     }
 
     /**
@@ -98,7 +98,7 @@ public class PlayerWorlds {
     /**
      * 不允许在主线程调用，会柱塞线程
      * */
-    public World putWorld(String type, WorldDataLock world, WorldCreator worldCreator){
+    public World putWorld(String type, WorldDataLock world, WorldConfig.WorldBuilder worldCreator){
         World world1;
         LoadingProgress loadingProgress =  new LoadingProgress(worldCreator.name());
         synchronized (PlayerWorlds.class){
@@ -113,7 +113,7 @@ public class PlayerWorlds {
     /**
      * 不允许在主线程调用，会柱塞线程
      * */
-    public World putWorld(PlayerWorldTypeAtName type,WorldDataLock world, WorldCreator worldCreator){
+    public World putWorld(PlayerWorldTypeAtName type,WorldDataLock world, WorldConfig.WorldBuilder worldCreator){
         return putWorld(type.toString(),world,worldCreator);
     }
     public void setPlayerLeaveLocation(Player player, Location location) {

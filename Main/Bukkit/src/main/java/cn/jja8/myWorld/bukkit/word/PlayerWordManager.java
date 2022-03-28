@@ -11,6 +11,7 @@ import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
 import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -53,13 +54,8 @@ public class PlayerWordManager implements Listener {
                 worldsData = worlds.newWorldsData("playerWordInform");
             }
             PlayerWordInform playerWordInform = new PlayerWordInform(worldsData);
-            PlayerWorlds playerWorlds = new PlayerWorlds(this,playerWordInform,worldsName,worlds);
-
             List<String> worldList = worlds.getWorldList();
-
             Map<WorldDataLock,String> worldDataLockNameMap = new HashMap<>();
-
-
             //加载所有世界的锁
             for (String s : worldList) {
                 WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(s,worldConfig.服务器名称);
@@ -87,85 +83,65 @@ public class PlayerWordManager implements Listener {
                 worldTypeMap.put(worldDataLock,new String(bytes,StandardCharsets.UTF_8));
             });
 
+            Map<World, WorldDataLock> worldLockMap = new HashMap<>();
+            Map<String,World> typeWorldMap = new HashMap<>();
+            //将全部世界加载到PlayerWorlds
+            worldTypeMap.forEach((worldDataLock, s) -> {
+                byte[] bytes = worldDataLock.getCustomDataByte("WorldCreator");
+                WorldConfig.WorldBuilder worldBuilder;
+                try {
+                    worldBuilder = YamlConfig.loadFromString(new String(bytes,StandardCharsets.UTF_8),WorldConfig.WorldBuilder.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    worldBuilder = worldConfig.主世界生成器;
+                }
+                World world1;
+                WorldCreator worldCreator = worldBuilder.getWordBuilder(worldDataLockNameMap.get(worldDataLock));
+                PlayerWorlds.LoadingProgress loadingProgress =  new PlayerWorlds.LoadingProgress(worldCreator.name());
+                synchronized (PlayerWorlds.class){
+                    world1 = worldDataLock.loadWorldAsync(worldCreator,loadingProgress);
+                }
+                loadingProgress.finish();
+                typeWorldMap.put(s,world1);
+                worldLockMap.put(world1,worldDataLock);
+            });
+            PlayerWorlds playerWorlds = new PlayerWorlds(this,playerWordInform,worldsName,worlds,worldLockMap,typeWorldMap);
+            worldsMap.put(worlds,playerWorlds);
+
             //判断主世界，地狱，末地是否存在，如果不存在就根据配置文件添加
             if (worldConfig.主世界生成器.启用){
-                if (!worldTypeMap.containsValue(PlayerWorldTypeAtName.world.toString())){
+                if (playerWorlds.getWorld(PlayerWorldTypeAtName.world)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
-                        worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.world.toString());
-                        worldDataLockNameMap.put(worldDataLock,worldname);
-                        worlds.putWorld(worldname);
+                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldDataLock,worldConfig.主世界生成器.getWordBuilder(worldname));
                     }else {
                         MyWorldBukkit.getMyWorldBukkit().getLogger().warning("新的世界"+worldname+"无法获得锁。可能是已经被其他服务器加载，或世界命名规则错乱导致。"+worldsName+"世界组将会没有主世界。");
                     }
                 }
             }
             if (worldConfig.地狱界生成器.启用){
-                if (!worldTypeMap.containsValue(PlayerWorldTypeAtName.infernal.toString())){
+                if (playerWorlds.getWorld(PlayerWorldTypeAtName.infernal)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
-                        worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.infernal.toString());
-                        worldDataLockNameMap.put(worldDataLock,worldname);
-                        worlds.putWorld(worldname);
+                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldDataLock,worldConfig.地狱界生成器.getWordBuilder(worldname));
                     }else {
                         MyWorldBukkit.getMyWorldBukkit().getLogger().warning("新的世界"+worldname+"无法获得锁。可能是已经被其他服务器加载，或世界命名规则错乱导致。"+worldsName+"世界组将会没有地狱世界。");
                     }
                 }
             }
             if (worldConfig.末地界生成器.启用){
-                if (!worldTypeMap.containsValue(PlayerWorldTypeAtName.end.toString())){
+                if (playerWorlds.getWorld(PlayerWorldTypeAtName.end)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
-                        worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.end.toString());
-                        worldDataLockNameMap.put(worldDataLock,worldname);
-                        worlds.putWorld(worldname);
+                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldDataLock,worldConfig.地狱界生成器.getWordBuilder(worldname));
                     }else {
                         MyWorldBukkit.getMyWorldBukkit().getLogger().warning("新的世界"+worldname+"无法获得锁。可能是已经被其他服务器加载，或世界命名规则错乱导致。"+worldsName+"世界组将会没有末地世界。");
                     }
                 }
             }
-
-            //将全部世界加载到PlayerWorlds
-            worldTypeMap.forEach((worldDataLock, s) -> {
-                byte[] bytes = worldDataLock.getCustomDataByte("WorldCreator");
-                WorldConfig.WorldBuilder worldBuilder = null;
-                if (bytes==null){
-                    PlayerWorldTypeAtName playerWorldTypeAtName;
-                    try {
-                        playerWorldTypeAtName = PlayerWorldTypeAtName.valueOf(s);
-                    }catch (IllegalArgumentException illegalArgumentException){
-                        playerWorldTypeAtName = null;
-                    }
-                    if (playerWorldTypeAtName==null){
-                        worldBuilder = worldConfig.主世界生成器;
-                    }else {
-                        switch (playerWorldTypeAtName){
-                            case world:
-                            case unknown:worldBuilder = worldConfig.主世界生成器;break;
-                            case infernal:worldBuilder = worldConfig.地狱界生成器;break;
-                            case end:worldBuilder = worldConfig.末地界生成器;break;
-                        }
-                    }
-                    try {
-                        worldDataLock.setCustomDataByte("WorldCreator",YamlConfig.saveToString(worldBuilder).getBytes(StandardCharsets.UTF_8));
-                    } catch (YamlException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (worldBuilder==null){
-                    try {
-                        worldBuilder = YamlConfig.loadFromString(new String(bytes,StandardCharsets.UTF_8),WorldConfig.WorldBuilder.class);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        worldBuilder = worldConfig.主世界生成器;
-                    }
-                }
-                playerWorlds.putWorld(s,worldDataLock,worldBuilder.getWordBuilder(worldDataLockNameMap.get(worldDataLock)));
-            });
-            worldsMap.put(worlds,playerWorlds);
             return playerWorlds;
         }
     }
