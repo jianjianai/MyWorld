@@ -52,20 +52,24 @@ public class PlayerWorlds {
     public void unLoad(boolean save){
         World mainWord = Bukkit.getWorld(worldConfig.主世界名称);
         if (mainWord==null){
-            worldLockMap.forEach((world, worldDataLock) -> {
+            typeWorldMap.forEach((worldType, world) -> {
                 for (Player player : world.getPlayers()) {
                     player.kickPlayer(lang.世界卸载主世界配置错误);
                 }
+                WorldDataLock worldDataLock = worldLockMap.get(world);
                 worldDataLock.unloadWorld(save);
+                worldDataLock.setCustomDataByte("WorldType",worldType.getBytes(StandardCharsets.UTF_8));
                 worldDataLock.unlock();
                 playerWordManager.wordMap.remove(world);
             });
         }else {
-            worldLockMap.forEach((world, worldDataLock) -> {
+            typeWorldMap.forEach((worldType, world) -> {
                 for (Player player : world.getPlayers()) {
                     player.teleport(mainWord.getSpawnLocation());
                 }
+                WorldDataLock worldDataLock = worldLockMap.get(world);
                 worldDataLock.unloadWorld(save);
+                worldDataLock.setCustomDataByte("WorldType",worldType.getBytes(StandardCharsets.UTF_8));
                 worldDataLock.unlock();
                 playerWordManager.wordMap.remove(world);
             });

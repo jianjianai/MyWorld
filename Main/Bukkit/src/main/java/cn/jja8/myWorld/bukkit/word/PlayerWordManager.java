@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * 用于管理每个世界
@@ -76,15 +77,15 @@ public class PlayerWordManager implements Listener {
 
             //获取全部世界的类型
             Map<WorldDataLock,String> worldTypeMap = new HashMap<>();//最后用于加载到PlayerWorlds的map
-
-            for (WorldDataLock worldDataLock : worldDataLockNameMap.keySet()) {
+            worldDataLockNameMap.forEach((worldDataLock, s) -> {
                 byte[] bytes = worldDataLock.getCustomDataByte("WorldType");
                 if (bytes==null){
-                    worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.unknown.toString());
-                    continue;
+                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning(worldsName+"中"+s+"世界没有世界类型，将不会被加载。");
+                    worldDataLock.unlock();
+                    return;
                 }
                 worldTypeMap.put(worldDataLock,new String(bytes,StandardCharsets.UTF_8));
-            }
+            });
 
             //判断主世界，地狱，末地是否存在，如果不存在就根据配置文件添加
             if (worldConfig.主世界生成器.启用){
@@ -92,7 +93,6 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
-                        worldDataLock.setCustomDataByte("WorldType",PlayerWorldTypeAtName.world.toString().getBytes(StandardCharsets.UTF_8));
                         worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.world.toString());
                         worldDataLockNameMap.put(worldDataLock,worldname);
                         worlds.putWorld(worldname);
@@ -106,7 +106,6 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
-                        worldDataLock.setCustomDataByte("WorldType",PlayerWorldTypeAtName.infernal.toString().getBytes(StandardCharsets.UTF_8));
                         worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.infernal.toString());
                         worldDataLockNameMap.put(worldDataLock,worldname);
                         worlds.putWorld(worldname);
@@ -120,7 +119,6 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
                     WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
                     if (worldDataLock!=null){
-                        worldDataLock.setCustomDataByte("WorldType",PlayerWorldTypeAtName.end.toString().getBytes(StandardCharsets.UTF_8));
                         worldTypeMap.put(worldDataLock,PlayerWorldTypeAtName.end.toString());
                         worldDataLockNameMap.put(worldDataLock,worldname);
                         worlds.putWorld(worldname);
