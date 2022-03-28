@@ -22,8 +22,8 @@ public class v1_12_R1 extends WorldDataAndLockSupport{
     }
 
     @Override
-    v1_16_R3.WorldDataAndLock getWorldDataAndLock(File worldFile, String worldName) {
-        return new v1_16_R3.WorldDataAndLock(worldFile,worldName);
+    WorldDataAndLock getWorldDataAndLock(File worldFile, String worldName) {
+        return new WorldDataAndLock(worldFile,worldName);
     }
 
     @Override

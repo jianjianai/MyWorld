@@ -14,8 +14,8 @@ public class v1_17_R1 extends LockAndDataFileSupport{
     }
 
     @Override
-    v1_16_R3.LockAndDataFile getLockAndDataFile(File playerDataFile, Player player) {
-        return new v1_16_R3.LockAndDataFile(playerDataFile,player);
+    LockAndDataFile getLockAndDataFile(File playerDataFile, Player player) {
+        return new LockAndDataFile(playerDataFile,player);
     }
 
     public static class LockAndDataFile extends cn.jja8.myWorld.bukkit.basic.playerDataSupport.LockAndDataFile {
