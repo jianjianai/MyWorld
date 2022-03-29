@@ -5,16 +5,6 @@ import java.util.UUID;
 
 public interface Worlds {
     /**
-     * 获取上锁服务器名称
-     * @return null 没被上锁
-     * */
-    String getLockServerName();
-    /**
-     * 强行释放某服务器的全部锁,请不要在正常情况下调用此方法。
-     * 仅用于bc检查到服务器不在线的情况下释放锁。
-     * */
-    void unAllLock(String lockServerName);
-    /**
      * 获取世界组里的全部世界
      * */
     List<String> getWorldList();

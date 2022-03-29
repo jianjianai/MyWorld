@@ -50,8 +50,8 @@ public class v1_18_R2 extends WorldDataAndLockSupport{
     }
 
     @Override
-    WorldDataAndLock getWorldDataAndLock(File worldFile, String worldName) {
-        return new WorldDataAndLock(worldFile,worldName);
+    WorldDataAndLock getWorldDataAndLock(File worldFile,WorldCreator creator) {
+        return new WorldDataAndLock(worldFile,creator);
     }
 
     @Override
@@ -63,13 +63,13 @@ public class v1_18_R2 extends WorldDataAndLockSupport{
     public static class WorldDataAndLock extends cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataAndLock {
         File worldFile;
         World world;
-        String worldName;
+        WorldCreator creator;
 
         DedicatedServer console;
         CraftServer craftServer;
         Map<String, World> worlds;
-        public WorldDataAndLock(File worldFile, String worldName) {
-            this.worldName = worldName;
+        public WorldDataAndLock(File worldFile,WorldCreator creator) {
+            this.creator = creator;
             this.worldFile = worldFile;
             worldFile.mkdirs();
 
@@ -92,7 +92,7 @@ public class v1_18_R2 extends WorldDataAndLockSupport{
         }
 
         @Override
-        public World loadWorld(WorldCreator creator, LoadingProgress loadingProgress) {
+        public World loadWorld(LoadingProgress loadingProgress) {
             if (world!=null) return world;
             world = load(creator,loadingProgress);
             return world;
@@ -101,6 +101,11 @@ public class v1_18_R2 extends WorldDataAndLockSupport{
         @Override
         public void delWorld() {
             delFolder(worldFile);
+        }
+
+        @Override
+        public WorldCreator getWorldCreator() {
+            return creator;
         }
 
         /**

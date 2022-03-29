@@ -150,33 +150,36 @@ public class JDBC_Worlds implements Worlds{
     }
 
     @Override
-    public String getLockServerName() {
+    public void removeWorld(String worldName) {
         try (Connection connection = datasheetManger.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("select LockServerName from Worlds where WorldsUUID=?")){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("delete from World where WorldsUUID=? and WorldName=?")){
                 preparedStatement.setString(1,worldsUUID.toString());
+                preparedStatement.setString(2,worldName);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean containsWorld(String worldName) {
+        try (Connection connection = datasheetManger.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID from World where WorldsUUID=? and WorldName=?")){
+                preparedStatement.setString(1,worldsUUID.toString());
+                preparedStatement.setString(2,worldName);
                 try (ResultSet resultSet = preparedStatement.executeQuery();){
                     if (resultSet.next()){
-                        return resultSet.getString(1);
+                        return true;
                     }
                 }
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-        return null;
+        return false;
     }
 
-    @Override
-    public void unAllLock(String lockServerName) {
-        try (Connection connection = datasheetManger.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement("update Worlds set LockServerName=? where LockServerName=?")){
-                preparedStatement.setString(1,null);
-                preparedStatement.setString(2,lockServerName);
-            }
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-    }
 
     @Override
     public int hashCode() {

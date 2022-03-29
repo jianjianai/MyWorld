@@ -9,10 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public interface WorldDataLock {
     /**
-     * 获取世界名称
-     * */
-    String getWorldName();
-    /**
      * 解锁，并且解锁释放资源
      * */
     void unlock();
@@ -21,6 +17,10 @@ public interface WorldDataLock {
      * @param save 是否保存这个世界的数据。true是，false否。
      * */
     void unloadWorld(boolean save);
+    /**
+     * 获取世界生成器
+     * */
+    WorldCreator getWorldCreator();
     /**
      * 加载当前世界
      * */
