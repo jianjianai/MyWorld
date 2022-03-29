@@ -7,6 +7,7 @@ import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.Permission;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
+import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandManger;
 import org.bukkit.Bukkit;
@@ -85,7 +86,12 @@ public class AdminCommand {
             return;
         }
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+            try {
+                MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+            } catch (NoAllWorldLocks e) {
+                commandSender.sendMessage(lang.loadWorld_世界被其他服务器加载);
+                return;
+            }
             commandSender.sendMessage(lang.loadWorld_加载完成);
         });
     }

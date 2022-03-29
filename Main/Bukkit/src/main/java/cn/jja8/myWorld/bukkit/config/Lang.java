@@ -90,6 +90,7 @@ public class Lang {
     public String loadWorld_世界名不合法 = "世界名不合法";
     public String goTo_世界不存在="<世界>世界不存在。";
     public String nuLoadWorld_世界不存在="<世界>世界不存在。";
+    public String loadWorld_世界被其他服务器加载 = "被其他服务器加载";
 
     public Lang(){
         查询信息_长信息列表.add("你所在的团队是：<团队>");

@@ -1,10 +1,15 @@
 package cn.jja8.myWorld.bukkit.config;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
+import com.esotericsoftware.yamlbeans.YamlException;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.generator.ChunkGenerator;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class WorldBuilder {
     public boolean 启用 = true;
@@ -29,11 +34,11 @@ public class WorldBuilder {
         return 世界生成器;
     }
 
-    public byte[] saveToByte() {
-        不急慢慢写
+    public byte[] saveToByte() throws YamlException {
+        return YamlConfig.saveToString(this).getBytes(StandardCharsets.UTF_8);
     }
 
-    public static WorldBuilder loadAsByte( byte[] bytes){
-        不急慢慢写
+    public static WorldBuilder loadAsByte(byte[] bytes) throws IOException {
+        return YamlConfig.loadFromString(new String(bytes,StandardCharsets.UTF_8),WorldBuilder.class);
     }
 }

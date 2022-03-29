@@ -9,11 +9,15 @@ import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.WorldBuilder;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import cn.jja8.myWorld.bukkit.word.error.ExistsType;
+import cn.jja8.myWorld.bukkit.word.error.ExistsWorld;
 import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
+import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
 import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
 import cn.jja8.myWorld.bukkit.word.name.WorldCustomDataName;
 import cn.jja8.myWorld.bukkit.word.name.WorldsDataName;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.Data.String.LocationToString;
+import com.esotericsoftware.yamlbeans.YamlException;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -22,12 +26,12 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 
@@ -73,7 +77,11 @@ public class PlayerWorlds {
                 WorldBuilder worldBuilder = null;
                 byte[] bytes = worldDataLock.getCustomDataByte(WorldCustomDataName.WorldCreator.toString());
                 if (bytes!=null){
-                    worldBuilder = WorldBuilder.loadAsByte(bytes);
+                    try {
+                        worldBuilder = WorldBuilder.loadAsByte(bytes);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if (worldBuilder==null){
                     worldBuilder = worldConfig.主世界生成器;
@@ -103,7 +111,9 @@ public class PlayerWorlds {
             loadingProgress.finish();
             typeWorldMap.put(worldType,world);
             worldLockMap.put(world,worldDataLock);
+            playerWordManager.wordMap.put(world,this);
         });
+        playerWordManager.worldsMap.put(worlds,this);
     }
 
     /**
@@ -158,22 +168,31 @@ public class PlayerWorlds {
     /**
      * 不允许在主线程调用，会柱塞线程。需要确保worldCreator的名称不和任何世界重名。type同一个世界组中不允许重名。
      * */
-    public World putWorld(String type, WorldBuilder worldBuilder, String WorldName){
+    public World putWorld(String type, WorldBuilder worldBuilder, String WorldName) throws ExistsWorld, NoWorldLocks, ExistsType {
         if (WorldData.worldDataSupport.isWorldExistence(WorldName)){
-            throw new Error("世界已经被创建");
+            throw new ExistsWorld("世界已经被创建");
         }
         WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldBuilder.getWordBuilder(WorldName),worldConfig.服务器名称);
         if (worldDataLock==null){
-            throw new Error("无法获得锁");
+            throw new NoWorldLocks("无法获得锁");
         }
         World world1;
         LoadingProgress loadingProgress =  new LoadingProgress(WorldName);
         synchronized (PlayerWorlds.class){
             if (typeWorldMap.containsKey(type)){
+                worldDataLock.unlock();
                 loadingProgress.finish();
-                throw new Error("type已经存在");
+                throw new ExistsType("type已经存在");
             }
-            worldDataLock.setCustomDataByte(WorldCustomDataName.WorldCreator.toString(),worldBuilder.saveToByte());
+            byte[] data = new byte[0];
+            try {
+                data = worldBuilder.saveToByte();
+            } catch (YamlException e) {
+                e.printStackTrace();
+            }
+            if (data!=null){
+                worldDataLock.setCustomDataByte(WorldCustomDataName.WorldCreator.toString(),data);
+            }
             if (!worlds.containsWorld(WorldName)){
                 worlds.addWorld(WorldName);
             }
@@ -188,14 +207,29 @@ public class PlayerWorlds {
     /**
      * 不允许在主线程调用，会柱塞线程。需要确保worldCreator的名称不和任何世界重名。type同一个世界组中不允许重名。
      * */
-    public World putWorld(PlayerWorldTypeAtName type, WorldBuilder worldBuilder, String WorldName){
+    public World putWorld(PlayerWorldTypeAtName type, WorldBuilder worldBuilder, String WorldName) throws ExistsType, NoWorldLocks, ExistsWorld {
         return putWorld(type.toString(),worldBuilder,WorldName);
     }
     /**
      * 删除世界
      * */
-    public void removeWorld(String WorldName){
-        不急,慢慢写
+    public void removeWorld(String worldName){
+        if (!worlds.containsWorld(worldName)){
+            return;
+        }
+        World world;
+        if ((world=typeWorldMap.get(worldName))==null){
+            worlds.removeWorld(worldName);
+            return;
+        }
+        WorldDataLock worldDataLock = worldLockMap.get(world);
+        if (worldDataLock!=null){
+            worldDataLock.delWorld();
+            worldDataLock.unlock();
+
+        }
+        typeWorldMap.remove(worldName);
+        worldLockMap.remove(world);
     }
 
 

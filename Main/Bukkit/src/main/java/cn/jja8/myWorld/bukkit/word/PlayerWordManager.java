@@ -1,17 +1,16 @@
 package cn.jja8.myWorld.bukkit.word;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldsData;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import cn.jja8.myWorld.bukkit.word.error.ExistsType;
+import cn.jja8.myWorld.bukkit.word.error.ExistsWorld;
+import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
 import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
-import cn.jja8.myWorld.bukkit.word.name.WorldCustomDataName;
-import cn.jja8.myWorld.bukkit.word.name.WorldsDataName;
-import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
@@ -19,8 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -42,25 +39,19 @@ public class PlayerWordManager implements Listener {
      * 加载世界组,最好在异步调用，此方法有可能阻塞线程。
      * @return null 有世界被其他服务器上锁，无法加载。
      */
-    public PlayerWorlds loadPlayerWorlds(Worlds worlds){
+    public PlayerWorlds loadPlayerWorlds(Worlds worlds) throws NoAllWorldLocks {
         synchronized (this){
-            PlayerWorlds po = worldsMap.get(worlds);
-            if (po!=null){
-                return po;
-            }
-
-            不急慢慢写
-            PlayerWorlds playerWorlds = new PlayerWorlds(this,playerWordInform,worldsName,worlds,worldLockMap,typeWorldMap);
-            worldsMap.put(worlds,playerWorlds);
-
+            String worldsName = worlds.getWorldsName();
+            PlayerWorlds playerWorlds = new PlayerWorlds(this,worlds);
             //判断主世界，地狱，末地是否存在，如果不存在就根据配置文件添加
             if (worldConfig.主世界生成器.启用){
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.world)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
-                    WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
-                    if (worldDataLock!=null){
-                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldDataLock,worldConfig.主世界生成器.getWordBuilder(worldname));
-                    }else {
+                    try {
+                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldConfig.主世界生成器,worldname);
+                    } catch (ExistsType | ExistsWorld e) {
+                        e.printStackTrace();
+                    } catch (NoWorldLocks e) {
                         MyWorldBukkit.getMyWorldBukkit().getLogger().warning("新的世界"+worldname+"无法获得锁。可能是已经被其他服务器加载，或世界命名规则错乱导致。"+worldsName+"世界组将会没有主世界。");
                     }
                 }
@@ -68,10 +59,11 @@ public class PlayerWordManager implements Listener {
             if (worldConfig.地狱界生成器.启用){
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.infernal)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
-                    WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
-                    if (worldDataLock!=null){
-                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldDataLock,worldConfig.地狱界生成器.getWordBuilder(worldname));
-                    }else {
+                    try {
+                        playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,worldConfig.地狱界生成器,worldname);
+                    } catch (ExistsType | ExistsWorld e) {
+                        e.printStackTrace();
+                    } catch (NoWorldLocks e) {
                         MyWorldBukkit.getMyWorldBukkit().getLogger().warning("新的世界"+worldname+"无法获得锁。可能是已经被其他服务器加载，或世界命名规则错乱导致。"+worldsName+"世界组将会没有地狱世界。");
                     }
                 }
@@ -79,10 +71,11 @@ public class PlayerWordManager implements Listener {
             if (worldConfig.末地界生成器.启用){
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.end)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
-                    WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldname,worldConfig.服务器名称);
-                    if (worldDataLock!=null){
-                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldDataLock,worldConfig.地狱界生成器.getWordBuilder(worldname));
-                    }else {
+                    try {
+                        playerWorlds.putWorld(PlayerWorldTypeAtName.end,worldConfig.末地界生成器,worldname);
+                    } catch (ExistsType | ExistsWorld e) {
+                        e.printStackTrace();
+                    } catch (NoWorldLocks e) {
                         MyWorldBukkit.getMyWorldBukkit().getLogger().warning("新的世界"+worldname+"无法获得锁。可能是已经被其他服务器加载，或世界命名规则错乱导致。"+worldsName+"世界组将会没有末地世界。");
                     }
                 }
@@ -155,7 +148,7 @@ public class PlayerWordManager implements Listener {
         }
         List<WorldDataLock> worldDataLocks = new ArrayList<>();//获取所有存在世界的锁
         for (String s : worldNames1) {
-            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(s,worldConfig.服务器名称);
+            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(new WorldCreator(s),worldConfig.服务器名称);
             if (worldDataLock!=null) {
                 worldDataLocks.add(worldDataLock);
             }

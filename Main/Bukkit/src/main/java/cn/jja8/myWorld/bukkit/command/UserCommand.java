@@ -13,6 +13,7 @@ import cn.jja8.myWorld.bukkit.config.Permission;
 import cn.jja8.myWorld.bukkit.config.TeamConfig;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
+import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandManger;
@@ -93,8 +94,10 @@ public class UserCommand {
             return;
         }
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
-            if (playerWorlds==null){
+            PlayerWorlds playerWorlds;
+            try {
+                playerWorlds = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+            } catch (NoAllWorldLocks e) {
                 player.sendMessage(lang.返回世界_世界被其他服务器加载);
                 return;
             }
@@ -483,8 +486,10 @@ public class UserCommand {
             return;
         }
         MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
-            if (playerWorlds==null){
+            PlayerWorlds playerWorlds;
+            try {
+                playerWorlds = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+            } catch (NoAllWorldLocks e) {
                 player.sendMessage(lang.去出生点_世界被其他服务器加载);
                 return;
             }
