@@ -2,7 +2,9 @@ package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
 import java.util.List;
 import java.util.UUID;
-
+/**
+ * 需要重写hashCode和equals方法
+ * */
 public interface Worlds {
     /**
      * 获取世界组里的全部世界

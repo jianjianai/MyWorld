@@ -93,16 +93,22 @@ public class UserCommand {
             player.sendMessage(lang.返回世界_团队没有世界);
             return;
         }
+        PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worlds);
+        if (playerWorlds!=null){
+            playerWorlds.playerBack(player);
+            player.sendMessage(lang.返回世界_传送成功);
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            PlayerWorlds playerWorlds;
+            PlayerWorlds world;
             try {
-                playerWorlds = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+                world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
             } catch (NoAllWorldLocks e) {
                 player.sendMessage(lang.返回世界_世界被其他服务器加载);
                 return;
             }
             Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                playerWorlds.playerBack(player);
+                world.playerBack(player);
                 player.sendMessage(lang.返回世界_传送成功);
             });
         });
@@ -485,19 +491,26 @@ public class UserCommand {
             player.sendMessage(lang.去出生点_团队没有世界);
             return;
         }
+        PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worlds);
+        if (playerWorlds!=null){
+            playerWorlds.playerBackSpawn(player);
+            player.sendMessage(lang.去出生点_传送成功);
+            return;
+        }
         MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player, () -> Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            PlayerWorlds playerWorlds;
+            PlayerWorlds world;
             try {
-                playerWorlds = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+                world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
             } catch (NoAllWorldLocks e) {
                 player.sendMessage(lang.去出生点_世界被其他服务器加载);
                 return;
             }
             Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                playerWorlds.playerBackSpawn(player);
+                world.playerBackSpawn(player);
                 player.sendMessage(lang.去出生点_传送成功);
             });
         }));
+
     }
 
     private static boolean isAdmin(TeamPlayer teamPlayer){
