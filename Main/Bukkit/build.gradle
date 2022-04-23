@@ -1,25 +1,5 @@
-
-plugins {
-    id 'java'
-}
-
-group 'cn.jja8.MyWorld'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-
-
-
 dependencies {
     compileOnly project(":Main:All")
     implementation fileTree(dir:'libs/implentation',includes:['*jar'])
     compileOnly fileTree(dir:'libs/compileonly',includes:['*jar'])
-}
-
-test {
-    useJUnitPlatform()
 }
