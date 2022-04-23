@@ -1,6 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'cn.jja8.personWorld'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 14
+targetCompatibility = 14
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly project(":Main:All")
     compileOnly project(":Main:Bukkit")
     implementation fileTree(dir:'libs/implentation',includes:['*jar'])
     compileOnly fileTree(dir:'libs/compileonly',includes:['*jar'])
+}
+
+test {
+    useJUnitPlatform()
 }
