@@ -1,14 +1,32 @@
 import java.text.SimpleDateFormat
 
-plugins {
-    id 'java'
-}
+allprojects {
+    apply plugin: 'java'
 
-group 'cn.jja8.personWorld'
-version '1.0-SNAPSHOT'
+    group 'cn.jja8.personWorld'
+    version '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(8))
+        }
+    }
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(Javadoc) {
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(ProcessResources) {
+        filteringCharset = "UTF-8"
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    test {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
@@ -20,24 +38,15 @@ dependencies {
     implementation project("Main:Bukkit:Version:v1_12_R1")
 }
 
-test {
-    useJUnitPlatform()
-}
-
 jar.doFirst {
     //获取当前时间作为版本号
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd.HHmm")
     //设置版本号
     version = formatter.format(new Date())+"-new";//"0.03"//
     //替换配置文件版本号
-    Iterator<File> 文件列表 = fileTree(dir: "${projectDir}/build/resources/main/", includes: ['*yml']).getFiles().iterator();
-    try {
-        while (true) {
-            File 文件 = 文件列表.next()
-            替换文本(文件, '版本号', version)
-        }
-    } catch (NoSuchElementException e) {
-        println "yaml版本号替换完成"
+    Iterator<File> 文件列表 = fileTree(dir: "${projectDir}/build/resources/main/", includes: ['*yml']).getFiles().iterator()
+    while (文件列表.hasNext()) {
+        替换文本(文件列表.next(), '版本号', version)
     }
 }
 jar{
