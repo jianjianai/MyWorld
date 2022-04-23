@@ -3,13 +3,8 @@ plugins {
     id 'java'
 }
 
-group 'cn.jja8.MyWorld'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
 
 
 
@@ -19,7 +14,3 @@ dependencies {
     compileOnly fileTree(dir:'libs/compileonly',includes:['*jar'])
 }
 
-
-test {
-    useJUnitPlatform()
-}

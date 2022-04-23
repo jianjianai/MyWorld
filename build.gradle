@@ -30,14 +30,9 @@ jar.doFirst {
     //设置版本号
     version = formatter.format(new Date())+"-new";//"0.03"//
     //替换配置文件版本号
-    Iterator<File> 文件列表 = fileTree(dir: "${projectDir}/build/resources/main/", includes: ['*yml']).getFiles().iterator();
-    try {
-        while (true) {
-            File 文件 = 文件列表.next()
-            替换文本(文件, '版本号', version)
-        }
-    } catch (NoSuchElementException e) {
-        println "yaml版本号替换完成"
+    Iterator<File> 文件列表 = fileTree(dir: "${projectDir}/build/resources/main/", includes: ['*yml']).getFiles().iterator()
+    while (文件列表.hasNext()) {
+        替换文本(文件列表.next(), '版本号', version.toString())
     }
 }
 jar{

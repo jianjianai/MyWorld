@@ -2,14 +2,9 @@ plugins {
     id 'java'
 }
 
-group 'cn.jja8.personWorld'
-version '1.0-SNAPSHOT'
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
+sourceCompatibility = 17
+targetCompatibility = 17
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     compileOnly project(":Main:All")
@@ -18,6 +13,3 @@ dependencies {
     compileOnly fileTree(dir:'libs/compileonly',includes:['*jar'])
 }
 
-test {
-    useJUnitPlatform()
-}
