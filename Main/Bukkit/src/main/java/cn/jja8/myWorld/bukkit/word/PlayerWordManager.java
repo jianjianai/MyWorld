@@ -11,6 +11,7 @@ import cn.jja8.myWorld.bukkit.word.error.ExistsWorld;
 import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
 import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
@@ -48,7 +49,8 @@ public class PlayerWordManager implements Listener {
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.world)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
                     try {
-                        playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldConfig.主世界生成器,worldname);
+                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldConfig.主世界生成器,worldname);
+                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> WorldConfig.setGameRule(worldConfig.主世界规则,world));
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
                     } catch (NoWorldLocks e) {
@@ -60,7 +62,8 @@ public class PlayerWordManager implements Listener {
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.infernal)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
                     try {
-                        playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,worldConfig.地狱界生成器,worldname);
+                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,worldConfig.地狱界生成器,worldname);
+                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> WorldConfig.setGameRule(worldConfig.地狱世界规则,world));
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
                     } catch (NoWorldLocks e) {
@@ -72,7 +75,8 @@ public class PlayerWordManager implements Listener {
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.end)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
                     try {
-                        playerWorlds.putWorld(PlayerWorldTypeAtName.end,worldConfig.末地界生成器,worldname);
+                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.end,worldConfig.末地界生成器,worldname);
+                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> WorldConfig.setGameRule(worldConfig.末地界规则,world));
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
                     } catch (NoWorldLocks e) {
