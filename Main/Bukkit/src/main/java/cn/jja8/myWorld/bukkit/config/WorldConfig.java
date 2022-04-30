@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit.config;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 
@@ -25,6 +26,9 @@ public class WorldConfig {
     public Map<String,Object> 地狱世界规则 = new HashMap<>();
     public Map<String,Object> 末地界规则 = new HashMap<>();
 
+    public Difficulty 主世界难度 = Difficulty.EASY;
+    public Difficulty 地狱世界难度 = Difficulty.EASY;
+    public Difficulty 末地世界难度 = Difficulty.EASY;
 
     public WorldConfig(){
         禁止玩家使用的世界名称列表.add("world");

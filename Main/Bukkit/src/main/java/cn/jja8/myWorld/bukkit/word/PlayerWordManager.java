@@ -50,7 +50,10 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
                     try {
                         World world = playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldConfig.主世界生成器,worldname);
-                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> WorldConfig.setGameRule(worldConfig.主世界规则,world));
+                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+                            WorldConfig.setGameRule(worldConfig.主世界规则,world);
+                            world.setDifficulty(worldConfig.主世界难度);
+                        });
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
                     } catch (NoWorldLocks e) {
@@ -63,7 +66,10 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
                     try {
                         World world = playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,worldConfig.地狱界生成器,worldname);
-                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> WorldConfig.setGameRule(worldConfig.地狱世界规则,world));
+                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+                            WorldConfig.setGameRule(worldConfig.地狱世界规则,world);
+                            world.setDifficulty(worldConfig.地狱世界难度);
+                        });
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
                     } catch (NoWorldLocks e) {
@@ -76,7 +82,10 @@ public class PlayerWordManager implements Listener {
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
                     try {
                         World world = playerWorlds.putWorld(PlayerWorldTypeAtName.end,worldConfig.末地界生成器,worldname);
-                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> WorldConfig.setGameRule(worldConfig.末地界规则,world));
+                        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+                            WorldConfig.setGameRule(worldConfig.末地界规则,world);
+                            world.setDifficulty(worldConfig.末地世界难度);
+                        });
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
                     } catch (NoWorldLocks e) {
