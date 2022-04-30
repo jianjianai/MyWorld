@@ -7,9 +7,13 @@
 发行版下载：[MyWorld 发行版 - Gitee.com](https://gitee.com/jja8/MyWorld/releases) （作者很懒，所以版本可能很旧）
 
 ## 使用方法和常见问题
-[常见问题解答.md](常见问题解答.md)
+插件使用方法：[插件使用方法.md · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/插件使用方法.md)
 
-[插件使用方法.md](插件使用方法.md)
+常见问题解答：[常见问题解答.md · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/常见问题解答.md)
+
+建议与反馈-Issues：[Issues · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/issues)  (推荐)
+
+建议与反馈-插件实验室：[PlugClub / 插件实验室](https://jq.qq.com/?_wv=1027&k=LyeQlfSK) （群号:820131534）
 
 ## 简介
 ### 玩法
