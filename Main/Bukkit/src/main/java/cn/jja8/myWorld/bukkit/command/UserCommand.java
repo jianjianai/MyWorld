@@ -14,9 +14,9 @@ import java.util.Map;
 public class UserCommand {
     //<被邀请的玩家,团队>
     public Map<Player, Team> 邀请map = new HashMap<>();
-
+    CommandManger commandManger;
     public UserCommand() {
-        CommandManger commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"}, ConfigBukkit.getPermission().使用权限);
+        commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"}, ConfigBukkit.getPermission().使用权限);
         CommandImplement go = new Go();
         commandManger.setDefaulCommand(go);
         commandManger.addCommand(new String[]{"创建团队", "NewTeam"}, new NewTeam());
@@ -33,5 +33,9 @@ public class UserCommand {
         commandManger.addCommand(new String[]{"去出生点", "goBeginningPoint"}, new goBeginningPoint());
         commandManger.addCommand(new String[]{"回到世界","go"}, go);
         commandManger.addCommand(new String[]{"创建世界", "NewWorld"}, new NewWorld());
+    }
+
+    public CommandManger getCommandManger() {
+        return commandManger;
     }
 }

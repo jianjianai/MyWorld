@@ -17,4 +17,8 @@ public class AdminCommand {
         commandManger.addCommand("LoadWorld", new LoadWorld());
         commandManger.addCommand("GoTo", new GoTo());
     }
+
+    public CommandManger getCommandManger() {
+        return commandManger;
+    }
 }
