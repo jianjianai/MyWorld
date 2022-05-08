@@ -6,6 +6,7 @@ import cn.jja8.myWorld.bukkit.basic.Portal;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.command.AdminCommand;
+import cn.jja8.myWorld.bukkit.command.tool.NameTool;
 import cn.jja8.myWorld.bukkit.command.UserCommand;
 import cn.jja8.myWorld.bukkit.player.PlayerDataManager;
 import cn.jja8.myWorld.bukkit.word.PlayerWordManager;
@@ -59,10 +60,21 @@ public class MyWorldBukkit extends JavaPlugin{
         return playerWorldPortal;
     }
 
+    public MyWorldBukkit() {
+        myWorldBukkit = this;
+    }
+
+    @Override
+    public void onLoad() {
+        getLogger().info("开始加载配置文件...");
+        //加载之后运行需要被调用的配置，主要是配置文件和静态工具的初始化。
+        ConfigBukkit.load();
+        NameTool.load();
+        getLogger().info("加载完成。");
+    }
+
     @Override
     public void onEnable() {
-        myWorldBukkit = this;
-        ConfigBukkit.load();
         //加载data
         boolean ok = true;
         try {

@@ -1,10 +1,14 @@
 # 介绍
 一款基于Paper开发的小队世界插件。可以在多个服务器之间同步世界，轻松多个服务器负载均衡。适合大型服务器。
 
-## 下载
-最新自动构建: [MyWorld[简简爱的插件构建]（感谢艾利格兰特提供的自动构建）](https://ci.pmcs.xyz/job/jian-ai-ai/job/MyWorld/)
+## 建议
+建议在Paper上使用本插件，Paper对加载世界的速度有优化。
+Spigot加载世界耗时是Paper的15倍左右。
 
+## 下载
 发行版下载：[MyWorld 发行版 - Gitee.com](https://gitee.com/jja8/MyWorld/releases) （作者很懒，所以版本可能很旧）
+
+最新自动构建：[MyWorld -Dev [简简爱的插件构建] [Jenkins]](https://ci.pmcs.xyz/job/jian-ai-ai/job/MyWorld/) （感谢艾利格兰特提供的自动构建）
 
 ## 使用方法和常见问题
 插件使用方法：[插件使用方法.md · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/插件使用方法.md)
@@ -14,6 +18,9 @@
 建议与反馈-Issues：[Issues · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/issues)  (推荐)
 
 建议与反馈-插件实验室：[PlugClub / 插件实验室](https://jq.qq.com/?_wv=1027&k=LyeQlfSK) （群号:820131534）
+
+## 统计
+[![统计](https://bstats.org/signatures/bukkit/MyWorld.svg)](https://bstats.org/plugin/bukkit/MyWorld/14206)
 
 ## 简介
 ### 玩法
