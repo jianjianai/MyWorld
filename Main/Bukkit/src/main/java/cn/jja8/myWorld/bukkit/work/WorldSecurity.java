@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.bukkit.word;
+package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
@@ -8,6 +8,7 @@ import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.Permission;
+import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.World;

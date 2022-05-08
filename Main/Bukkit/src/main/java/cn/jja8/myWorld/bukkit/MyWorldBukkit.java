@@ -8,11 +8,11 @@ import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.command.AdminCommand;
 import cn.jja8.myWorld.bukkit.command.tool.NameTool;
 import cn.jja8.myWorld.bukkit.command.UserCommand;
-import cn.jja8.myWorld.bukkit.player.PlayerDataManager;
+import cn.jja8.myWorld.bukkit.work.PlayerDataManager;
 import cn.jja8.myWorld.bukkit.word.PlayerWordManager;
-import cn.jja8.myWorld.bukkit.word.PlayerWorldPortal;
-import cn.jja8.myWorld.bukkit.word.WorldClean;
-import cn.jja8.myWorld.bukkit.word.WorldSecurity;
+import cn.jja8.myWorld.bukkit.work.WorldPortal;
+import cn.jja8.myWorld.bukkit.work.WorldClean;
+import cn.jja8.myWorld.bukkit.work.WorldSecurity;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.bStats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,7 +33,7 @@ public class MyWorldBukkit extends JavaPlugin{
     static MyWorldBukkit myWorldBukkit = null;
     static WorldSecurity worldSecurity = null;
     static WorldClean worldClean = null;
-    static PlayerWorldPortal playerWorldPortal = null;
+    static WorldPortal worldPortal = null;
 
     public static PlayerWordManager getPlayerWordMangaer() {
         return playerWordManager;
@@ -56,8 +56,8 @@ public class MyWorldBukkit extends JavaPlugin{
     public static WorldClean getWorldClean() {
         return worldClean;
     }
-    public static PlayerWorldPortal getPlayerWorldPortal() {
-        return playerWorldPortal;
+    public static WorldPortal getPlayerWorldPortal() {
+        return worldPortal;
     }
 
     public MyWorldBukkit() {
@@ -108,7 +108,7 @@ public class MyWorldBukkit extends JavaPlugin{
         playerDataManager = new PlayerDataManager();
         worldSecurity = new WorldSecurity();
         worldClean = new WorldClean();
-        playerWorldPortal = new PlayerWorldPortal();
+        worldPortal = new WorldPortal();
 
         userCommand = new UserCommand();
         adminCommand = new AdminCommand();

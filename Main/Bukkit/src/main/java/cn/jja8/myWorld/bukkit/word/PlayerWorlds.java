@@ -52,6 +52,13 @@ public class PlayerWorlds {
     Map<String,World> typeWorldMap=new HashMap<>();
 
     /**
+     * 获取type与world的对应表
+     * */
+    public Map<String, World> getTypeWorldMap() {
+        return new HashMap<>(typeWorldMap);
+    }
+
+    /**
      * 请在异步调用，有可能阻塞线程
      * */
     public PlayerWorlds(PlayerWordManager playerWordManager,Worlds worlds) throws NoAllWorldLocks {

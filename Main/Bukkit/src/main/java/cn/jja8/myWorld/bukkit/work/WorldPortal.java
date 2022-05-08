@@ -1,7 +1,8 @@
-package cn.jja8.myWorld.bukkit.word;
+package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Portal;
+import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -12,8 +13,8 @@ import org.bukkit.event.player.PlayerPortalEvent;
 /**
  * 玩家世界的三个世界的传送门处理
  * */
-public class PlayerWorldPortal implements Listener {
-    public PlayerWorldPortal() {
+public class WorldPortal implements Listener {
+    public WorldPortal() {
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
     }
 

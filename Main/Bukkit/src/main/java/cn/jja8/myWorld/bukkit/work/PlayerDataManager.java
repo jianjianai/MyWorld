@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.bukkit.player;
+package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;

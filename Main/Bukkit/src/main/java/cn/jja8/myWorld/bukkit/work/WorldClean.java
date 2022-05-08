@@ -1,8 +1,9 @@
-package cn.jja8.myWorld.bukkit.word;
+package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
+import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -38,7 +39,7 @@ public class WorldClean  implements Listener {
                 playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
                     boolean k = true;
-                    for (World value : playerWord.typeWorldMap.values()) {
+                    for (World value : playerWord.getTypeWorldMap().values()) {
                         if (value.getPlayers().size()>0){
                             k = false;
                             break;
