@@ -1,22 +1,10 @@
 rootProject.name = 'MyWorld'
 
 include 'Main:Bungeecord'
-findProject(':Main:Bungeecord')?.name = 'Bungeecord'
-
 include 'Main:All'
-findProject(':Main:All')?.name = 'All'
-
 include 'Main:Bukkit'
-findProject(':Main:Bukkit')?.name = 'Bukkit'
-
 include 'Main:Bukkit'
-findProject(':Main:Bukkit')?.name = 'Bukkit'
-
 include 'Main:Bukkit:Version:v1_17_R1'
-findProject(':Main:Bukkit:Version:v1_17_R1')?.name = 'v1_17_R1'
-
 include 'Main:Bukkit:Version:v1_18_R2'
-findProject(':Main:Bukkit:Version:v1_18_R2')?.name = 'v1_18_R2'
-
 include 'Main:Bukkit:Version:v1_12_R1'
-findProject(':Main:Bukkit:Version:v1_12_R1')?.name = 'v1_12_R1'
+include 'Main:Bukkit:Version:v1_16_R3'
