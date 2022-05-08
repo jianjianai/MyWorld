@@ -29,10 +29,6 @@ public class NewWorld implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().创建世界_世界名不合法);
             return;
         }
-        if (strings[0].contains("_nether") | strings[0].contains("_the_end")) {
-            player.sendMessage(ConfigBukkit.getLang().创建世界_世界名不合法);
-            return;
-        }
         if (ConfigBukkit.getWorldConfig().禁止玩家使用的世界名称列表.contains(strings[0].toLowerCase())) {
             player.sendMessage(ConfigBukkit.getLang().创建世界_名称禁止使用.replaceAll("<世界>", strings[0]));
             return;

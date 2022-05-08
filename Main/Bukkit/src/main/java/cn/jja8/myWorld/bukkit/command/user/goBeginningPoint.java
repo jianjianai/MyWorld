@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 public class goBeginningPoint implements CommandImplement {
     @Override
     public void command(CommandSender commandSender, String[] strings) {
-
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
         Team 团队 = TeamsPlayerTool.getTeamPlayerNotNull(player).getTeam();
