@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.bukkit.work;
+package cn.jja8.myWorld.bukkit.listener;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
