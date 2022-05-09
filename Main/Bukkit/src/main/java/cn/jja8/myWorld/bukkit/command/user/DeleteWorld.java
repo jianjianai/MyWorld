@@ -26,13 +26,13 @@ public class DeleteWorld implements CommandImplement {
             return;
         }
         TeamPlayer teamPlayer = TeamsPlayerTool.getTeamPlayerNotNull(player);
-        if (!TeamsPlayerTool.isLeader(teamPlayer)) {
-            player.sendMessage(ConfigBukkit.getLang().删除世界_不是团长);
-            return;
-        }
         Team 团队 = teamPlayer.getTeam();
         if (团队 == null) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_玩家没有团队);
+            return;
+        }
+        if (!TeamsPlayerTool.isLeader(teamPlayer)) {
+            player.sendMessage(ConfigBukkit.getLang().删除世界_不是团长);
             return;
         }
         Worlds worlds = 团队.getWorlds();
