@@ -1,7 +1,7 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldsData;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroupData;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
@@ -12,7 +12,7 @@ import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import cn.jja8.myWorld.bukkit.word.error.ExistsType;
 import cn.jja8.myWorld.bukkit.word.error.ExistsWorld;
 import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
-import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
+import cn.jja8.myWorld.bukkit.work.error.NoWorldLocks;
 import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
 import cn.jja8.myWorld.bukkit.word.name.WorldCustomDataName;
 import cn.jja8.myWorld.bukkit.word.name.WorldsDataName;
@@ -46,7 +46,7 @@ public class PlayerWorlds {
     PlayerWordManager playerWordManager;
     PlayerWordInform playerWordInform;
     String name;
-    Worlds worlds;
+    WorldGroup worldGroup;
 
     Map<World, WorldDataLock> worldLockMap = new HashMap<>();
     Map<String,World> typeWorldMap=new HashMap<>();
@@ -61,17 +61,17 @@ public class PlayerWorlds {
     /**
      * 请在异步调用，有可能阻塞线程
      * */
-    public PlayerWorlds(PlayerWordManager playerWordManager,Worlds worlds) throws NoAllWorldLocks {
+    public PlayerWorlds(PlayerWordManager playerWordManager, WorldGroup worldGroup) throws NoAllWorldLocks {
         this.playerWordManager = playerWordManager;
-        this.worlds = worlds;
-        this.name = worlds.getWorldsName();
+        this.worldGroup = worldGroup;
+        this.name = worldGroup.getWorldGroupName();
 
-        WorldsData worldsData = worlds.getWorldsData(WorldsDataName.playerWordInform.toString());
-        if (worldsData==null){
-            worldsData = worlds.newWorldsData(WorldsDataName.playerWordInform.toString());
+        WorldGroupData worldGroupData = worldGroup.getWorldGroupData(WorldsDataName.playerWordInform.toString());
+        if (worldGroupData ==null){
+            worldGroupData = worldGroup.newWorldGroupData(WorldsDataName.playerWordInform.toString());
         }
-        playerWordInform = new PlayerWordInform(worldsData);
-        List<String> worldList = worlds.getWorldList();
+        playerWordInform = new PlayerWordInform(worldGroupData);
+        List<String> worldList = worldGroup.getWorldList();
         Map<WorldDataLock,String> worldDataLockNameMap = new HashMap<>();
         //加载所有世界的锁
         for (String s : worldList) {
@@ -120,7 +120,7 @@ public class PlayerWorlds {
             worldLockMap.put(world,worldDataLock);
             playerWordManager.wordMap.put(world,this);
         });
-        playerWordManager.worldsMap.put(worlds,this);
+        playerWordManager.worldsMap.put(worldGroup,this);
     }
 
     /**
@@ -151,7 +151,7 @@ public class PlayerWorlds {
                 playerWordManager.wordMap.remove(world);
             });
         }
-        playerWordManager.worldsMap.remove(worlds);
+        playerWordManager.worldsMap.remove(worldGroup);
         worldLockMap=null;
         typeWorldMap=null;
         if (save) {
@@ -200,8 +200,8 @@ public class PlayerWorlds {
             if (data!=null){
                 worldDataLock.setCustomDataByte(WorldCustomDataName.WorldCreator.toString(),data);
             }
-            if (!worlds.containsWorld(WorldName)){
-                worlds.addWorld(WorldName);
+            if (!worldGroup.containsWorld(WorldName)){
+                worldGroup.addWorld(WorldName);
             }
             world1 = worldDataLock.loadWorldAsync(loadingProgress);
             worldLockMap.put(world1,worldDataLock);
@@ -221,12 +221,12 @@ public class PlayerWorlds {
      * 删除世界
      * */
     public void removeWorld(String worldName){
-        if (!worlds.containsWorld(worldName)){
+        if (!worldGroup.containsWorld(worldName)){
             return;
         }
         World world;
         if ((world=typeWorldMap.get(worldName))==null){
-            worlds.removeWorld(worldName);
+            worldGroup.removeWorld(worldName);
             return;
         }
         WorldDataLock worldDataLock = worldLockMap.get(world);
@@ -244,22 +244,22 @@ public class PlayerWorlds {
 
     public void setPlayerLeaveLocation(Player player, Location location) {
         String dataName = "location/"+player.getUniqueId();
-        WorldsData worldsData = worlds.getWorldsData(dataName);
-        if (worldsData==null){
-            worldsData = worlds.newWorldsData(dataName);
+        WorldGroupData worldGroupData = worldGroup.getWorldGroupData(dataName);
+        if (worldGroupData ==null){
+            worldGroupData = worldGroup.newWorldGroupData(dataName);
         }
-        worldsData.setData(LocationToString.totring(location).getBytes(StandardCharsets.UTF_8));
+        worldGroupData.setData(LocationToString.totring(location).getBytes(StandardCharsets.UTF_8));
     }
     /**
      * @return null 没有这个玩家的位置
      * */
     public Location getPlayerLocation(Player player) {
         String dataName = "location/"+player.getUniqueId();
-        WorldsData worldsData = worlds.getWorldsData(dataName);
-        if (worldsData==null){
+        WorldGroupData worldGroupData = worldGroup.getWorldGroupData(dataName);
+        if (worldGroupData ==null){
             return null;
         }
-        return LocationToString.load(new String(worldsData.getData(),StandardCharsets.UTF_8));
+        return LocationToString.load(new String(worldGroupData.getData(),StandardCharsets.UTF_8));
     }
 
     /**

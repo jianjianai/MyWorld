@@ -2,11 +2,11 @@ package cn.jja8.myWorld.bukkit.command.user;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.command.tool.TeamsPlayerTool;
-import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
+import cn.jja8.myWorld.bukkit.work.error.NoWorldLocks;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,13 +35,13 @@ public class DeleteWorld implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().删除世界_不是团长);
             return;
         }
-        Worlds worlds = 团队.getWorlds();
-        if (worlds == null) {
+        WorldGroup worldGroup = 团队.getWorldGroup();
+        if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_世界不存在);
             return;
         }
         try {
-            MyWorldBukkit.getPlayerWordMangaer().delPlayerWorlds(worlds);
+            MyWorldBukkit.getPlayerWordMangaer().delPlayerWorlds(worldGroup);
         } catch (NoWorldLocks e) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_世界被其他服务器加载);
         }

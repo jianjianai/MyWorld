@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bukkit.command.admin;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
@@ -20,14 +20,14 @@ public class LoadWorld implements CommandImplement {
             commandSender.sendMessage(ConfigBukkit.getLang().loadWorld_世界名不合法);
             return;
         }
-        Worlds worlds = Teams.datasheetManager.getWorldsFromWorldsName(strings[0]);
-        if (worlds == null) {
+        WorldGroup worldGroup = Teams.datasheetManager.getWorldGroupFromWorldsName(strings[0]);
+        if (worldGroup == null) {
             commandSender.sendMessage(ConfigBukkit.getLang().loadWorld_世界不存在.replaceAll("<世界>", strings[0]));
             return;
         }
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
             try {
-                MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+                MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worldGroup);
             } catch (NoAllWorldLocks e) {
                 commandSender.sendMessage(ConfigBukkit.getLang().loadWorld_世界被其他服务器加载);
                 return;

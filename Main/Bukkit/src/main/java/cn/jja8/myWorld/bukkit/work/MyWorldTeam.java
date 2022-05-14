@@ -1,7 +1,7 @@
 package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 
 /**
  * 代表一个团队
@@ -11,25 +11,33 @@ public class MyWorldTeam {
     /**
      * 使用现有的team
      * */
-    public MyWorldTeam(Team team) {
+    MyWorldTeam(Team team) {
         this.team = team;
     }
 
     /**
-     * 创建一个新团队
+     * 解散这个团队
+     * **/
+    public void delete(){
+        team.delete();
+    }
+
+    /**
+     * 设置团队的世界组
      * */
-    public MyWorldTeam(String name){
-        ...
+    public void setWorldGroup(MyWorldWorldGroup myWorldWorldGroup){
+        team.setWorlds(myWorldWorldGroup==null?null:myWorldWorldGroup.worldGroup);
     }
 
     /**
      * 获得团队的世界组
      * */
     public MyWorldWorldGroup getWorldGroup(){
-       Worlds worlds = team.getWorlds();
-       if (worlds==null){
+       WorldGroup worldGroup = team.getWorldGroup();
+       if (worldGroup ==null){
            return null;
        }
-       return new MyWorldWorldGroup(worlds);
+       return new MyWorldWorldGroup(worldGroup);
     }
+
 }

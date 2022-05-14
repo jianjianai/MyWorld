@@ -71,14 +71,14 @@ public class JDBC_DatasheetManger implements DatasheetManager {
     }
 
     @Override
-    public Worlds getWorldsFromWorldsName(String worldsName) {
+    public WorldGroup getWorldGroupFromWorldsName(String worldGroupName) {
         try (Connection connection = getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID from Worlds where WorldsName=?")){
-                preparedStatement.setString(1,worldsName);
+                preparedStatement.setString(1, worldGroupName);
                 try (ResultSet resultSet = preparedStatement.executeQuery();){
                     if (resultSet.next()){
                         try {
-                            return new JDBC_Worlds(this,UUID.fromString(resultSet.getString(1)));
+                            return new JDBC_WorldGroup(this,UUID.fromString(resultSet.getString(1)));
                         }catch (IllegalArgumentException illegalArgumentException){
                             illegalArgumentException.printStackTrace();
                         }
@@ -149,22 +149,22 @@ public class JDBC_DatasheetManger implements DatasheetManager {
     }
 
     @Override
-    public Worlds newWorlds(String worldName) {
+    public WorldGroup newWorldGroup(String worldGroupName) {
         UUID uuid = UUID.randomUUID();
         try (Connection connection = getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("insert into Worlds(WorldsUUID,WorldsName) values(?,?)")){
                 preparedStatement.setString(1,uuid.toString());
-                preparedStatement.setString(2,worldName);
+                preparedStatement.setString(2, worldGroupName);
                 int up = preparedStatement.executeUpdate();
                 if (up==1){
-                    return new JDBC_Worlds(this,uuid);
+                    return new JDBC_WorldGroup(this,uuid);
                 }
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
             if (sqlException.getErrorCode()==19){
                 if (sqlException.getMessage().contains("WorldsUUID")){
-                    return newWorlds(worldName);
+                    return newWorldGroup(worldGroupName);
                 }
             }
         }

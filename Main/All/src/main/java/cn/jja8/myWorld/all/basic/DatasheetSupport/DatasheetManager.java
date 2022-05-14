@@ -11,7 +11,7 @@ public interface DatasheetManager {
     /**
      * 通过世界名称获取Worlds
      * */
-    Worlds getWorldsFromWorldsName(String worldsName);
+    WorldGroup getWorldGroupFromWorldsName(String worldGroupName);
     /**
      * 通过玩家UUID获得TeamPlayer
      * @return null 这个玩家还不存在
@@ -30,7 +30,7 @@ public interface DatasheetManager {
      * 创建一个worlds
      * @return null 这个世界已经存在
      * */
-    Worlds newWorlds(String worldName);
+    WorldGroup newWorldGroup(String worldGroupName);
     /**
      * 关闭teamManger，一般在插件关闭时调用。
      * */

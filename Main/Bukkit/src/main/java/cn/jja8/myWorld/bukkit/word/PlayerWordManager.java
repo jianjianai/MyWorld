@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bukkit.word;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
@@ -9,7 +9,7 @@ import cn.jja8.myWorld.bukkit.config.WorldConfig;
 import cn.jja8.myWorld.bukkit.word.error.ExistsType;
 import cn.jja8.myWorld.bukkit.word.error.ExistsWorld;
 import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
-import cn.jja8.myWorld.bukkit.word.error.NoWorldLocks;
+import cn.jja8.myWorld.bukkit.work.error.NoWorldLocks;
 import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -26,10 +26,8 @@ import java.util.*;
  */
 public class PlayerWordManager implements Listener {
 
-    WorldConfig worldConfig =  ConfigBukkit.getWorldConfig();
-
     Map<World, PlayerWorlds> wordMap = new HashMap<>();
-    Map<Worlds, PlayerWorlds> worldsMap = new HashMap<>();
+    Map<WorldGroup, PlayerWorlds> worldsMap = new HashMap<>();
 
     public PlayerWordManager() {
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this,MyWorldBukkit.getMyWorldBukkit());
@@ -40,19 +38,19 @@ public class PlayerWordManager implements Listener {
      * 加载世界组,最好在异步调用，此方法有可能阻塞线程。
      * @return null 有世界被其他服务器上锁，无法加载。
      */
-    public PlayerWorlds loadPlayerWorlds(Worlds worlds) throws NoAllWorldLocks {
+    public PlayerWorlds loadPlayerWorlds(WorldGroup worldGroup) throws NoAllWorldLocks {
         synchronized (this){
-            String worldsName = worlds.getWorldsName();
-            PlayerWorlds playerWorlds = new PlayerWorlds(this,worlds);
+            String worldsName = worldGroup.getWorldGroupName();
+            PlayerWorlds playerWorlds = new PlayerWorlds(this, worldGroup);
             //判断主世界，地狱，末地是否存在，如果不存在就根据配置文件添加
-            if (worldConfig.主世界生成器.启用){
+            if (ConfigBukkit.getWorldConfig().主世界生成器.启用){
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.world)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.world;
                     try {
-                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.world,worldConfig.主世界生成器,worldname);
+                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.world, ConfigBukkit.getWorldConfig().主世界生成器,worldname);
                         Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                            WorldConfig.setGameRule(worldConfig.主世界规则,world);
-                            world.setDifficulty(worldConfig.主世界难度);
+                            WorldConfig.setGameRule(ConfigBukkit.getWorldConfig().主世界规则,world);
+                            world.setDifficulty(ConfigBukkit.getWorldConfig().主世界难度);
                         });
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
@@ -61,14 +59,14 @@ public class PlayerWordManager implements Listener {
                     }
                 }
             }
-            if (worldConfig.地狱界生成器.启用){
+            if (ConfigBukkit.getWorldConfig().地狱界生成器.启用){
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.infernal)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.infernal;
                     try {
-                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.infernal,worldConfig.地狱界生成器,worldname);
+                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.infernal, ConfigBukkit.getWorldConfig().地狱界生成器,worldname);
                         Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                            WorldConfig.setGameRule(worldConfig.地狱世界规则,world);
-                            world.setDifficulty(worldConfig.地狱世界难度);
+                            WorldConfig.setGameRule(ConfigBukkit.getWorldConfig().地狱世界规则,world);
+                            world.setDifficulty(ConfigBukkit.getWorldConfig().地狱世界难度);
                         });
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
@@ -77,14 +75,14 @@ public class PlayerWordManager implements Listener {
                     }
                 }
             }
-            if (worldConfig.末地界生成器.启用){
+            if (ConfigBukkit.getWorldConfig().末地界生成器.启用){
                 if (playerWorlds.getWorld(PlayerWorldTypeAtName.end)==null){
                     String worldname = worldsName+"_"+PlayerWorldTypeAtName.end;
                     try {
-                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.end,worldConfig.末地界生成器,worldname);
+                        World world = playerWorlds.putWorld(PlayerWorldTypeAtName.end, ConfigBukkit.getWorldConfig().末地界生成器,worldname);
                         Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                            WorldConfig.setGameRule(worldConfig.末地界规则,world);
-                            world.setDifficulty(worldConfig.末地世界难度);
+                            WorldConfig.setGameRule(ConfigBukkit.getWorldConfig().末地界规则,world);
+                            world.setDifficulty(ConfigBukkit.getWorldConfig().末地世界难度);
                         });
                     } catch (ExistsType | ExistsWorld e) {
                         e.printStackTrace();
@@ -109,14 +107,14 @@ public class PlayerWordManager implements Listener {
      * 从已加载的世界中获取世界
      * @return 如果世界没加载返回null
      */
-    public PlayerWorlds getBeLoadPlayerWorlds(Worlds worlds){
-        return worldsMap.get(worlds);
+    public PlayerWorlds getBeLoadPlayerWorlds(WorldGroup worldGroup){
+        return worldsMap.get(worldGroup);
     }
 
     /**
      * 被加载的世界称集合
      * */
-    public Set<Worlds> getWorldNames(){
+    public Set<WorldGroup> getWorldNames(){
         return worldsMap.keySet();
     }
     /**
@@ -147,12 +145,12 @@ public class PlayerWordManager implements Listener {
     /**
      * 删除世界
      */
-    public void delPlayerWorlds(Worlds worlds) throws NoWorldLocks {
-        PlayerWorlds po = worldsMap.get(worlds);
+    public void delPlayerWorlds(WorldGroup worldGroup) throws NoWorldLocks {
+        PlayerWorlds po = worldsMap.get(worldGroup);
         if(po!=null){
             po.unLoad(false);
         }
-        List<String> worldNames = worlds.getWorldList();
+        List<String> worldNames = worldGroup.getWorldList();
         List<String> worldNames1 = new ArrayList<>(worldNames);//用于删除掉没有被创建的世界
         for (String worldName : worldNames) {
             if (!WorldData.worldDataSupport.isWorldExistence(worldName)) {
@@ -161,7 +159,7 @@ public class PlayerWordManager implements Listener {
         }
         List<WorldDataLock> worldDataLocks = new ArrayList<>();//获取所有存在世界的锁
         for (String s : worldNames1) {
-            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(new WorldCreator(s),worldConfig.服务器名称);
+            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(new WorldCreator(s), ConfigBukkit.getWorldConfig().服务器名称);
             if (worldDataLock!=null) {
                 worldDataLocks.add(worldDataLock);
             }
@@ -179,7 +177,7 @@ public class PlayerWordManager implements Listener {
             worldDataLock.unlock();
         }
         //删除世界库中的世界
-        worlds.delete();
+        worldGroup.delete();
     }
 
     @EventHandler

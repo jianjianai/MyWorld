@@ -1,7 +1,7 @@
 package cn.jja8.myWorld.bukkit.command.user;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.command.tool.TeamsPlayerTool;
@@ -22,12 +22,12 @@ public class Go implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().返回世界_没有团队);
             return;
         }
-        Worlds worlds = team.getWorlds();
-        if (worlds == null) {
+        WorldGroup worldGroup = team.getWorldGroup();
+        if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().返回世界_团队没有世界);
             return;
         }
-        PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worlds);
+        PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worldGroup);
         if (playerWorlds != null) {
             playerWorlds.playerBack(player);
             player.sendMessage(ConfigBukkit.getLang().返回世界_传送成功);
@@ -36,7 +36,7 @@ public class Go implements CommandImplement {
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
             PlayerWorlds world;
             try {
-                world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds);
+                world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worldGroup);
             } catch (NoAllWorldLocks e) {
                 player.sendMessage(ConfigBukkit.getLang().返回世界_世界被其他服务器加载);
                 return;

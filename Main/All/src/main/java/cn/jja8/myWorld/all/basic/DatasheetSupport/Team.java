@@ -18,11 +18,11 @@ public interface Team {
     /**
      * 获取世界组
      * */
-    Worlds getWorlds();
+    WorldGroup getWorldGroup();
     /**
      * 设置团队的世界组
      * */
-    void setWorlds(Worlds worlds);
+    void setWorlds(WorldGroup worldGroup);
     /**
      * 获取团队的uuid
      * */

@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class JDBC_Worlds implements Worlds{
+public class JDBC_WorldGroup implements WorldGroup {
     JDBC_DatasheetManger datasheetManger;
     UUID worldsUUID;
-    public JDBC_Worlds(JDBC_DatasheetManger datasheetManger, UUID worldsUUID) {
+    public JDBC_WorldGroup(JDBC_DatasheetManger datasheetManger, UUID worldsUUID) {
         this.datasheetManger = datasheetManger;
         this.worldsUUID = worldsUUID;
     }
@@ -49,7 +49,7 @@ public class JDBC_Worlds implements Worlds{
     }
 
     @Override
-    public String getWorldsName() {
+    public String getWorldGroupName() {
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsName from Worlds where WorldsUUID=?")){
                 preparedStatement.setString(1, worldsUUID.toString());
@@ -112,14 +112,14 @@ public class JDBC_Worlds implements Worlds{
     }
 
     @Override
-    public WorldsData getWorldsData(String dataName) {
+    public WorldGroupData getWorldGroupData(String dataName) {
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID,DataName from WorldsData where WorldsUUID=? and DataName=?")){
                 preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.setString(2,dataName);
                 try (ResultSet resultSet = preparedStatement.executeQuery();){
                     if (resultSet.next()){
-                        return new JDBC_WorldsData(datasheetManger,resultSet.getString("WorldsUUID"),resultSet.getString("DataName"));
+                        return new JDBC_WorldGroupData(datasheetManger,resultSet.getString("WorldsUUID"),resultSet.getString("DataName"));
                     }
                 }
             }
@@ -130,14 +130,14 @@ public class JDBC_Worlds implements Worlds{
     }
 
     @Override
-    public WorldsData newWorldsData(String dataName) {
+    public WorldGroupData newWorldGroupData(String dataName) {
         try (Connection connection = datasheetManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("insert into WorldsData(WorldsUUID,DataName) values(?,?)")){
                 preparedStatement.setString(1,worldsUUID.toString());
                 preparedStatement.setString(2,dataName);
                 int up = preparedStatement.executeUpdate();
                 if (up==1){
-                    return new JDBC_WorldsData(datasheetManger,worldsUUID.toString(),dataName);
+                    return new JDBC_WorldGroupData(datasheetManger,worldsUUID.toString(),dataName);
                 }
             }
         } catch (SQLException sqlException) {
@@ -188,8 +188,8 @@ public class JDBC_Worlds implements Worlds{
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof JDBC_Worlds) {
-            return worldsUUID.equals(((JDBC_Worlds)obj).worldsUUID);
+        if (obj instanceof JDBC_WorldGroup) {
+            return worldsUUID.equals(((JDBC_WorldGroup)obj).worldsUUID);
         }
         return false;
 

@@ -12,21 +12,21 @@ public class JDBC {
         if (team==null) {
             team = datasheetManager.newTeam("zdxhsdjtfsd");
         }
-        Worlds worlds = team.getWorlds();
-        if (worlds==null) {
-            worlds = datasheetManager.newWorlds("asdasdasd");
-            team.setWorlds(worlds);
+        WorldGroup worldGroup = team.getWorldGroup();
+        if (worldGroup ==null) {
+            worldGroup = datasheetManager.newWorldGroup("asdasdasd");
+            team.setWorlds(worldGroup);
         }
-        System.out.println(worlds.getWorldList());
+        System.out.println(worldGroup.getWorldList());
 
-        WorldsData worldsData = worlds.getWorldsData("asdasddqwe");
-        if (worldsData==null) {
-            worldsData = worlds.newWorldsData("asdasddqwe");
+        WorldGroupData worldGroupData = worldGroup.getWorldGroupData("asdasddqwe");
+        if (worldGroupData ==null) {
+            worldGroupData = worldGroup.newWorldGroupData("asdasddqwe");
         }
-        byte[] bytes = worldsData.getData();
+        byte[] bytes = worldGroupData.getData();
         if (bytes==null) {
             bytes = "大帅哥啊啊啊啊".getBytes(StandardCharsets.UTF_8);
-            worldsData.setData(bytes);
+            worldGroupData.setData(bytes);
             System.out.println("wwwwwww");
         }
         System.out.println(new String(bytes, StandardCharsets.UTF_8));

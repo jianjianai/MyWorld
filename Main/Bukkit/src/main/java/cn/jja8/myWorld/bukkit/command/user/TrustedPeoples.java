@@ -1,7 +1,7 @@
 package cn.jja8.myWorld.bukkit.command.user;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.command.tool.TeamsPlayerTool;
@@ -23,12 +23,12 @@ public class TrustedPeoples implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().信任列表_你没有团队);
             return;
         }
-        Worlds worlds = 团队.getWorlds();
-        if (worlds == null) {
+        WorldGroup worldGroup = 团队.getWorldGroup();
+        if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().信任列表_团队没有世界);
             return;
         }
-        PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worlds);
+        PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worldGroup);
         if (世界 == null) {
             player.sendMessage(ConfigBukkit.getLang().信任列表_世界未加载);
             return;

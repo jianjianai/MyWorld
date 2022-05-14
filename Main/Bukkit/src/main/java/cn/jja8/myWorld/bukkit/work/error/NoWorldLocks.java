@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.bukkit.word.error;
+package cn.jja8.myWorld.bukkit.work.error;
 
 /**
  * 无法获取世界的锁异常

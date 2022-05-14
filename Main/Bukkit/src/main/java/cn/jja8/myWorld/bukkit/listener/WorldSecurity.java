@@ -2,7 +2,7 @@ package cn.jja8.myWorld.bukkit.listener;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
@@ -121,10 +121,10 @@ public class WorldSecurity implements Listener {
         if (team==null){
             return false;
         }
-        Worlds worlds = team.getWorlds();
-        if (worlds==null){
+        WorldGroup worldGroup = team.getWorldGroup();
+        if (worldGroup ==null){
             return false;
         }
-        return 世界.getName().equals(worlds.getWorldsName());
+        return 世界.getName().equals(worldGroup.getWorldGroupName());
     }
 }

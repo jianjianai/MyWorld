@@ -1,6 +1,6 @@
 package cn.jja8.myWorld.bungeecord.veryUtil;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.all.veryUtil.PingServer;
 import cn.jja8.myWorld.bungeecord.MyWorldBungeecord;
 import cn.jja8.myWorld.bungeecord.basic.WorldData;
@@ -63,13 +63,13 @@ public class ServerFind {
      * 获得正在使用某个世界的服务器
      * @return null 这个世界没有被服务器使用
      * */
-    public static ServerInfo getWorldBeLoadServer(Worlds worlds){
-        for (String s : worlds.getWorldList()) {
+    public static ServerInfo getWorldBeLoadServer(WorldGroup worldGroup){
+        for (String s : worldGroup.getWorldList()) {
             String servername = WorldData.worldDataSupport.gitLockServerName(s);
             if (servername!=null){
                 ServerInfo serverInfo = MyWorldBungeecord.getMyWorldBungeecord().getProxy().getServerInfo(servername);
                 if (serverInfo==null){
-                    throw new Error(worlds.getWorldsName()+"世界被"+servername+"服务器上锁了，但是在群组中未找到"+servername+"服务器。（请检查子服务器的配置文件中名称是否和bc中相同。）");
+                    throw new Error(worldGroup.getWorldGroupName()+"世界被"+servername+"服务器上锁了，但是在群组中未找到"+servername+"服务器。（请检查子服务器的配置文件中名称是否和bc中相同。）");
                 }
                 return serverInfo;
             }

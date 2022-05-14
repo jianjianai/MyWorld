@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * 需要重写hashCode和equals方法
  * */
-public interface Worlds {
+public interface WorldGroup {
     /**
      * 获取世界组里的全部世界
      * */
@@ -17,7 +17,7 @@ public interface Worlds {
     /**
      * 获取世界组名称
      * */
-    String getWorldsName();
+    String getWorldGroupName();
     /**
      * 获取世界组uuid
      * */
@@ -35,12 +35,12 @@ public interface Worlds {
      * 获取世界组的某自定义数据
      * @return null 没有这个自定义数据
      * */
-    WorldsData getWorldsData(String dataName);
+    WorldGroupData getWorldGroupData(String dataName);
     /**
      * 创建一个新自定义数据
      * @return null 这个数据已经存在
      * */
-    WorldsData newWorldsData(String dataName);
+    WorldGroupData newWorldGroupData(String dataName);
 
     /**
      * 删除一个世界

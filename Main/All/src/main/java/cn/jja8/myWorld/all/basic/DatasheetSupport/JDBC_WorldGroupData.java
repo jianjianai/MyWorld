@@ -2,11 +2,11 @@ package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
 import java.sql.*;
 
-public class JDBC_WorldsData implements WorldsData{
+public class JDBC_WorldGroupData implements WorldGroupData {
     JDBC_DatasheetManger datasheetManger;
     String worldsUUID, dataName;
 
-    public JDBC_WorldsData(JDBC_DatasheetManger datasheetManger, String worldsUUID, String dataName) {
+    public JDBC_WorldGroupData(JDBC_DatasheetManger datasheetManger, String worldsUUID, String dataName) {
         this.datasheetManger = datasheetManger;
         this.worldsUUID = worldsUUID;
         this.dataName = dataName;
@@ -51,8 +51,8 @@ public class JDBC_WorldsData implements WorldsData{
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof JDBC_WorldsData) {
-            JDBC_WorldsData i = (JDBC_WorldsData)obj;
+        if (obj instanceof JDBC_WorldGroupData) {
+            JDBC_WorldGroupData i = (JDBC_WorldGroupData)obj;
             return worldsUUID.equals(i.worldsUUID)&&dataName.equals(i.worldsUUID);
         }
         return false;

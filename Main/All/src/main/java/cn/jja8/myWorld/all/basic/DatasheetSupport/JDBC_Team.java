@@ -100,7 +100,7 @@ public class JDBC_Team implements Team {
     }
 
     @Override
-    public Worlds getWorlds() {
+    public WorldGroup getWorldGroup() {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("select WorldsUUID from Team where UUID=?")){
                 preparedStatement.setString(1,TeamUUID.toString());
@@ -108,7 +108,7 @@ public class JDBC_Team implements Team {
                     if (resultSet.next()){
                         String uu = resultSet.getString(1);
                         if (uu!=null) {
-                            return new JDBC_Worlds(teamManger,UUID.fromString(uu));
+                            return new JDBC_WorldGroup(teamManger,UUID.fromString(uu));
                         }
                     }
                 }
@@ -120,8 +120,8 @@ public class JDBC_Team implements Team {
     }
 
     @Override
-    public void setWorlds(Worlds worlds) {
-        UUID worldsUUID = worlds.getUUID();
+    public void setWorlds(WorldGroup worldGroup) {
+        UUID worldsUUID = worldGroup.getUUID();
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("update Team set WorldsUUID=? where UUID=?")){
                 preparedStatement.setString(1,worldsUUID.toString());

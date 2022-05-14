@@ -29,7 +29,7 @@ public class DisbandOurTeam implements CommandImplement {
             return;
         }
         if (ConfigBukkit.getTeamConfig().删除团队时必须先删除世界) {
-            if (团队.getWorlds() != null) {
+            if (团队.getWorldGroup() != null) {
                 player.sendMessage(ConfigBukkit.getLang().删除团队_没有删除世界);
                 return;
             }

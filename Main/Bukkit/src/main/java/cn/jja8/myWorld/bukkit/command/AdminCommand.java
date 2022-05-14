@@ -12,10 +12,10 @@ public class AdminCommand {
     CommandManger commandManger;
     public AdminCommand() {
         commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(),"MyWorldAdmin",new String[]{"mwa"}, ConfigBukkit.getPermission().管理员权限);
-        commandManger.addCommand("UnLoadWorld", new UnLoadWorld());
-        commandManger.addCommand("NuLoadAllWorld", new NuLoadAllWorld());
-        commandManger.addCommand("LoadWorld", new LoadWorld());
-        commandManger.addCommand("GoTo", new GoTo());
+        commandManger.addCommand(new String[]{"UnLoadWorld","卸载世界"}, new UnLoadWorld());
+        commandManger.addCommand(new String[]{"NuLoadAllWorld","卸载全部世界"}, new NuLoadAllWorld());
+        commandManger.addCommand(new String[]{"LoadWorld","加载世界"}, new LoadWorld());
+        commandManger.addCommand(new String[]{"GoTo","进入世界"}, new GoTo());
     }
 
     public CommandManger getCommandManger() {

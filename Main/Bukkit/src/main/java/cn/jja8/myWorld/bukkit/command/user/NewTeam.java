@@ -3,7 +3,7 @@ package cn.jja8.myWorld.bukkit.command.user;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
@@ -75,8 +75,8 @@ public class NewTeam implements CommandImplement {
                 player11.sendMessage(ConfigBukkit.getLang().创建世界_玩家没有团队);
                 return;
             }
-            Worlds worlds = 团队11.getWorlds();
-            if (worlds != null) {
+            WorldGroup worldGroup = 团队11.getWorldGroup();
+            if (worldGroup != null) {
                 player11.sendMessage(ConfigBukkit.getLang().创建世界_团队已经有世界了);
                 return;
             }
@@ -84,16 +84,16 @@ public class NewTeam implements CommandImplement {
                 player11.sendMessage(ConfigBukkit.getLang().创建世界_不是团长);
                 return;
             }
-            worlds = Teams.datasheetManager.newWorlds(strings[0]);
-            if (worlds == null) {
+            worldGroup = Teams.datasheetManager.newWorldGroup(strings[0]);
+            if (worldGroup == null) {
                 player11.sendMessage(ConfigBukkit.getLang().创建世界_世界名称被他人占用);
                 return;
             }
             //创建世界了
-            团队11.setWorlds(worlds);
+            团队11.setWorlds(worldGroup);
             player11.sendMessage(ConfigBukkit.getLang().创建世界_创建成功);
             if (ConfigBukkit.getWorldConfig().创建世界后传送到世界) {
-                Worlds finalWorlds = worlds;
+                WorldGroup finalWorldGroup = worldGroup;
                 Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
                     if ((!(commandSender instanceof Player))) return;
                     Player player1 = (Player) commandSender;
@@ -102,12 +102,12 @@ public class NewTeam implements CommandImplement {
                         player1.sendMessage(ConfigBukkit.getLang().去出生点_没有团队);
                         return;
                     }
-                    Worlds worlds1 = 团队1.getWorlds();
-                    if (worlds1 == null) {
+                    WorldGroup worldGroup1 = 团队1.getWorldGroup();
+                    if (worldGroup1 == null) {
                         player1.sendMessage(ConfigBukkit.getLang().去出生点_团队没有世界);
                         return;
                     }
-                    PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worlds1);
+                    PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worldGroup1);
                     if (playerWorlds != null) {
                         playerWorlds.playerBackSpawn(player1);
                         player1.sendMessage(ConfigBukkit.getLang().去出生点_传送成功);
@@ -116,7 +116,7 @@ public class NewTeam implements CommandImplement {
                     MyWorldBukkit.getPlayerDataManager().playerLoadFinishedToRun(player1, () -> Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
                         PlayerWorlds world;
                         try {
-                            world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worlds1);
+                            world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worldGroup1);
                         } catch (NoAllWorldLocks e) {
                             player1.sendMessage(ConfigBukkit.getLang().去出生点_世界被其他服务器加载);
                             return;

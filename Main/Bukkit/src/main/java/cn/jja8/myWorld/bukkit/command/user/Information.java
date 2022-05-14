@@ -2,7 +2,7 @@ package cn.jja8.myWorld.bukkit.command.user;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Worlds;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.all.veryUtil.StringTool;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.command.tool.TeamsPlayerTool;
@@ -27,11 +27,11 @@ public class Information implements CommandImplement {
 
         HashMap<String, String> map = new HashMap<>();
         map.put("<团队>", 团队.getTeamName());
-        Worlds worlds = 团队.getWorlds();
-        if (worlds == null) {
+        WorldGroup worldGroup = 团队.getWorldGroup();
+        if (worldGroup == null) {
             map.put("<团队世界信息>", ConfigBukkit.getLang().查询信息_团队没有世界);
         } else {
-            map.put("<团队世界信息>", ConfigBukkit.getLang().查询信息_团队世界信息.replaceAll("<世界>", worlds.getWorldsName()));
+            map.put("<团队世界信息>", ConfigBukkit.getLang().查询信息_团队世界信息.replaceAll("<世界>", worldGroup.getWorldGroupName()));
         }
 
         map.put("<团长>", TeamsPlayerTool.getTeamPlayersNotNull(团队, Status.leader).toString());
