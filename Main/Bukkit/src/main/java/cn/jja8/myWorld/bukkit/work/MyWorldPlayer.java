@@ -33,7 +33,7 @@ public class MyWorldPlayer {
     public void setTeam(MyWorldTeam myWorldTeam) {
         if (myWorldTeam==null){
             teamPlayer.setTeam(null);
-            teamPlayer.setStatus(null);
+            teamPlayer.setStatus(Status.unKnow);
         }else {
             teamPlayer.setTeam(myWorldTeam.team);
             teamPlayer.setStatus(Status.player);
@@ -47,5 +47,23 @@ public class MyWorldPlayer {
         if (teamPlayer.getTeam()!=null) {
             teamPlayer.setStatus(status);
         }
+    }
+    /**
+     * 获取玩家的级别,级别越低权限越高。
+     * */
+    public Status getStatus(){
+        return teamPlayer.getStatus();
+    }
+
+    /**
+     * 获取玩家名称
+     * */
+    public String getName(){
+        return teamPlayer.getName();
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

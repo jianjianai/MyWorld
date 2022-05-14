@@ -1,12 +1,9 @@
 package cn.jja8.myWorld.bukkit.command.user;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
-import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.command.tool.TeamsPlayerTool;
-import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
 import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
+import cn.jja8.myWorld.bukkit.work.*;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,34 +14,36 @@ public class Go implements CommandImplement {
     public void command(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
-        Team team = TeamsPlayerTool.getTeamPlayerNotNull(player).getTeam();
+        MyWorldPlayer myWorldPlayer = MyWorldManger.getPlayer(player);
+        MyWorldTeam team = myWorldPlayer.getTeam();
         if (team == null) {
             player.sendMessage(ConfigBukkit.getLang().返回世界_没有团队);
             return;
         }
-        WorldGroup worldGroup = team.getWorldGroup();
+        MyWorldWorldGroup worldGroup = team.getWorldGroup();
         if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().返回世界_团队没有世界);
             return;
         }
-        PlayerWorlds playerWorlds = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(worldGroup);
-        if (playerWorlds != null) {
-            playerWorlds.playerBack(player);
-            player.sendMessage(ConfigBukkit.getLang().返回世界_传送成功);
-            return;
-        }
-        Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            PlayerWorlds world;
-            try {
-                world = MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worldGroup);
-            } catch (NoAllWorldLocks e) {
-                player.sendMessage(ConfigBukkit.getLang().返回世界_世界被其他服务器加载);
-                return;
+        worldGroup.load(new MyWorldWorldGroup.OnLoad() {
+            @Override
+            public void onload(MyWorldWorldGrouping worldGrouping) {
+                Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+                    worldGrouping.playerBack(player);
+                    player.sendMessage(ConfigBukkit.getLang().返回世界_传送成功);
+                });
             }
-            Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                world.playerBack(player);
-                player.sendMessage(ConfigBukkit.getLang().返回世界_传送成功);
-            });
+
+            @Override
+            public void fail(Exception exception) {
+                if (exception instanceof NoAllWorldLocks){
+                    player.sendMessage(ConfigBukkit.getLang().返回世界_世界被其他服务器加载);
+                }else {
+                    player.sendMessage(ConfigBukkit.getLang().返回世界_未知异常);
+                    exception.printStackTrace();
+                }
+
+            }
         });
     }
 }

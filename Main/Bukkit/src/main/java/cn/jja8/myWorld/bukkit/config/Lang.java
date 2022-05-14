@@ -4,6 +4,8 @@ package cn.jja8.myWorld.bukkit.config;
 import java.util.ArrayList;
 
 public class Lang {
+    public   String 去出生点_未知异常 = "加载世界出错，请联系管理员。";
+    public   String 返回世界_未知异常 = "加载世界出错，请联系管理员。";
     public   String 世界卸载主世界配置错误 = "主世界不存在，只能将你踢出游戏。请联系管理员在WorldConfig中正确设置主世界。";
     public   String 添加信任_世界不存在 ="你所在的团队没有世界";
     public   String 取消信任_世界不存在 = "你所在的团队没有世界";
@@ -20,7 +22,6 @@ public class Lang {
     public   String 删除团队_没有删除世界 = "在删除团队之前，请先删除世界。";
     public   String 世界交互_无权限 = "你没有<世界>的交互权限";
     public   String 创建世界_名称禁止使用 = "<世界>名称被禁止使用";
-    public   String 创建世界_世界已经存在 = "<世界>世界已经存在服务器中了，请换一个名称。";
     public   String 删除世界_删除成功 = "删除成功";
     public   String 删除世界_删除确认 = "请添加一条参数”yes“来确认你确认要删除世界。";
     public   String 删除世界_玩家没有团队 = "你没有团队";
@@ -91,6 +92,7 @@ public class Lang {
     public String goTo_世界不存在="<世界>世界不存在。";
     public String nuLoadWorld_世界不存在="<世界>世界不存在。";
     public String loadWorld_世界被其他服务器加载 = "被其他服务器加载";
+    public String loadWorld_未知异常 = "请在后台查看详细信息。";
 
     public Lang(){
         查询信息_长信息列表.add("你所在的团队是：<团队>");

@@ -1,10 +1,9 @@
 package cn.jja8.myWorld.bukkit.command;
 
-import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.command.user.*;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
+import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandManger;
 import org.bukkit.entity.Player;
 
@@ -13,11 +12,11 @@ import java.util.Map;
 
 public class UserCommand {
     //<被邀请的玩家,团队>
-    public Map<Player, Team> 邀请map = new HashMap<>();
+    public Map<Player, MyWorldTeam> acceptInvitationMap = new HashMap<>();
     CommandManger commandManger;
     public UserCommand() {
         commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"}, ConfigBukkit.getPermission().使用权限);
-        CommandImplement go = new Go();
+        Go go = new Go();
         commandManger.setDefaulCommand(go);
         commandManger.addCommand(new String[]{"NewTeam","创建团队"}, new NewTeam());
         commandManger.addCommand(new String[]{"DisbandOurTeam","解散团队"}, new DisbandOurTeam());
@@ -32,7 +31,7 @@ public class UserCommand {
         commandManger.addCommand(new String[]{"ServerName"}, new ServerName());
         commandManger.addCommand(new String[]{"goBeginningPoint","去出生点"}, new goBeginningPoint());
         commandManger.addCommand(new String[]{"go","回到世界"}, go);
-        commandManger.addCommand(new String[]{"NewWorld","创建世界"}, new NewWorld());
+        commandManger.addCommand(new String[]{"NewWorld","创建世界"}, new NewWorld(go));
     }
 
     public CommandManger getCommandManger() {

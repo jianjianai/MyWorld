@@ -33,7 +33,7 @@ public class PlayerWordInform {
     }
 
     /**
-     * 判断玩家是否有权限
+     * 判断玩家是否被信任
      */
     public boolean isBeTrust(String PlayerName) {
        return BeTrustList.contains(PlayerName);
@@ -53,7 +53,7 @@ public class PlayerWordInform {
     /**
      * 信任玩家列表
      * */
-    public List<String> BeTrustList(){
+    public List<String> beTrustList(){
         return new ArrayList<>(BeTrustList);
     }
 

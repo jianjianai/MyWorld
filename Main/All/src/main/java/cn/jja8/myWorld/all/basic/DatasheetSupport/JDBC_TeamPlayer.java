@@ -41,7 +41,7 @@ public class JDBC_TeamPlayer implements TeamPlayer {
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-        return Status.player;
+        return Status.unKnow;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class JDBC_TeamPlayer implements TeamPlayer {
     public void setStatus(Status status) {
         try (Connection connection = teamManger.getConnection()){
             try (PreparedStatement preparedStatement = connection.prepareStatement("update TeamPlayer set Status=? where PlayerUUID=?")){
-                preparedStatement.setString(1,status==null?null:status.toString());
+                preparedStatement.setString(1,status==null?Status.unKnow.toString():status.toString());
                 preparedStatement.setString(2,PlayerUUID.toString());
                 preparedStatement.executeUpdate();
             }

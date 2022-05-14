@@ -6,8 +6,6 @@ import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.work.error.NoWorldLocks;
 import org.bukkit.Bukkit;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 代表一个世界组
@@ -24,7 +22,6 @@ public class MyWorldWorldGroup {
          */
         void fail(Exception exception);
     }
-    static Map<String,MyWorldWorldGrouping> groupName_myWorldWorldGroupingMap = new HashMap<>();
 
     WorldGroup worldGroup;
     String name;
@@ -34,6 +31,14 @@ public class MyWorldWorldGroup {
     }
 
     /**
+     * 获取世界组名称
+     * */
+    public String getName() {
+        return name;
+    }
+
+
+    /**
      * 删除这个世界组
      * */
     public void delete() throws NoWorldLocks {
@@ -41,19 +46,27 @@ public class MyWorldWorldGroup {
     }
 
     /**
+     * 获取已经加载的本世界组
+     * @return null 没有被加载
+     * */
+    public MyWorldWorldGrouping getLoaded(){
+        return MyWorldManger.groupName_myWorldWorldGroupingMap.get(name);
+    }
+
+    /**
      * 加载这个世界组
-     * @param onLoad 加载完成时返回世界组
+     * @param onLoad 加载完成时返回世界组,此时是在异步运行
      * */
     public void load(OnLoad onLoad){
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
             synchronized (MyWorldWorldGroup.class){
-                MyWorldWorldGrouping myWorldWorldGrouping = groupName_myWorldWorldGroupingMap.get(name);
+                MyWorldWorldGrouping myWorldWorldGrouping = getLoaded();
                 if (myWorldWorldGrouping!=null){
                     onLoad.onload(myWorldWorldGrouping);
                 }
                 try {
                     myWorldWorldGrouping = new MyWorldWorldGrouping(MyWorldBukkit.getPlayerWordMangaer().loadPlayerWorlds(worldGroup),this);
-                    groupName_myWorldWorldGroupingMap.put(name,myWorldWorldGrouping);
+                    MyWorldManger.groupName_myWorldWorldGroupingMap.put(name,myWorldWorldGrouping);
                     onLoad.onload(myWorldWorldGrouping);
                 } catch (NoAllWorldLocks e) {
                     onLoad.fail(e);
@@ -61,4 +74,6 @@ public class MyWorldWorldGroup {
             }
         });
     }
+
+
 }
