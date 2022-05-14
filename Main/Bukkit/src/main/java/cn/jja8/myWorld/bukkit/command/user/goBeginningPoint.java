@@ -2,7 +2,7 @@ package cn.jja8.myWorld.bukkit.command.user;
 
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.word.error.NoAllWorldLocks;
+import cn.jja8.myWorld.bukkit.work.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;

@@ -9,10 +9,11 @@ import cn.jja8.myWorld.bukkit.command.AdminCommand;
 import cn.jja8.myWorld.bukkit.command.tool.NameTool;
 import cn.jja8.myWorld.bukkit.command.UserCommand;
 import cn.jja8.myWorld.bukkit.listener.PlayerDataManager;
-import cn.jja8.myWorld.bukkit.word.PlayerWordManager;
+import cn.jja8.myWorld.bukkit.listener.LeaveTheWorldPositionRecord;
 import cn.jja8.myWorld.bukkit.listener.WorldPortal;
 import cn.jja8.myWorld.bukkit.listener.WorldClean;
 import cn.jja8.myWorld.bukkit.listener.WorldSecurity;
+import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.bStats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +27,7 @@ import java.util.Random;
 
 public class MyWorldBukkit extends JavaPlugin{
 
-    static PlayerWordManager playerWordManager = null;
+    static LeaveTheWorldPositionRecord leaveTheWorldPositionRecord = null;
     static UserCommand userCommand = null;
     static AdminCommand adminCommand = null;
     static PlayerDataManager playerDataManager = null;
@@ -35,8 +36,8 @@ public class MyWorldBukkit extends JavaPlugin{
     static WorldClean worldClean = null;
     static WorldPortal worldPortal = null;
 
-    public static PlayerWordManager getPlayerWordMangaer() {
-        return playerWordManager;
+    public static LeaveTheWorldPositionRecord getPlayerWordMangaer() {
+        return leaveTheWorldPositionRecord;
     }
     public static MyWorldBukkit getMyWorldBukkit() {
         return myWorldBukkit;
@@ -104,7 +105,7 @@ public class MyWorldBukkit extends JavaPlugin{
         getLogger().info("若有疑问，您可以前往 “PlugClub/插件实验室 - 820131534” 交流。");
         getLogger().warning("当前非正式版本，若有bug您可以前往 “PlugClub/插件实验室 - 820131534” 交流和反馈。");
         //加载管理器
-        playerWordManager = new PlayerWordManager();
+        leaveTheWorldPositionRecord = new LeaveTheWorldPositionRecord();
         playerDataManager = new PlayerDataManager();
         worldSecurity = new WorldSecurity();
         worldClean = new WorldClean();
@@ -143,9 +144,9 @@ public class MyWorldBukkit extends JavaPlugin{
 
     @Override
     public void onDisable() {
-        if (playerWordManager != null) {
+        if (leaveTheWorldPositionRecord != null) {
             getLogger().info("正在保存世界..");
-            playerWordManager.close();
+            MyWorldManger.close();
         }
         if (playerDataManager != null) {
             getLogger().info("正在保存玩家数据..");

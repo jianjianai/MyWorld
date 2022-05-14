@@ -36,7 +36,7 @@ public class TrustHim implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().添加信任_世界未加载);
             return;
         }
-        beLoadWorlds.getMyWorldWordInform().addBeTrust(strings[0]);
+        beLoadWorlds.getMyWorldWordInform().getTrust().addBeTrust(strings[0]);
         player.sendMessage(ConfigBukkit.getLang().添加信任_添加成功);
     }
 }

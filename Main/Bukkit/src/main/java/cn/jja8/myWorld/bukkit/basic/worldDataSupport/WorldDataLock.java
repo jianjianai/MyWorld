@@ -31,12 +31,26 @@ public interface WorldDataLock {
     default World loadWorldAsync(LoadingProgress loadingProgress){
         Bukkit.getLogger().warning("异步加载世界方式未被实现，将在主线程加载世界");
         AtomicReference<World> world = new AtomicReference<>();
-        Bukkit.getServer().getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> world.set(loadWorld(loadingProgress)));
-        while (world.get()==null){
+        AtomicReference<Throwable> throwable = new AtomicReference<>();
+        Bukkit.getServer().getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+            try {
+                world.set(loadWorld(loadingProgress));
+            }catch (Throwable e){
+                throwable.set(e);
+            }
+
+        });
+        while (true){
             try {
                 Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if (world.get()!=null){
+                break;
+            }
+            if (throwable.get() !=null){
+                throw new Error(throwable.get());
             }
         }
         return world.get();

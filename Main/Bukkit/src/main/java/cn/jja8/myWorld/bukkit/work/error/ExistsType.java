@@ -1,6 +1,4 @@
-package cn.jja8.myWorld.bukkit.word.error;
-
-import cn.jja8.myWorld.bukkit.work.error.MyWorldException;
+package cn.jja8.myWorld.bukkit.work.error;
 
 /**
  * 世界类型已存在异常

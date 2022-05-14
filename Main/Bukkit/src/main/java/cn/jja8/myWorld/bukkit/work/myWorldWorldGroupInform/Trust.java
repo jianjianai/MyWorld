@@ -1,4 +1,4 @@
-package cn.jja8.myWorld.bukkit.word;
+package cn.jja8.myWorld.bukkit.work.myWorldWorldGroupInform;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroupData;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 代表一个世界的信息
+ * 信任信息
  */
-public class PlayerWordInform {
+public class Trust {
     private final List<String> BeTrustList;
     private final WorldGroupData worldGroupData;
-    public PlayerWordInform(WorldGroupData worldGroupData) {
+    public Trust(WorldGroupData worldGroupData) {
         this.worldGroupData = worldGroupData;
         byte[] bytes = worldGroupData.getData();
         if (bytes==null){

@@ -2,8 +2,9 @@ package cn.jja8.myWorld.bukkit.listener;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Portal;
-import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
-import cn.jja8.myWorld.bukkit.word.name.PlayerWorldTypeAtName;
+import cn.jja8.myWorld.bukkit.work.name.PlayerWorldTypeAtName;
+import cn.jja8.myWorld.bukkit.work.MyWorldManger;
+import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,13 +21,13 @@ public class WorldPortal implements Listener {
 
     @EventHandler
     public void 实体被传送门传送(EntityPortalEvent event){
-        PlayerWorlds playerWorldsFrom = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(event.getFrom().getWorld());
+        MyWorldWorldGrouping playerWorldsFrom = MyWorldManger.getWorldGrouping(event.getFrom().getWorld());
         if (playerWorldsFrom ==null){
             return;
         }
         Location to = event.getTo();
         if (to!=null){
-            PlayerWorlds playerWorldsTo = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(to.getWorld());
+            MyWorldWorldGrouping playerWorldsTo = MyWorldManger.getWorldGrouping(to.getWorld());
             if (playerWorldsTo == playerWorldsFrom){
                 return;
             }
@@ -35,21 +36,21 @@ public class WorldPortal implements Listener {
         Portal.portalTransmission.send(
                 event.getEntity(),
                 event.getFrom().getBlock(),
-                playerWorldsFrom.getWorld(PlayerWorldTypeAtName.world),
-                playerWorldsFrom.getWorld(PlayerWorldTypeAtName.infernal),
-                playerWorldsFrom.getWorld(PlayerWorldTypeAtName.end)
+                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.world.toString()).getWorld(),
+                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.infernal.toString()).getWorld(),
+                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.end.toString()).getWorld()
         );
     }
 
     @EventHandler
     public void 玩家被传送门传送(PlayerPortalEvent event){
-        PlayerWorlds playerWorldsFrom = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(event.getFrom().getWorld());
+        MyWorldWorldGrouping playerWorldsFrom = MyWorldManger.getWorldGrouping(event.getFrom().getWorld());
         if (playerWorldsFrom ==null){
             return;
         }
         Location to = event.getTo();
         if (to!=null){
-            PlayerWorlds playerWorldsTo = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(to.getWorld());
+            MyWorldWorldGrouping playerWorldsTo = MyWorldManger.getWorldGrouping(to.getWorld());
             if (playerWorldsTo == playerWorldsFrom){
                 return;
             }
@@ -58,9 +59,9 @@ public class WorldPortal implements Listener {
         Portal.portalTransmission.send(
                 event.getPlayer(),
                 event.getFrom().getBlock(),
-                playerWorldsFrom.getWorld(PlayerWorldTypeAtName.world),
-                playerWorldsFrom.getWorld(PlayerWorldTypeAtName.infernal),
-                playerWorldsFrom.getWorld(PlayerWorldTypeAtName.end)
+                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.world.toString()).getWorld(),
+                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.infernal.toString()).getWorld(),
+                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.end.toString()).getWorld()
         );
     }
 }

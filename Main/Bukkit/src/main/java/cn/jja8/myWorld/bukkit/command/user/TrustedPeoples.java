@@ -33,7 +33,7 @@ public class TrustedPeoples implements CommandImplement {
             return;
         }
         String worldGroupName = worldGroup.getName();
-        List<String> 信任列表 = myWorldWorldGrouping.getMyWorldWordInform().beTrustList();
+        List<String> 信任列表 = myWorldWorldGrouping.getMyWorldWordInform().getTrust().beTrustList();
         player.sendMessage(ConfigBukkit.getLang().信任列表_信息.replaceAll("<世界>", worldGroupName).replaceAll("<数量>", String.valueOf(信任列表.size())).replaceAll("<列表>", 信任列表.toString()));
     }
 }

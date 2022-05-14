@@ -3,7 +3,9 @@ package cn.jja8.myWorld.bukkit.listener;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.config.WorldConfig;
-import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
+import cn.jja8.myWorld.bukkit.work.MyWorldManger;
+import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
+import cn.jja8.myWorld.bukkit.work.MyWorldWorlding;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -20,9 +22,9 @@ import java.util.List;
  * */
 public class WorldClean  implements Listener {
     WorldConfig worldConfig = ConfigBukkit.getWorldConfig();
-    List<PlayerWorlds> 空世界 = new ArrayList<>();
-    List<PlayerWorlds> 过期空世界 = new ArrayList<>();
-    List<PlayerWorlds> cleaningWorlds = new ArrayList<>();
+    List<MyWorldWorldGrouping> 空世界 = new ArrayList<>();
+    List<MyWorldWorldGrouping> 过期空世界 = new ArrayList<>();
+    List<MyWorldWorldGrouping> cleaningWorlds = new ArrayList<>();
     public WorldClean(){
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
         //扫描过期世界
@@ -33,14 +35,14 @@ public class WorldClean  implements Listener {
                 过期空世界 = 空世界;
                 空世界 = new ArrayList<>();
                 //扫描空世界
-                List<PlayerWorlds> playerWorldsList = new ArrayList<>(MyWorldBukkit.getPlayerWordMangaer().getWorlds());
+                List<MyWorldWorldGrouping> playerWorldsList = new ArrayList<>(MyWorldManger.getLoadedWorldGrouping().values());
                 playerWorldsList.removeAll(空世界);
                 playerWorldsList.removeAll(过期空世界);
                 playerWorldsList.removeAll(cleaningWorlds);
                 playerWorldsList.forEach(playerWord -> {
                     boolean k = true;
-                    for (World value : playerWord.getTypeWorldMap().values()) {
-                        if (value.getPlayers().size()>0){
+                    for (MyWorldWorlding value : playerWord.getAllLoadWorld()) {
+                        if (value.getWorld().getPlayers().size()>0){
                             k = false;
                             break;
                         }
@@ -56,7 +58,7 @@ public class WorldClean  implements Listener {
             @Override
             public void run() {
                 if (cleaningWorlds.size()>0){
-                    PlayerWorlds playerWorlds = cleaningWorlds.remove(0);
+                    MyWorldWorldGrouping playerWorlds = cleaningWorlds.remove(0);
                     playerWorlds.unLoad(true);
                 }
             }
@@ -73,7 +75,7 @@ public class WorldClean  implements Listener {
         if (word==null){
             return;
         }
-        PlayerWorlds wo = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(word);
+        MyWorldWorldGrouping wo = MyWorldManger.getWorldGrouping(word);
         if (wo==null){
             return;
         }
@@ -88,7 +90,7 @@ public class WorldClean  implements Listener {
         if (word==null){
             return;
         }
-        PlayerWorlds wo = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(word);
+        MyWorldWorldGrouping wo = MyWorldManger.getWorldGrouping(word);
         if (wo==null){
             return;
         }

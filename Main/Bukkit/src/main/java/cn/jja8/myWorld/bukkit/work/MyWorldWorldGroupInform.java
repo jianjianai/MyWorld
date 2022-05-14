@@ -1,32 +1,31 @@
 package cn.jja8.myWorld.bukkit.work;
 
-import cn.jja8.myWorld.bukkit.word.PlayerWordInform;
-
-import java.util.List;
+import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroupData;
+import cn.jja8.myWorld.bukkit.work.myWorldWorldGroupInform.PlayerLeaveLocation;
+import cn.jja8.myWorld.bukkit.work.myWorldWorldGroupInform.Trust;
+import cn.jja8.myWorld.bukkit.work.name.WorldsDataName;
 
 public class MyWorldWorldGroupInform {
-    PlayerWordInform playerWordInform;
-    MyWorldWorldGroupInform(PlayerWordInform playerWordInform) {
-        this.playerWordInform = playerWordInform;
-    }
-    /**
-     * 取消信任玩家
-     * */
-    public void delBeTrust(String playerName) {
-        playerWordInform.delBeTrust(playerName);
-    }
-
-    /**
-     * 获取被信任的玩家列表
-     * */
-    public List<String> beTrustList() {
-        return playerWordInform.beTrustList();
+    Trust trust;
+    PlayerLeaveLocation playerLeaveLocation;
+    MyWorldWorldGroupInform(MyWorldWorldGroup myWorldWorldGroup) {
+        WorldGroupData worldGroupData = myWorldWorldGroup.worldGroup.getWorldGroupData(WorldsDataName.playerWordInform.toString());
+        if (worldGroupData ==null){
+            worldGroupData = myWorldWorldGroup.worldGroup.newWorldGroupData(WorldsDataName.playerWordInform.toString());
+        }
+        this.trust = new Trust(worldGroupData);
+        this.playerLeaveLocation = new PlayerLeaveLocation(myWorldWorldGroup.worldGroup);
     }
 
-    /**
-     * 添加信任的玩家
-     * */
-    public void addBeTrust(String playerName) {
-        playerWordInform.addBeTrust(playerName);
+    public Trust getTrust() {
+        return trust;
+    }
+
+    public PlayerLeaveLocation getPlayerLeaveLocation() {
+        return playerLeaveLocation;
+    }
+
+    public void save() {
+        trust.save();
     }
 }

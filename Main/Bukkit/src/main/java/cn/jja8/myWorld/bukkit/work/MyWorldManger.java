@@ -7,6 +7,7 @@ import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
 import cn.jja8.myWorld.bukkit.work.error.TeamAlreadyExists;
 import cn.jja8.myWorld.bukkit.work.error.WorldGroupAlreadyExists;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -16,12 +17,26 @@ import java.util.Map;
  * 一个静态类
  * */
 public class MyWorldManger {
-    static Map<String,MyWorldWorldGrouping> groupName_myWorldWorldGroupingMap = new HashMap<>();
+    static Map<String,MyWorldWorldGrouping> groupName_myWorldWorldGrouping = new HashMap<>();
+    static Map<World, MyWorldWorldGrouping> world_MyWorldWorldGrouping = new HashMap<>();
+    static Map<String,MyWorldWorldLock> worldName_MyWorldWorldLock = new HashMap<>();
+    static Map<String,MyWorldWorlding> worldName_MyWorldWorlding = new HashMap<>();
+    /**
+     * 关闭
+     * */
+    public static void close(){
+        for (MyWorldWorldGrouping value : groupName_myWorldWorldGrouping.values()) {
+            value.unLoad(true);
+        }
+        groupName_myWorldWorldGrouping = new HashMap<>();
+        world_MyWorldWorldGrouping = new HashMap<>();
+    }
+
     /**
      * 获取已经加载的世界组name map
      * */
     public static Map<String,MyWorldWorldGrouping> getLoadedWorldGrouping(){
-        return new HashMap<>(groupName_myWorldWorldGroupingMap);
+        return new HashMap<>(groupName_myWorldWorldGrouping);
     }
 
     /**
@@ -80,6 +95,12 @@ public class MyWorldManger {
             throw new MyWorldError("未知错误！");
         }
         return new MyWorldWorldGroup(worldGroup);
+    }
 
+    /**
+     * 获取世界对应的世界组
+     * */
+    public static MyWorldWorldGrouping getWorldGrouping(World world){
+        return world_MyWorldWorldGrouping.get(world);
     }
 }

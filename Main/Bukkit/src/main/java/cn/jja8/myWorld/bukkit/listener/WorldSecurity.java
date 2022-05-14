@@ -8,7 +8,8 @@ import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.config.Lang;
 import cn.jja8.myWorld.bukkit.config.Permission;
-import cn.jja8.myWorld.bukkit.word.PlayerWorlds;
+import cn.jja8.myWorld.bukkit.work.MyWorldManger;
+import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.World;
@@ -103,13 +104,13 @@ public class WorldSecurity implements Listener {
         if (player.hasPermission(permission.管理员权限)){
             return true;
         }
-        PlayerWorlds 世界 = MyWorldBukkit.getPlayerWordMangaer().getBeLoadPlayerWorlds(world);
+        MyWorldWorldGrouping worldWorldGrouping = MyWorldManger.getWorldGrouping(world);
         //如果玩家不在玩家的世界
-        if (世界==null){
+        if (worldWorldGrouping==null){
             return true;
         }
         //判断世界信任
-        if (世界.getPlayerWordInform().isBeTrust(player.getName())){
+        if (worldWorldGrouping.getMyWorldWordInform().getTrust().isBeTrust(player.getName())){
             return true;
         }
         //判断玩家团队
@@ -125,6 +126,6 @@ public class WorldSecurity implements Listener {
         if (worldGroup ==null){
             return false;
         }
-        return 世界.getName().equals(worldGroup.getWorldGroupName());
+        return worldWorldGrouping.getMyWorldWorldGroup().getName().equals(worldGroup.getWorldGroupName());
     }
 }
