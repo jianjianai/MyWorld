@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.function.BiConsumer;
 
-public class NuLoadAllWorld implements CommandImplement {
+public class UnLoadAllWorld implements CommandImplement {
     @Override
     public void command(CommandSender commandSender, String[] strings) {
         MyWorldManger.getLoadedWorldGrouping().forEach(new BiConsumer<String, MyWorldWorldGrouping>() {
