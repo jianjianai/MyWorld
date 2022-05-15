@@ -101,24 +101,22 @@ public class MyWorldManger {
         }
         MyWorldWorldGroup myWorldWorldGroup = new MyWorldWorldGroup(worldGroup);
         //添加默认的世界到组中
-        ConfigBukkit.getDefWorlds().getType_defMyWorldWorldCreator().forEach(new BiConsumer<String, MyWorldWorldCreator>() {
-            @Override
-            public void accept(String s, MyWorldWorldCreator myWorldWorldCreator) {
-                String worldName = myWorldWorldGroup.name+"_"+s;
-                MyWorldWorld myWorldWorld = MyWorldManger.newWorld(s);
-                if (myWorldWorld==null){
-                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning("已经存在"+worldName+"世界，无法创建。世界组"+myWorldWorldGroup.name+"将没有"+s+"世界。");
-                    return;
-                }
-                MyWorldWorldLock lock = myWorldWorld.getMyWorldWorldLock();
-                if (lock==null){
-                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning("无法获取"+worldName+"世界的锁，无法创建。世界组"+myWorldWorldGroup.name+"将没有"+s+"世界。");
-                    return;
-                }
-                lock.myWorldWorldInform.getMyWorldWorldCreator().copy(myWorldWorldCreator);
-                lock.unlock(true);
-                myWorldWorldGroup.putWorld(myWorldWorld);
+        ConfigBukkit.getDefWorlds().getType_defMyWorldWorldCreator().forEach((s, myWorldWorldCreator) -> {
+            String worldName = myWorldWorldGroup.name+"_"+s;
+            MyWorldWorld myWorldWorld = MyWorldManger.newWorld(worldName);
+            if (myWorldWorld==null){
+                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("已经存在"+worldName+"世界，无法创建。世界组"+myWorldWorldGroup.name+"将没有"+s+"世界。");
+                return;
             }
+            MyWorldWorldLock lock = myWorldWorld.getMyWorldWorldLock();
+            if (lock==null){
+                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("无法获取"+worldName+"世界的锁，无法创建。世界组"+myWorldWorldGroup.name+"将没有"+s+"世界。");
+                return;
+            }
+            lock.getMyWorldWorldInform().getMyWorldWorldType().setType(s);
+            lock.getMyWorldWorldInform().getMyWorldWorldCreator().copy(myWorldWorldCreator);
+            lock.unlock(true);
+            myWorldWorldGroup.putWorld(myWorldWorld);
         });
         return myWorldWorldGroup;
     }

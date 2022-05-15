@@ -165,35 +165,37 @@ public class MyWorldWorldCreator {
      * 完成世界加载后的设置
      */
     public void setting(World world) {
-        //设置难度
-        world.setDifficulty(difficulty);
-        //设置规则
-        gameRule.forEach((s, o) -> {
-            GameRule<Object> gameRule = (GameRule<Object>) GameRule.getByName(s);
-            if (gameRule == null) {
-                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("规则" + s + "无效！");
-                return;
-            }
-            if (o instanceof String) {
-                if (gameRule.getType().equals(Integer.class)) {
-                    try {
-                        o = Integer.valueOf((String) o);
-                    } catch (NumberFormatException ignored) {
+        Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
+            //设置难度
+            world.setDifficulty(difficulty);
+            //设置规则
+            gameRule.forEach((s, o) -> {
+                GameRule<Object> gameRule = (GameRule<Object>) GameRule.getByName(s);
+                if (gameRule == null) {
+                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning("规则" + s + "无效！");
+                    return;
+                }
+                if (o instanceof String) {
+                    if (gameRule.getType().equals(Integer.class)) {
+                        try {
+                            o = Integer.valueOf((String) o);
+                        } catch (NumberFormatException ignored) {
 
-                    }
-                } else if (gameRule.getType().equals(Boolean.class)) {
-                    if (o.equals("true")) {
-                        o = true;
-                    } else if (o.equals("false")) {
-                        o = false;
+                        }
+                    } else if (gameRule.getType().equals(Boolean.class)) {
+                        if (o.equals("true")) {
+                            o = true;
+                        } else if (o.equals("false")) {
+                            o = false;
+                        }
                     }
                 }
-            }
-            if (!(gameRule.getType().equals(o.getClass()))) {
-                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("规则" + s + "需要" + gameRule.getType() + "而提供的是" + o.getClass());
-                return;
-            }
-            world.setGameRule(gameRule, o);
+                if (!(gameRule.getType().equals(o.getClass()))) {
+                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning("规则" + s + "需要" + gameRule.getType() + "而提供的是" + o.getClass());
+                    return;
+                }
+                world.setGameRule(gameRule, o);
+            });
         });
     }
 

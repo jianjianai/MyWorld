@@ -25,10 +25,12 @@ public class MyWorldWorldInform {
         //加载myWorldWorldCreator
         myWorldWorldCreator = new MyWorldWorldCreator();
         byte[] bytes = myWorldWorldLock.worldDataLock.getCustomDataByte(WorldCustomDataName.WorldCreator.toString());
-        StringReader stringReader = new StringReader(new String(bytes, StandardCharsets.UTF_8));
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(stringReader);
-        stringReader.close();
-        myWorldWorldCreator.loadByYaml(yamlConfiguration);
+        if (bytes!=null){
+            StringReader stringReader = new StringReader(new String(bytes, StandardCharsets.UTF_8));
+            YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(stringReader);
+            stringReader.close();
+            myWorldWorldCreator.loadByYaml(yamlConfiguration);
+        }
     }
 
     public void save(){

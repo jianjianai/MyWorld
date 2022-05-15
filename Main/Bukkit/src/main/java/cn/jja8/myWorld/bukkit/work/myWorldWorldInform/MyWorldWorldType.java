@@ -26,6 +26,8 @@ public class MyWorldWorldType {
     }
 
     public void save(){
-        worldDataLock.setCustomDataByte(WorldsDataName.WorldType.toString(),type.getBytes(StandardCharsets.UTF_8));
+        if (type!=null){
+            worldDataLock.setCustomDataByte(WorldsDataName.WorldType.toString(),type.getBytes(StandardCharsets.UTF_8));
+        }
     }
 }
