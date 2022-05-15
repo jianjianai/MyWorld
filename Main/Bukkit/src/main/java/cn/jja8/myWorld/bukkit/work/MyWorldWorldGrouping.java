@@ -2,21 +2,15 @@ package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.basic.WorldData;
-import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
-import cn.jja8.myWorld.bukkit.config.WorldBuilder;
-import cn.jja8.myWorld.bukkit.work.error.*;
+import cn.jja8.myWorld.bukkit.work.error.ExistsType;
+import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
+import cn.jja8.myWorld.bukkit.work.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.work.name.PlayerWorldTypeAtName;
-import cn.jja8.myWorld.bukkit.work.name.WorldCustomDataName;
-import com.esotericsoftware.yamlbeans.YamlException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,62 +20,72 @@ public class MyWorldWorldGrouping {
     MyWorldWorldGroup myWorldWorldGroup;
     MyWorldWorldGroupInform myWorldWorldGroupInform;
 
-    Map<World, WorldDataLock> worldLockMap = new HashMap<>();
-    Map<String,World> typeWorldMap=new HashMap<>();
+    Map<String,MyWorldWorldGroupingWorlding> type_MyWorldWorldGroupingWorlding = new HashMap<>();
 
     MyWorldWorldGrouping(MyWorldWorldGroup myWorldWorldGroup) throws NoAllWorldLocks {
         this.myWorldWorldGroup = myWorldWorldGroup;
         myWorldWorldGroupInform = new MyWorldWorldGroupInform(myWorldWorldGroup);
         List<String> worldList = myWorldWorldGroup.worldGroup.getWorldList();
-        Map<WorldDataLock,String> worldDataLockNameMap = new HashMap<>();
+        List<MyWorldWorldLock> myWorldWorldLockList = new ArrayList<>();
         //加载所有世界的锁
         for (String s : worldList) {
-            WorldCreator worldCreator = new WorldCreator(s);
-            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldCreator, ConfigBukkit.getWorldConfig().服务器名称);
-            if (worldDataLock!=null) {
-                worldDataLockNameMap.put(worldDataLock,s);
-
-                //加载世界生成器
-                WorldBuilder worldBuilder = null;
-                byte[] bytes = worldDataLock.getCustomDataByte(WorldCustomDataName.WorldCreator.toString());
-                if (bytes!=null){
-                    try {
-                        worldBuilder = WorldBuilder.loadAsByte(bytes);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            MyWorldWorldLock myWorldWorld = new MyWorldWorld(s).getMyWorldWorldLock();
+            if (myWorldWorld==null){
+                for (MyWorldWorldLock myWorldWorldLock : myWorldWorldLockList) {
+                    myWorldWorldLock.unlock(false);
                 }
-                if (worldBuilder==null){
-                    worldBuilder = ConfigBukkit.getWorldConfig().主世界生成器;
-                }
-                worldCreator.copy(worldBuilder.getWordBuilder(s));
+                throw new NoAllWorldLocks("无法获得世界"+s+"的锁，有可能已经被其他服务器加载。");
+            }else {
+                myWorldWorldLockList.add(myWorldWorld);
             }
         }
-        //判断世界全部上锁
-        if (worldDataLockNameMap.size()<worldList.size()){
-            for (WorldDataLock worldDataLock : worldDataLockNameMap.keySet()) {
-                worldDataLock.unlock();
-            }
-            throw new NoAllWorldLocks("无法获取"+myWorldWorldGroup.getName()+"世界组中全部的锁。");
-        }
-
         //加载全部世界
-        worldDataLockNameMap.forEach((worldDataLock, worldName) -> {
-            byte[] bytes = worldDataLock.getCustomDataByte(WorldCustomDataName.WorldType.toString());
-            if (bytes==null){
-                MyWorldBukkit.getMyWorldBukkit().getLogger().warning(myWorldWorldGroup.getName()+"中"+worldName+"世界没有世界类型，将不会被加载。");
-                worldDataLock.unlock();
-                return;
+        for (MyWorldWorldLock myWorldWorldLock : myWorldWorldLockList) {
+            String worldType = myWorldWorldLock.getMyWorldWorldInform().getMyWorldWorldType().getType();
+            if (worldType==null){
+                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("世界组"+myWorldWorldGroup.getName()+"中的"+myWorldWorldLock.myWorldWorld.name+"世界没有指定type，不会被加载！");
+                myWorldWorldLock.unlock(false);
+                continue;
             }
-            String worldType = new String(bytes, StandardCharsets.UTF_8);
-            LoadingProgress loadingProgress =  new LoadingProgress(worldName);
-            World world = worldDataLock.loadWorldAsync(loadingProgress);
-            loadingProgress.finish();
-            typeWorldMap.put(worldType,world);
-            worldLockMap.put(world,worldDataLock);
-            MyWorldManger.world_MyWorldWorldGrouping.put(world,this);
-        });
-        MyWorldManger.groupName_myWorldWorldGrouping.put(myWorldWorldGroup.getName(),this);
+            MyWorldWorldGroupingWorlding myWorldWorldGroupingWorlding = type_MyWorldWorldGroupingWorlding.get(worldType);
+            if (myWorldWorldGroupingWorlding!=null){
+                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("世界组"+myWorldWorldGroup.getName()+"中的"+myWorldWorldLock.myWorldWorld.name+"世界的tpye与"+myWorldWorldGroupingWorlding.myWorldWorlding.myWorldWorldLock.myWorldWorld.name+"世界相同，不会被加载！");
+                myWorldWorldLock.unlock(false);
+                continue;
+            }
+            final MyWorldWorlding[] worlding = new MyWorldWorlding[1];
+            final Exception[] err = new Exception[1];
+            myWorldWorldLock.loadWorld(new MyWorldWorldLock.OnLoad() {
+                @Override
+                public void onload(MyWorldWorlding myWorldWorlding) {
+                    worlding[0] = myWorldWorlding;
+                }
+
+                @Override
+                public void fail(Exception exception) {
+                    err[0] = exception;
+                }
+            });
+            while (true){
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (worlding[0] !=null){
+                    break;
+                }
+                if (err[0] !=null){
+                    err[0].printStackTrace();
+                    break;
+                }
+
+            }
+            if (worlding[0] ==null){
+                continue;
+            }
+            type_MyWorldWorldGroupingWorlding.put(worldType,new MyWorldWorldGroupingWorlding(worldType,this, worlding[0]));
+        }
     }
 
     /**
@@ -89,60 +93,44 @@ public class MyWorldWorldGrouping {
      * @param save 是否保存数据。
      * */
     public void unLoad(boolean save){
+        //踢出玩家
         World mainWord = Bukkit.getWorld(ConfigBukkit.getWorldConfig().主世界名称);
         if (mainWord==null){
-            typeWorldMap.forEach((worldType, world) -> {
-                for (Player player : world.getPlayers()) {
+            type_MyWorldWorldGroupingWorlding.forEach((worldType, world) -> {
+                for (Player player : world.myWorldWorlding.world.getPlayers()) {
                     player.kickPlayer(ConfigBukkit.getLang().世界卸载主世界配置错误);
                 }
-                WorldDataLock worldDataLock = worldLockMap.get(world);
-                worldDataLock.unloadWorld(save);
-                worldDataLock.setCustomDataByte("WorldType",worldType.getBytes(StandardCharsets.UTF_8));
-                worldDataLock.unlock();
-                MyWorldManger.world_MyWorldWorldGrouping.remove(world);
+                world.myWorldWorlding.myWorldWorldLock.unlock(save);
+                MyWorldManger.world_MyWorldWorldGrouping.remove(world.myWorldWorlding.world);
             });
         }else {
-            typeWorldMap.forEach((worldType, world) -> {
-                for (Player player : world.getPlayers()) {
+            type_MyWorldWorldGroupingWorlding.forEach((worldType, world) -> {
+                for (Player player : world.myWorldWorlding.world.getPlayers()) {
                     player.teleport(mainWord.getSpawnLocation());
                 }
-                WorldDataLock worldDataLock = worldLockMap.get(world);
-                worldDataLock.unloadWorld(save);
-                worldDataLock.setCustomDataByte("WorldType",worldType.getBytes(StandardCharsets.UTF_8));
-                worldDataLock.unlock();
-                MyWorldManger.world_MyWorldWorldGrouping.remove(world);
+                world.myWorldWorlding.myWorldWorldLock.unlock(save);
+                MyWorldManger.world_MyWorldWorldGrouping.remove(world.myWorldWorlding.world);
             });
         }
-        worldLockMap=null;
-        typeWorldMap=null;
         if (save) {
             myWorldWorldGroupInform.save();
         }
-        myWorldWorldGroupInform = null;
         MyWorldManger.groupName_myWorldWorldGrouping.remove(myWorldWorldGroup.getName());
     }
 
-    public World getWorld(String type){
-        return typeWorldMap.get(type);
-    }
 
     /**
      * 获取全部加载的世界
      * */
-    public List<MyWorldWorlding> getAllLoadWorld(){
-        ArrayList<MyWorldWorlding> myWorldWorldGroupings = new ArrayList<>();
-        typeWorldMap.forEach((s, world) -> {
-            myWorldWorldGroupings.add(new MyWorldWorlding(world,s));
-        });
-        return myWorldWorldGroupings;
+    public Map<String,MyWorldWorldGroupingWorlding> getAllLoadWorld(){
+        return new HashMap<>(type_MyWorldWorldGroupingWorlding);
     }
 
     /**
      * 获取指定type的世界
      * */
-    public MyWorldWorlding getMyWorldWording(String type){
-        World world = getWorld(type);
-        return world==null?null:new MyWorldWorlding(world,type);
+    public MyWorldWorldGroupingWorlding getMyWorldWording(String type){
+        return type_MyWorldWorldGroupingWorlding.get(type);
     }
 
     /**
@@ -173,9 +161,9 @@ public class MyWorldWorldGrouping {
      * 玩家回到出生点
      * */
     public void playerBackSpawn(Player player) {
-        World world = getWorld(PlayerWorldTypeAtName.world.toString());
+        MyWorldWorldGroupingWorlding world = type_MyWorldWorldGroupingWorlding.get(PlayerWorldTypeAtName.world.toString());
         if (world==null){
-            for (World s : typeWorldMap.values()) {
+            for (MyWorldWorldGroupingWorlding s : type_MyWorldWorldGroupingWorlding.values()) {
                 world = s;
                 break;
             }
@@ -184,7 +172,7 @@ public class MyWorldWorldGrouping {
             player.sendMessage("你的世界组中没有任何世界，请联系管理员！");
             throw new MyWorldError("至少要开启一个世界才能去玩家的世界。");
         }
-        player.teleport(world.getSpawnLocation());
+        player.teleport(world.myWorldWorlding.world.getSpawnLocation());
     }
 
     /**
@@ -198,65 +186,18 @@ public class MyWorldWorldGrouping {
         myWorldWorldGroupInform.getPlayerLeaveLocation().setPlayerLeaveLocation(player,location);
     }
 
-    /**
-     * 删除世界
-     * */
-    public void removeWorld(String type){
-        if (!myWorldWorldGroup.containsWorld(type)){
-            return;
-        }
-        World world;
-        if ((world=typeWorldMap.get(type))==null){
-            myWorldWorldGroup.removeWorld(type);
-            return;
-        }
-        WorldDataLock worldDataLock = worldLockMap.get(world);
-        if (worldDataLock!=null){
-            worldDataLock.delWorld();
-            worldDataLock.unlock();
 
-        }
-        typeWorldMap.remove(type);
-        worldLockMap.remove(world);
-    }
 
     /**
-     * 不允许在主线程调用，会柱塞线程。需要确保worldCreator的名称不和任何世界重名。type同一个世界组中不允许重名。
+     * 将一个世界添加到组中，type不允许重名
      * */
-    public World putWorld(String type, WorldBuilder worldBuilder, String WorldName) throws ExistsWorld, NoWorldLocks, ExistsType {
-        if (WorldData.worldDataSupport.isWorldExistence(WorldName)){
-            throw new ExistsWorld("世界已经被创建");
+    public MyWorldWorldGroupingWorlding putWorld(String type,MyWorldWorlding myWorldWorlding) throws ExistsType {
+        if (type_MyWorldWorldGroupingWorlding.containsKey(type)) {
+            throw new ExistsType("type ‘"+type+"’ 已经存在");
         }
-        WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(worldBuilder.getWordBuilder(WorldName), ConfigBukkit.getWorldConfig().服务器名称);
-        if (worldDataLock==null){
-            throw new NoWorldLocks("无法获得锁");
-        }
-        World world1;
-        LoadingProgress loadingProgress =  new LoadingProgress(WorldName);
-        synchronized (MyWorldWorldGrouping.class){
-            if (typeWorldMap.containsKey(type)){
-                worldDataLock.unlock();
-                loadingProgress.finish();
-                throw new ExistsType("type已经存在");
-            }
-            byte[] data = new byte[0];
-            try {
-                data = worldBuilder.saveToByte();
-            } catch (YamlException e) {
-                e.printStackTrace();
-            }
-            if (data!=null){
-                worldDataLock.setCustomDataByte(WorldCustomDataName.WorldCreator.toString(),data);
-            }
-            if (!myWorldWorldGroup.containsWorld(WorldName)){
-                myWorldWorldGroup.addWorld(WorldName);
-            }
-            world1 = worldDataLock.loadWorldAsync(loadingProgress);
-            worldLockMap.put(world1,worldDataLock);
-            typeWorldMap.put(type,world1);
-            MyWorldManger.world_MyWorldWorldGrouping.put(world1,this);
-        }
-        loadingProgress.finish();
-        return world1;
+        MyWorldWorldGroupingWorlding myWorldWorldGroupingWorlding = new MyWorldWorldGroupingWorlding(type,this,myWorldWorlding);
+        myWorldWorldGroup.worldGroup.addWorld(myWorldWorlding.myWorldWorldLock.myWorldWorld.name);
+        type_MyWorldWorldGroupingWorlding.put(type,myWorldWorldGroupingWorlding);
+        return myWorldWorldGroupingWorlding;
     }
 }

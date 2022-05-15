@@ -54,6 +54,9 @@ public class MyWorldWorldLock {
         if (myWorldWorlding!=null){
             myWorldWorlding.unLoad(true);
         }
+        if (save){
+            myWorldWorldInform.save();
+        }
         worldDataLock.unlock();
         MyWorldManger.worldName_MyWorldWorldLock.remove(myWorldWorld.name);
     }

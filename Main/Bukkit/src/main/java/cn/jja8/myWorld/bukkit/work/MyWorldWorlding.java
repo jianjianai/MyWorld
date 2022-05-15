@@ -2,6 +2,9 @@ package cn.jja8.myWorld.bukkit.work;
 
 import org.bukkit.World;
 
+/**
+ * 代表一个正在服务器中运行的世界
+ * */
 public class MyWorldWorlding {
     MyWorldWorldLock myWorldWorldLock;
     World world;
