@@ -2,14 +2,13 @@ package cn.jja8.myWorld.bukkit.command.user;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
-import cn.jja8.myWorld.bukkit.work.MyWorldManger;
-import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
-import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
-import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;
-import cn.jja8.myWorld.bukkit.work.error.NoWorldLocks;
+import cn.jja8.myWorld.bukkit.MyWorldBukkit;
+import cn.jja8.myWorld.bukkit.work.*;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class DeleteWorld implements CommandImplement {
     @Override
@@ -40,10 +39,19 @@ public class DeleteWorld implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().删除世界_世界不存在);
             return;
         }
-        try {
-            worldGroup.delete();
-        } catch (NoWorldLocks e) {
-            player.sendMessage(ConfigBukkit.getLang().删除世界_世界被其他服务器加载);
+
+        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoading();
+        if (myWorldWorldGrouping!=null){
+            myWorldWorldGrouping.unLoad(false);
+        }
+        List<MyWorldWorld> worldList = worldGroup.delete();
+        for (MyWorldWorld myWorldWorld : worldList) {
+            MyWorldWorldLock lock = myWorldWorld.getMyWorldWorldLock();
+            if (lock==null){
+                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("无法获得"+myWorldWorld.getName()+"世界的锁，无法删除！");
+                continue;
+            }
+            lock.delete();
         }
         player.sendMessage(ConfigBukkit.getLang().删除世界_删除成功);
     }

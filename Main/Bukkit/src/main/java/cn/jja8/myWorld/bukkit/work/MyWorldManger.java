@@ -10,20 +10,21 @@ import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
 import cn.jja8.myWorld.bukkit.work.error.TeamAlreadyExists;
 import cn.jja8.myWorld.bukkit.work.error.WorldGroupAlreadyExists;
-import cn.jja8.myWorld.bukkit.work.myWorldWorldInform.MyWorldWorldCreator;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 /**
  * 一个静态类
  * */
 public class MyWorldManger {
-    static Map<String,MyWorldWorldGrouping> groupName_myWorldWorldGrouping = new HashMap<>();
+    //用于查询的
     static Map<World, MyWorldWorldGrouping> world_MyWorldWorldGrouping = new HashMap<>();
+
+    //用于保证唯一性的
+    static Map<String,MyWorldWorldGrouping> groupName_myWorldWorldGrouping = new HashMap<>();
     static Map<String,MyWorldWorldLock> worldName_MyWorldWorldLock = new HashMap<>();
     static Map<String,MyWorldWorlding> worldName_MyWorldWorlding = new HashMap<>();
     /**

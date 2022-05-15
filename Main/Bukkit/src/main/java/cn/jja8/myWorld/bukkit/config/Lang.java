@@ -10,7 +10,6 @@ public class Lang {
     public   String 添加信任_世界不存在 ="你所在的团队没有世界";
     public   String 取消信任_世界不存在 = "你所在的团队没有世界";
     public   String 信任列表_团队没有世界 = "你所在的团队没有世界";
-    public   String 删除世界_世界被其他服务器加载 = "世界被其他服务器加载";
     public   String 删除世界_世界不存在 = "团队没有世界";
     public   String 世界加载完成提示文本 = "完成";
     public   String 世界加载提示文本 = "服务器可能卡顿几秒钟，正在加载世界<世界>..<数>";

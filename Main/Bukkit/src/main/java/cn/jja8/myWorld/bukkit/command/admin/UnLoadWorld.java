@@ -22,7 +22,7 @@ public class UnLoadWorld implements CommandImplement {
             commandSender.sendMessage(ConfigBukkit.getLang().nuLoadWorld_世界不存在.replaceAll("<世界>", strings[0]));
             return;
         }
-        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoaded();
+        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoading();
         if (myWorldWorldGrouping == null) {
             commandSender.sendMessage(ConfigBukkit.getLang().nuLoadWorld_世界没有加载.replaceAll("<世界>", strings[0]));
             return;

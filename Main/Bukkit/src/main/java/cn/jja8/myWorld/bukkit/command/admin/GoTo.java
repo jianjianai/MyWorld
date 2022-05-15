@@ -26,7 +26,7 @@ public class GoTo implements CommandImplement {
             return;
         }
 
-        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoaded();
+        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoading();
         if (myWorldWorldGrouping == null) {
             commandSender.sendMessage(ConfigBukkit.getLang().goTo_世界没有加载.replaceAll("<世界>", strings[0]));
             return;

@@ -89,8 +89,11 @@ public class MyWorldWorldGrouping {
             if (worlding[0] ==null){
                 continue;
             }
-            type_MyWorldWorldGroupingWorlding.put(worldType,new MyWorldWorldGroupingWorlding(worldType,this, worlding[0]));
+            MyWorldWorldGroupingWorlding myWorld = new MyWorldWorldGroupingWorlding(worldType,this, worlding[0]);
+            type_MyWorldWorldGroupingWorlding.put(worldType,myWorld);
+            MyWorldManger.world_MyWorldWorldGrouping.put(myWorld.getMyWorldWorlding().getWorld(),this);
         }
+        MyWorldManger.groupName_myWorldWorldGrouping.put(myWorldWorldGroup.name,this);
     }
 
     /**
@@ -203,6 +206,7 @@ public class MyWorldWorldGrouping {
         MyWorldWorldGroupingWorlding myWorldWorldGroupingWorlding = new MyWorldWorldGroupingWorlding(type,this,myWorldWorlding);
         myWorldWorldGroup.worldGroup.addWorld(myWorldWorlding.myWorldWorldLock.myWorldWorld.name);
         type_MyWorldWorldGroupingWorlding.put(type,myWorldWorldGroupingWorlding);
+        MyWorldManger.world_MyWorldWorldGrouping.put(myWorldWorlding.getWorld(),this);
         return myWorldWorldGroupingWorlding;
     }
 }

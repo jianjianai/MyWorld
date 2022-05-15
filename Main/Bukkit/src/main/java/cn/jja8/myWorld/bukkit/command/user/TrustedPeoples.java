@@ -27,7 +27,7 @@ public class TrustedPeoples implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().信任列表_团队没有世界);
             return;
         }
-        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoaded();
+        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoading();
         if (myWorldWorldGrouping == null) {
             player.sendMessage(ConfigBukkit.getLang().信任列表_世界未加载);
             return;

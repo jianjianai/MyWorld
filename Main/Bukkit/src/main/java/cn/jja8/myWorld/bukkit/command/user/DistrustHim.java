@@ -33,7 +33,7 @@ public class DistrustHim implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().取消信任_世界不存在);
             return;
         }
-        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoaded();
+        MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoading();
         if (myWorldWorldGrouping == null) {
             player.sendMessage(ConfigBukkit.getLang().取消信任_世界未加载);
             return;
@@ -55,7 +55,7 @@ public class DistrustHim implements CommandImplement {
         if (worldGroup == null) {
             return null;
         }
-        MyWorldWorldGrouping beLoadWorlds = worldGroup.getLoaded();
+        MyWorldWorldGrouping beLoadWorlds = worldGroup.getLoading();
         if (beLoadWorlds == null) {
             return null;
         }

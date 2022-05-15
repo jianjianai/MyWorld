@@ -7,12 +7,13 @@ import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 代表一个团队
  * */
 public class MyWorldTeam {
-    Team team;
+    final Team team;
     /**
      * 使用现有的team
      * */
@@ -65,5 +66,18 @@ public class MyWorldTeam {
             }
         }
         return myWorldPlayerList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyWorldTeam that = (MyWorldTeam) o;
+        return team.equals(that.team);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(team);
     }
 }

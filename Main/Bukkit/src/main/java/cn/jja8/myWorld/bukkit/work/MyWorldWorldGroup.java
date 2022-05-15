@@ -1,17 +1,14 @@
 package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
-import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.basic.WorldData;
-import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
+import cn.jja8.myWorld.bukkit.work.error.GroupIsRunning;
 import cn.jja8.myWorld.bukkit.work.error.NoAllWorldLocks;
-import cn.jja8.myWorld.bukkit.work.error.NoWorldLocks;
 import org.bukkit.Bukkit;
-import org.bukkit.WorldCreator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -78,48 +75,27 @@ public class MyWorldWorldGroup {
 
 
     /**
-     * 删除这个世界组
+     * 删除这个世界组,并且返回组中的世界。
      * */
-    public void delete() throws NoWorldLocks {
+    public List<MyWorldWorld> delete() throws GroupIsRunning {
         MyWorldWorldGrouping po = MyWorldManger.groupName_myWorldWorldGrouping.get(name);
         if(po!=null){
-            po.unLoad(false);
-        }
-        List<String> worldNames = worldGroup.getWorldList();
-        List<String> worldNames1 = new ArrayList<>(worldNames);//用于删除掉没有被创建的世界
-        for (String worldName : worldNames) {
-            if (!WorldData.worldDataSupport.isWorldExistence(worldName)) {
-                worldNames1.remove(worldName);
-            }
-        }
-        List<WorldDataLock> worldDataLocks = new ArrayList<>();//获取所有存在世界的锁
-        for (String s : worldNames1) {
-            WorldDataLock worldDataLock = WorldData.worldDataSupport.getWorldDataLock(new WorldCreator(s), ConfigBukkit.getWorldConfig().服务器名称);
-            if (worldDataLock!=null) {
-                worldDataLocks.add(worldDataLock);
-            }
-        }
-        //无法获取全部的锁就抛出异常
-        if (worldDataLocks.size()!=worldNames1.size()){
-            for (WorldDataLock worldDataLock : worldDataLocks) {
-                worldDataLock.unlock();
-            }
-            throw new NoWorldLocks("无法获取需要删除全部世界的锁");
-        }
-        //删除全部世界
-        for (WorldDataLock worldDataLock : worldDataLocks) {
-            worldDataLock.delWorld();
-            worldDataLock.unlock();
+            throw new GroupIsRunning("组正在运行！");
         }
         //删除世界库中的世界
+        List<MyWorldWorld> worlds = new ArrayList<>();
+        for (MyWorldWorldGroupWorld myWorldWorldGroupWorld : getWorldList()) {
+            worlds.add(myWorldWorldGroupWorld.getMyWorldWorld());
+        }
         worldGroup.delete();
+        return worlds;
     }
 
     /**
      * 获取已经加载的本世界组
      * @return null 没有被加载
      * */
-    public MyWorldWorldGrouping getLoaded(){
+    public MyWorldWorldGrouping getLoading(){
         return MyWorldManger.groupName_myWorldWorldGrouping.get(name);
     }
 
@@ -130,13 +106,13 @@ public class MyWorldWorldGroup {
     public void load(OnLoad onLoad){
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
             synchronized (MyWorldWorldGroup.class){
-                MyWorldWorldGrouping myWorldWorldGrouping = getLoaded();
+                MyWorldWorldGrouping myWorldWorldGrouping = getLoading();
                 if (myWorldWorldGrouping!=null){
                     onLoad.onload(myWorldWorldGrouping);
+                    return;
                 }
                 try {
                     myWorldWorldGrouping = new MyWorldWorldGrouping(this);
-                    MyWorldManger.groupName_myWorldWorldGrouping.put(name,myWorldWorldGrouping);
                     onLoad.onload(myWorldWorldGrouping);
                 } catch (NoAllWorldLocks e) {
                     onLoad.fail(e);
@@ -145,7 +121,18 @@ public class MyWorldWorldGroup {
         });
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyWorldWorldGroup that = (MyWorldWorldGroup) o;
+        return Objects.equals(name, that.name);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
 
 }

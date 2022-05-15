@@ -38,6 +38,12 @@ public class MyWorldWorldLock {
         MyWorldManger.worldName_MyWorldWorldLock.put(myWorldWorld.name,this);
     }
 
+    public void delete(){
+        worldDataLock.delWorld();
+        worldDataLock.unlock();
+        MyWorldManger.worldName_MyWorldWorldLock.remove(myWorldWorld.name);
+    }
+
     /**
      * 获得世界信息
      * */
@@ -52,7 +58,7 @@ public class MyWorldWorldLock {
     public void unlock(boolean save){
         MyWorldWorlding myWorldWorlding = MyWorldManger.worldName_MyWorldWorlding.get(myWorldWorld.name);
         if (myWorldWorlding!=null){
-            myWorldWorlding.unLoad(true);
+            myWorldWorlding.unLoad(save);
         }
         if (save){
             myWorldWorldInform.save();
@@ -66,11 +72,14 @@ public class MyWorldWorldLock {
      * */
     public void loadWorld(OnLoad onLoad){
         Bukkit.getScheduler().runTaskAsynchronously(MyWorldBukkit.getMyWorldBukkit(), () -> {
-            MyWorldWorlding myWorldWorlding = MyWorldManger.worldName_MyWorldWorlding.get(myWorldWorld.name);
-            if (myWorldWorlding!=null){
-                onLoad.onload(myWorldWorlding);
+            synchronized (MyWorldWorldLock.class){
+                MyWorldWorlding myWorldWorlding = MyWorldManger.worldName_MyWorldWorlding.get(myWorldWorld.name);
+                if (myWorldWorlding!=null){
+                    onLoad.onload(myWorldWorlding);
+                    return;
+                }
+                onLoad.onload(new MyWorldWorlding(MyWorldWorldLock.this));
             }
-            onLoad.onload(new MyWorldWorlding(MyWorldWorldLock.this));
         });
     }
 

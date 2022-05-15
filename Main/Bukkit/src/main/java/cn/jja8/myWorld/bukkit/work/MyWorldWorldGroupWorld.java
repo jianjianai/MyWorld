@@ -1,8 +1,10 @@
 package cn.jja8.myWorld.bukkit.work;
 
+import java.util.Objects;
+
 public class MyWorldWorldGroupWorld {
-    MyWorldWorldGroup myWorldWorldGroup;
-    MyWorldWorld myWorldWorld;
+    private final MyWorldWorldGroup myWorldWorldGroup;
+    private final MyWorldWorld myWorldWorld;
 
     public MyWorldWorldGroupWorld(MyWorldWorldGroup myWorldWorldGroup, MyWorldWorld myWorldWorld) {
         this.myWorldWorldGroup = myWorldWorldGroup;
@@ -22,5 +24,18 @@ public class MyWorldWorldGroupWorld {
 
     public MyWorldWorld getMyWorldWorld() {
         return myWorldWorld;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyWorldWorldGroupWorld that = (MyWorldWorldGroupWorld) o;
+        return myWorldWorldGroup.equals(that.myWorldWorldGroup) && myWorldWorld.equals(that.myWorldWorld);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(myWorldWorldGroup, myWorldWorld);
     }
 }

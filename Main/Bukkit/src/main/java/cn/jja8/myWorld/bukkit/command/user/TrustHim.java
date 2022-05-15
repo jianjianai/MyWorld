@@ -31,7 +31,7 @@ public class TrustHim implements CommandImplement {
         if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().添加信任_世界不存在);
         }
-        MyWorldWorldGrouping beLoadWorlds = worldGroup.getLoaded();
+        MyWorldWorldGrouping beLoadWorlds = worldGroup.getLoading();
         if (beLoadWorlds == null) {
             player.sendMessage(ConfigBukkit.getLang().添加信任_世界未加载);
             return;

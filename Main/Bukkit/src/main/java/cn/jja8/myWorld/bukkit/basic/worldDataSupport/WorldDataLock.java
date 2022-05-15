@@ -29,7 +29,7 @@ public interface WorldDataLock {
      * 异步加载世界,此方法可在异步调用,如果没有被实现，就会调用loadWorld(),并等待加载完成
      * */
     default World loadWorldAsync(LoadingProgress loadingProgress){
-        Bukkit.getLogger().warning("异步加载世界方式未被实现，将在主线程加载世界");
+        MyWorldBukkit.getMyWorldBukkit().getLogger().info("异步加载世界方式未被实现，将在主线程加载世界");
         AtomicReference<World> world = new AtomicReference<>();
         AtomicReference<Throwable> throwable = new AtomicReference<>();
         Bukkit.getServer().getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {

@@ -4,11 +4,13 @@ import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
 
+import java.util.Objects;
+
 /**
  * 代表一个玩家
  * */
 public class MyWorldPlayer {
-    TeamPlayer teamPlayer;
+    final TeamPlayer teamPlayer;
     /**
      * 通过teamPlayer创建一个MyWorldPlayer
      * */
@@ -65,5 +67,18 @@ public class MyWorldPlayer {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyWorldPlayer that = (MyWorldPlayer) o;
+        return teamPlayer.equals(that.teamPlayer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(teamPlayer);
     }
 }

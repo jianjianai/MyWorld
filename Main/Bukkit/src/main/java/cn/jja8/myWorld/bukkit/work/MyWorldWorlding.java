@@ -26,6 +26,8 @@ public class MyWorldWorlding {
      * */
     public void unLoad(boolean save){
         myWorldWorldLock.worldDataLock.unloadWorld(save);
+        MyWorldManger.worldName_MyWorldWorlding.remove(myWorldWorldLock.myWorldWorld.name);
+        world=null;
     }
 
     /**
