@@ -24,4 +24,11 @@ public class MyWorldWorldGroupingWorlding {
         return myWorldWorlding;
     }
 
+    public MyWorldWorldGrouping getMyWorldWorldGrouping() {
+        return myWorldWorldGrouping;
+    }
+
+    public MyWorldWorlding getMyWorldWorlding() {
+        return myWorldWorlding;
+    }
 }

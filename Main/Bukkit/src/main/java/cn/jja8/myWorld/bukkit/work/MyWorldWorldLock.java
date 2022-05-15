@@ -34,7 +34,7 @@ public class MyWorldWorldLock {
         this.myWorldWorld = myWorldWorld;
         this.worldDataLock = worldDataLock;
         myWorldWorldInform = new MyWorldWorldInform(this);
-        worldDataLock.getWorldCreator().copy(myWorldWorldInform.getMyWorldWorldCreator().getWorldCreator());
+        worldDataLock.getWorldCreator().copy(myWorldWorldInform.getMyWorldWorldCreator().getWorldCreator(myWorldWorld.name));
         MyWorldManger.worldName_MyWorldWorldLock.put(myWorldWorld.name,this);
     }
 

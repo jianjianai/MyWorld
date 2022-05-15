@@ -1,0 +1,45 @@
+### 创建世界时，默认生成的世界列表
+### 当地传送门传送时 ”world“世界作为主世界 ”infernal“作为地狱 ”end“ 作为末地。其他名称的世界不会参与传送门传送。
+
+world:
+  seed: 888888
+  environment: "NORMAL"
+  generator: "Minecraft"
+  generatorSettings: ""
+  type: "NORMAL"
+  generateStructures: true
+  hardcore: false
+  difficulty: "HARD"
+  gameRule:
+    #死亡不掉落
+    keepInventory: true
+    #最大实体碰撞
+    maxEntityCramming: 5
+
+
+infernal:
+  seed: 99999
+  environment: "NETHER"
+  generator: "Minecraft"
+  generatorSettings: ""
+  type: "NORMAL"
+  generateStructures: true
+  hardcore: false
+  difficulty: "HARD"
+  gameRule:
+    keepInventory: true
+    maxEntityCramming: 5
+
+
+end:
+  seed: 888888
+  environment: "THE_END"
+  generator: "Minecraft"
+  generatorSettings: ""
+  type: "NORMAL"
+  generateStructures: true
+  hardcore: false
+  difficulty: "HARD"
+  gameRule:
+    keepInventory: true
+    maxEntityCramming: 5

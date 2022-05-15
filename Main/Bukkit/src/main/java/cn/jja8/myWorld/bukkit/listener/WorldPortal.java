@@ -2,10 +2,12 @@ package cn.jja8.myWorld.bukkit.listener;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Portal;
+import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroupingWorlding;
 import cn.jja8.myWorld.bukkit.work.name.PlayerWorldTypeAtName;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPortalEvent;
@@ -36,9 +38,9 @@ public class WorldPortal implements Listener {
         Portal.portalTransmission.send(
                 event.getEntity(),
                 event.getFrom().getBlock(),
-                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.world.toString()).getWorld(),
-                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.infernal.toString()).getWorld(),
-                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.end.toString()).getWorld()
+                getWorld(playerWorldsFrom,PlayerWorldTypeAtName.world.toString()),
+                getWorld(playerWorldsFrom,PlayerWorldTypeAtName.infernal.toString()),
+                getWorld(playerWorldsFrom,PlayerWorldTypeAtName.end.toString())
         );
     }
 
@@ -59,9 +61,17 @@ public class WorldPortal implements Listener {
         Portal.portalTransmission.send(
                 event.getPlayer(),
                 event.getFrom().getBlock(),
-                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.world.toString()).getWorld(),
-                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.infernal.toString()).getWorld(),
-                playerWorldsFrom.getMyWorldWording(PlayerWorldTypeAtName.end.toString()).getWorld()
+                getWorld(playerWorldsFrom,PlayerWorldTypeAtName.world.toString()),
+                getWorld(playerWorldsFrom,PlayerWorldTypeAtName.infernal.toString()),
+                getWorld(playerWorldsFrom,PlayerWorldTypeAtName.end.toString())
         );
+    }
+
+    private World getWorld(MyWorldWorldGrouping worldWorldGrouping,String type){
+        MyWorldWorldGroupingWorlding worlding = worldWorldGrouping.getMyWorldWording(type);
+        if (worlding==null){
+            return null;
+        }
+        return worlding.getMyWorldWorlding().getWorld();
     }
 }

@@ -31,6 +31,7 @@ public class DistrustHim implements CommandImplement {
         MyWorldWorldGroup worldGroup = team.getWorldGroup();
         if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().取消信任_世界不存在);
+            return;
         }
         MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoaded();
         if (myWorldWorldGrouping == null) {

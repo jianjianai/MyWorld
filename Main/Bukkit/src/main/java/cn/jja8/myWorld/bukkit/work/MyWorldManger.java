@@ -3,15 +3,20 @@ package cn.jja8.myWorld.bukkit.work;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
+import cn.jja8.myWorld.bukkit.ConfigBukkit;
+import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
+import cn.jja8.myWorld.bukkit.basic.WorldData;
 import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
 import cn.jja8.myWorld.bukkit.work.error.TeamAlreadyExists;
 import cn.jja8.myWorld.bukkit.work.error.WorldGroupAlreadyExists;
+import cn.jja8.myWorld.bukkit.work.myWorldWorldInform.MyWorldWorldCreator;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * 一个静态类
@@ -94,7 +99,28 @@ public class MyWorldManger {
         if (worldGroup==null){
             throw new MyWorldError("未知错误！");
         }
-        return new MyWorldWorldGroup(worldGroup);
+        MyWorldWorldGroup myWorldWorldGroup = new MyWorldWorldGroup(worldGroup);
+        //添加默认的世界到组中
+        ConfigBukkit.getDefWorlds().getType_defMyWorldWorldCreator().forEach(new BiConsumer<String, MyWorldWorldCreator>() {
+            @Override
+            public void accept(String s, MyWorldWorldCreator myWorldWorldCreator) {
+                String worldName = myWorldWorldGroup.name+"_"+s;
+                MyWorldWorld myWorldWorld = MyWorldManger.newWorld(s);
+                if (myWorldWorld==null){
+                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning("已经存在"+worldName+"世界，无法创建。世界组"+myWorldWorldGroup.name+"将没有"+s+"世界。");
+                    return;
+                }
+                MyWorldWorldLock lock = myWorldWorld.getMyWorldWorldLock();
+                if (lock==null){
+                    MyWorldBukkit.getMyWorldBukkit().getLogger().warning("无法获取"+worldName+"世界的锁，无法创建。世界组"+myWorldWorldGroup.name+"将没有"+s+"世界。");
+                    return;
+                }
+                lock.myWorldWorldInform.getMyWorldWorldCreator().copy(myWorldWorldCreator);
+                lock.unlock(true);
+                myWorldWorldGroup.putWorld(myWorldWorld);
+            }
+        });
+        return myWorldWorldGroup;
     }
 
     /**
@@ -102,5 +128,28 @@ public class MyWorldManger {
      * */
     public static MyWorldWorldGrouping getWorldGrouping(World world){
         return world_MyWorldWorldGrouping.get(world);
+    }
+
+    /**
+     * 获取某世界
+     * @return null 世界不存在
+     * */
+    public static MyWorldWorld getWorld(String worldName){
+        if (!WorldData.worldDataSupport.isWorldExistence(worldName)) {
+            return null;
+        }else {
+            return new MyWorldWorld(worldName);
+        }
+    }
+    /**
+     * 创建某世界
+     * @return null 世界名称已经存在
+     * */
+    public static MyWorldWorld newWorld(String worldName){
+        if (WorldData.worldDataSupport.isWorldExistence(worldName)){
+            return null;
+        }else {
+            return new MyWorldWorld(worldName);
+        }
     }
 }

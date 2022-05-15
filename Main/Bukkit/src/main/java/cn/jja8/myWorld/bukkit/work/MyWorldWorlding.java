@@ -15,7 +15,9 @@ public class MyWorldWorlding {
         world = myWorldWorldLock.worldDataLock.loadWorldAsync(loadingProgress);
         loadingProgress.finish();
 
+
         MyWorldManger.worldName_MyWorldWorlding.put(myWorldWorldLock.myWorldWorld.name,this);
+        myWorldWorldLock.myWorldWorldInform.getMyWorldWorldCreator().setting(world);
     }
 
     /**

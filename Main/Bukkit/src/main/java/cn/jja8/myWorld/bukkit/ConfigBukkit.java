@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit;
 
 import cn.jja8.myWorld.bukkit.config.*;
+import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.JarFile;
 import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
 
 import java.io.File;
@@ -13,7 +14,9 @@ public class ConfigBukkit {
     static WorldConfig worldConfig;
     static TeamConfig teamConfig;
     static PlayerDataConfig playerDataConfig;
+    static DefWorlds defWorlds;
     static void load(){
+        defWorlds = new DefWorlds();
         if (fileConfig==null){
             try {
                 fileConfig = YamlConfig.loadFromFile(new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(), "FileConfig.yml"),fileConfig = new FileConfig());
@@ -77,5 +80,9 @@ public class ConfigBukkit {
     }
     public static Permission getPermission() {
         return permission;
+    }
+
+    public static DefWorlds getDefWorlds() {
+        return defWorlds;
     }
 }

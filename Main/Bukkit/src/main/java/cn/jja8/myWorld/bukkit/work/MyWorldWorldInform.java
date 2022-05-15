@@ -23,7 +23,7 @@ public class MyWorldWorldInform {
         myWorldWorldType = new MyWorldWorldType(myWorldWorldLock.worldDataLock);
 
         //加载myWorldWorldCreator
-        myWorldWorldCreator = new MyWorldWorldCreator(myWorldWorldLock.myWorldWorld.name);
+        myWorldWorldCreator = new MyWorldWorldCreator();
         byte[] bytes = myWorldWorldLock.worldDataLock.getCustomDataByte(WorldCustomDataName.WorldCreator.toString());
         StringReader stringReader = new StringReader(new String(bytes, StandardCharsets.UTF_8));
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(stringReader);

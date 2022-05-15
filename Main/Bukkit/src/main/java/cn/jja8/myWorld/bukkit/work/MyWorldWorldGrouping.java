@@ -29,7 +29,12 @@ public class MyWorldWorldGrouping {
         List<MyWorldWorldLock> myWorldWorldLockList = new ArrayList<>();
         //加载所有世界的锁
         for (String s : worldList) {
-            MyWorldWorldLock myWorldWorld = new MyWorldWorld(s).getMyWorldWorldLock();
+            MyWorldWorld myworldworld = MyWorldManger.getWorld(s);
+            if (myworldworld==null){
+                MyWorldBukkit.getMyWorldBukkit().getLogger().warning("世界组"+myWorldWorldGroup.getName()+"中的"+s+"世界不存在，将不会被加载！");
+                continue;
+            }
+            MyWorldWorldLock myWorldWorld = myworldworld.getMyWorldWorldLock();
             if (myWorldWorld==null){
                 for (MyWorldWorldLock myWorldWorldLock : myWorldWorldLockList) {
                     myWorldWorldLock.unlock(false);

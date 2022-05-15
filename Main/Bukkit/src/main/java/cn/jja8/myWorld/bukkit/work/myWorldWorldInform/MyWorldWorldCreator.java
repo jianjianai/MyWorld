@@ -1,7 +1,6 @@
 package cn.jja8.myWorld.bukkit.work.myWorldWorldInform;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.work.MyWorldWorldLock;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.Random;
 
 public class MyWorldWorldCreator {
-    private final String name;
     private long seed; //种子
     private World.Environment environment; //环境
     private String generator; //区块加载器名称
@@ -22,9 +20,22 @@ public class MyWorldWorldCreator {
     public Map<String, Object> gameRule = new HashMap<>(); //世界规则
     public Difficulty difficulty = Difficulty.EASY; //难度
 
-    public MyWorldWorldCreator(String name) {
-        this.name = name;
+    public MyWorldWorldCreator() {
         this.seed = (new Random()).nextLong();
+    }
+
+
+    public void copy(MyWorldWorldCreator myWorldWorldCreator) {
+        seed = myWorldWorldCreator.seed;
+        environment = myWorldWorldCreator.environment; //环境
+        generator = myWorldWorldCreator.generator; //区块加载器名称
+        generatorSettings = myWorldWorldCreator.generatorSettings; //区块加载器设置
+        type = myWorldWorldCreator.type;//世界类型
+        generateStructures = myWorldWorldCreator.generateStructures;//是否生成结构
+        hardcore = myWorldWorldCreator.hardcore; //不知道是什么东西。
+
+        gameRule = new HashMap<>(myWorldWorldCreator.gameRule); //世界规则
+        difficulty = myWorldWorldCreator.difficulty; //难度
     }
 
     public void loadByYaml(ConfigurationSection configurationSection) {
@@ -138,7 +149,7 @@ public class MyWorldWorldCreator {
     /**
      * 获得世界的构造器
      */
-    public WorldCreator getWorldCreator() {
+    public WorldCreator getWorldCreator(String name) {
         WorldCreator worldCreator = new WorldCreator(name);
         worldCreator.seed(seed);
         worldCreator.environment(environment);
@@ -153,7 +164,7 @@ public class MyWorldWorldCreator {
     /**
      * 完成世界加载后的设置
      */
-    public void Setting(World world) {
+    public void setting(World world) {
         //设置难度
         world.setDifficulty(difficulty);
         //设置规则
@@ -185,4 +196,5 @@ public class MyWorldWorldCreator {
             world.setGameRule(gameRule, o);
         });
     }
+
 }
