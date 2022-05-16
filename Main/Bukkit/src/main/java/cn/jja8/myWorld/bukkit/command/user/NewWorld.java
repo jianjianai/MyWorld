@@ -3,6 +3,7 @@ package cn.jja8.myWorld.bukkit.command.user;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.command.tool.NameTool;
+import cn.jja8.myWorld.bukkit.config.WorldCleans;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
@@ -10,6 +11,9 @@ import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewWorld implements CommandImplement {
     Go go;
@@ -53,12 +57,31 @@ public class NewWorld implements CommandImplement {
             player.sendMessage(ConfigBukkit.getLang().创建世界_世界名称被他人占用);
             return;
         }
-        worldGroup = MyWorldManger.newWorldGroup(strings[0]);
+        WorldCleans.Creator creator;
+        if (strings.length>=2){
+            creator = ConfigBukkit.getDefWorlds().getClean_Creator().get(strings[1]);
+            if (creator==null){
+                player.sendMessage(ConfigBukkit.getLang().创建世界_世界生成器不存在.replaceAll("<WorldClean>",strings[1]));
+                return;
+            }
+        }else {
+            creator = ConfigBukkit.getDefWorlds().getDefault();
+        }
+        worldGroup = MyWorldManger.newWorldGroup(strings[0],creator);
         //创建世界了
         team.setWorldGroup(worldGroup);
         player.sendMessage(ConfigBukkit.getLang().创建世界_创建成功);
         if (ConfigBukkit.getWorldConfig().创建世界后传送到世界) {
             go.command(commandSender,new String[]{});
         }
+    }
+
+    @Override
+    public List<String> TabCompletion(CommandSender commandSender, String[] strings) {
+        if ((!(commandSender instanceof Player))) return new ArrayList<>();
+        if (strings.length!=2){
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(ConfigBukkit.getDefWorlds().getClean_Creator().keySet());
     }
 }

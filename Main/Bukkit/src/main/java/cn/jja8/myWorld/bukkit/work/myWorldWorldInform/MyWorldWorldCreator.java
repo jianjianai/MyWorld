@@ -17,16 +17,16 @@ public class MyWorldWorldCreator {
     private boolean generateStructures;//是否生成结构
     private boolean hardcore; //不知道是什么东西。
 
-    public Map<String, Object> gameRule = new HashMap<>(); //世界规则
-    public Difficulty difficulty = Difficulty.EASY; //难度
+    private Map<String, Object> gameRule = new HashMap<>(); //世界规则
+    private Difficulty difficulty = Difficulty.EASY; //难度
 
     public MyWorldWorldCreator() {
-        this.seed = (new Random()).nextLong();
+        this.seed = new Random().nextLong();
     }
 
 
     public void copy(MyWorldWorldCreator myWorldWorldCreator) {
-        seed = myWorldWorldCreator.seed;
+        seed = myWorldWorldCreator.seed==0?seed:myWorldWorldCreator.seed; //如果种子是0就不拷贝。0代表不指定种子。
         environment = myWorldWorldCreator.environment; //环境
         generator = myWorldWorldCreator.generator; //区块加载器名称
         generatorSettings = myWorldWorldCreator.generatorSettings; //区块加载器设置
@@ -72,7 +72,7 @@ public class MyWorldWorldCreator {
     }
 
     public void saveToYaml(ConfigurationSection configurationSection) {
-        configurationSection.set("seed", seed);
+        configurationSection.set("seed", getSeedPrivate());
         configurationSection.set("environment", environment.toString());
         configurationSection.set("generator", generator);
         configurationSection.set("generatorSettings", generatorSettings);
@@ -88,6 +88,46 @@ public class MyWorldWorldCreator {
      */
     public void setSeed(long seed) {
         this.seed = seed;
+    }
+
+    private long getSeedPrivate() {
+        return seed==0?seed=new Random().nextLong():seed;//0代表不指定种子，所以保存0的时候保存随机数
+    }
+
+    public Long getSeed() {
+        return seed==0?null:seed;
+    }
+
+    public World.Environment getEnvironment() {
+        return environment;
+    }
+
+    public String getGenerator() {
+        return generator;
+    }
+
+    public String getGeneratorSettings() {
+        return generatorSettings;
+    }
+
+    public WorldType getType() {
+        return type;
+    }
+
+    public boolean isGenerateStructures() {
+        return generateStructures;
+    }
+
+    public boolean isHardcore() {
+        return hardcore;
+    }
+
+    public Map<String, Object> getGameRule() {
+        return new HashMap<>(gameRule);
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     /**
@@ -151,7 +191,7 @@ public class MyWorldWorldCreator {
      */
     public WorldCreator getWorldCreator(String name) {
         WorldCreator worldCreator = new WorldCreator(name);
-        worldCreator.seed(seed);
+        worldCreator.seed(getSeedPrivate());
         worldCreator.environment(environment);
         worldCreator.generator(generator);
         worldCreator.generatorSettings(generatorSettings);

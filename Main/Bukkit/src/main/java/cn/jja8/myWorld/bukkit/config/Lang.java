@@ -4,6 +4,7 @@ package cn.jja8.myWorld.bukkit.config;
 import java.util.ArrayList;
 
 public class Lang {
+    public   String 创建世界_世界生成器不存在 = "世界生成器<WorldClean>不存在。";
     public   String 去出生点_未知异常 = "加载世界出错，请联系管理员。";
     public   String 返回世界_未知异常 = "加载世界出错，请联系管理员。";
     public   String 世界卸载主世界配置错误 = "主世界不存在，只能将你踢出游戏。请联系管理员在WorldConfig中正确设置主世界。";
