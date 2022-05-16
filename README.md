@@ -11,6 +11,8 @@ Spigot加载世界耗时是Paper的15倍左右。
 最新自动构建：[MyWorld -Dev [简简爱的插件构建] [Jenkins]](https://ci.pmcs.xyz/job/jian-ai-ai/job/MyWorld/) （感谢艾利格兰特提供的自动构建）
 
 ## 使用方法和常见问题
+插件命令列表：[命令.md · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/命令.md)
+
 插件使用方法：[插件使用方法.md · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/插件使用方法.md)
 
 常见问题解答：[常见问题解答.md · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/常见问题解答.md)
@@ -18,6 +20,8 @@ Spigot加载世界耗时是Paper的15倍左右。
 建议与反馈-Issues：[Issues · 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/issues)  (推荐)
 
 建议与反馈-插件实验室：[PlugClub / 插件实验室](https://jq.qq.com/?_wv=1027&k=LyeQlfSK) （群号:820131534）
+
+计划和日志：[日志和安排.md· 简简爱/MyWorld](https://gitee.com/jja8/MyWorld/blob/jianjianai/日志和安排.md)
 
 ## 统计
 [![统计](https://bstats.org/signatures/bukkit/MyWorld.svg)](https://bstats.org/plugin/bukkit/MyWorld/14206)
