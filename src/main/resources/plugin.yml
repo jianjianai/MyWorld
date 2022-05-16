@@ -12,3 +12,6 @@ permissions:
   "MyWorld.user":
     description: "myWorld使用权限"
     default: true
+  "MyWorld.comm.user.GoToWorld":
+    description: "myWorld命令使用权限"
+    default: true

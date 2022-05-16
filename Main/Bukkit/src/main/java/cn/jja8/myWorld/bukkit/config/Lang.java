@@ -91,6 +91,12 @@ public class Lang {
     public String nuLoadWorld_世界不存在="<世界>世界不存在。";
     public String loadWorld_世界被其他服务器加载 = "被其他服务器加载";
     public String loadWorld_未知异常 = "请在后台查看详细信息。";
+    public String GoToWorld_没有指定世界type = "未指定type";
+    public String GoToWorld_没有团队 = "你还没有加入团队";
+    public String GoToWorld_团队没有世界 = "你所在的团队还没有世界";
+    public String GoToWorld_世界没有加载 = "你所在的团队的世界没有加载，请先进入世界。";
+    public String GoToWorld_type错误 = "type'<type>'不存在";
+    public String GoToWorld_传送成功 = "传送成功。";
 
     public Lang(){
         查询信息_长信息列表.add("你所在的团队是：<团队>");

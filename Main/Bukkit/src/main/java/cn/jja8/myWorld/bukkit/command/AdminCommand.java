@@ -11,7 +11,7 @@ import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandManger;
 public class AdminCommand {
     CommandManger commandManger;
     public AdminCommand() {
-        commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(),"MyWorldAdmin",new String[]{"mwa"}, ConfigBukkit.getPermission().管理员权限);
+        commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(),"MyWorldAdmin",new String[]{"mwa"}, ConfigBukkit.getPermission().admin);
         commandManger.addCommand(new String[]{"UnLoadWorld","卸载世界"}, new UnLoadWorld());
         commandManger.addCommand(new String[]{"UnLoadAllWorld","卸载全部世界"}, new UnLoadAllWorld());
         commandManger.addCommand(new String[]{"LoadWorld","加载世界"}, new LoadWorld());

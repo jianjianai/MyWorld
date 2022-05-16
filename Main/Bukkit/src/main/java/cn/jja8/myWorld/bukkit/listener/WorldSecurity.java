@@ -101,7 +101,7 @@ public class WorldSecurity implements Listener {
      * 判断一个玩家在某世界是否有权限,只有信任的玩家有权限。
      */
     private boolean isHasAuthority(Player player, World world){
-        if (player.hasPermission(permission.管理员权限)){
+        if (player.hasPermission(permission.admin)){
             return true;
         }
         MyWorldWorldGrouping worldWorldGrouping = MyWorldManger.getWorldGrouping(world);

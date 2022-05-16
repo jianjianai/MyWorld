@@ -15,7 +15,7 @@ public class UserCommand {
     public Map<Player, MyWorldTeam> acceptInvitationMap = new HashMap<>();
     CommandManger commandManger;
     public UserCommand() {
-        commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"}, ConfigBukkit.getPermission().使用权限);
+        commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"}, ConfigBukkit.getPermission().user);
         Go go = new Go();
         commandManger.setDefaulCommand(go);
         commandManger.addCommand(new String[]{"NewTeam","创建团队"}, new NewTeam());
@@ -32,6 +32,7 @@ public class UserCommand {
         commandManger.addCommand(new String[]{"goBeginningPoint","去出生点"}, new goBeginningPoint());
         commandManger.addCommand(new String[]{"go","回到世界"}, go);
         commandManger.addCommand(new String[]{"NewWorld","创建世界"}, new NewWorld(go));
+        commandManger.addCommand(new String[]{"GoToWorld","去世界"}, new GoToWorld(),ConfigBukkit.getPermission().comm_user_GoToWorld);
     }
 
     public CommandManger getCommandManger() {

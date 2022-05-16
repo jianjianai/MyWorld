@@ -1,6 +1,7 @@
 package cn.jja8.myWorld.bukkit.config;
 
 public class Permission {
-    public String 使用权限 = "MyWorld.user";
-    public String 管理员权限 = "MyWorld.admin";
+    public String user = "MyWorld.user";
+    public String admin = "MyWorld.admin";
+    public String comm_user_GoToWorld = "MyWorld.comm.user.GoToWorld";
 }
