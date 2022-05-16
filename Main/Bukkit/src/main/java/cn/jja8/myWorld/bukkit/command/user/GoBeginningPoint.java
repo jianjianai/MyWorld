@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class goBeginningPoint implements CommandImplement {
+public class GoBeginningPoint implements CommandImplement {
     @Override
     public void command(CommandSender commandSender, String[] strings) {
         if ((!(commandSender instanceof Player))) return;

@@ -29,8 +29,8 @@ public class UserCommand {
         commandManger.addCommand(new String[]{"TrustedPeoples","信任列表"}, new TrustedPeoples());
         commandManger.addCommand(new String[]{"DeleteWorld","删除世界"}, new DeleteWorld());
         commandManger.addCommand(new String[]{"ServerName"}, new ServerName());
-        commandManger.addCommand(new String[]{"goBeginningPoint","去出生点"}, new goBeginningPoint());
-        commandManger.addCommand(new String[]{"go","回到世界"}, go);
+        commandManger.addCommand(new String[]{"GoBeginningPoint","去出生点"}, new GoBeginningPoint());
+        commandManger.addCommand(new String[]{"Go","回到世界"}, go);
         commandManger.addCommand(new String[]{"NewWorld","创建世界"}, new NewWorld(go));
         commandManger.addCommand(new String[]{"GoToWorld","去世界"}, new GoToWorld(),ConfigBukkit.getPermission().comm_user_GoToWorld);
     }

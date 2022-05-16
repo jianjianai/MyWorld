@@ -19,7 +19,6 @@ public class NewWorld implements CommandImplement {
 
     @Override
     public void command(CommandSender commandSender, String[] strings) {
-
         if ((!(commandSender instanceof Player))) return;
         Player player = (Player) commandSender;
         if (strings.length < 1) {
