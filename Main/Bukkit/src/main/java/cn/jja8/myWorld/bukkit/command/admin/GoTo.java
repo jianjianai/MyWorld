@@ -31,7 +31,7 @@ public class GoTo implements CommandImplement {
             commandSender.sendMessage(ConfigBukkit.getLang().goTo_世界没有加载.replaceAll("<世界>", strings[0]));
             return;
         }
-        myWorldWorldGrouping.playerBack(player);
+        player.teleport(myWorldWorldGrouping.getSpawnLocation());
         player.sendMessage(ConfigBukkit.getLang().goTo_传送成功);
     }
 
