@@ -6,6 +6,7 @@ import cn.jja8.myWorld.bukkit.work.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.work.*;
 import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,10 @@ public class Go implements CommandImplement {
             @Override
             public void onload(MyWorldWorldGrouping worldGrouping) {
                 Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                    worldGrouping.playerBack(player);
+                    Location l = worldGrouping.getMyWorldWordInform().getPlayerLeaveLocation().getPlayerLocation(player);
+                    if (l==null){
+                        player.teleport(worldGrouping.getSpawnLocation());
+                    }
                     player.sendMessage(ConfigBukkit.getLang().返回世界_传送成功);
                 });
             }

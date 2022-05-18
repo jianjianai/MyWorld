@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * 记录世界生成器，和规则信息
+ * */
 public class MyWorldWorldCreator {
     private long seed; //种子
     private World.Environment environment; //环境

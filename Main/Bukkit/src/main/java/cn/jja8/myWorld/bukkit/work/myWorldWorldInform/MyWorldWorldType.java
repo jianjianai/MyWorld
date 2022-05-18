@@ -5,6 +5,9 @@ import cn.jja8.myWorld.bukkit.work.name.WorldsDataName;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 记录世界的维度信息
+ * */
 public class MyWorldWorldType {
     private String type = null;
     private final WorldDataLock worldDataLock;

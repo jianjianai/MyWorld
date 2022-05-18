@@ -3,7 +3,6 @@ package cn.jja8.myWorld.bukkit.work;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.Team;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.TeamPlayer;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
-import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 一个静态类
+ * 一个静态类，用于管理各种资源
  * */
 public class MyWorldManger {
     //用于查询的

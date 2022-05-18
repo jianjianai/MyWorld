@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 信任信息
+ * 记录世界组信任的玩家
  */
 public class Trust {
     private final List<String> BeTrustList;

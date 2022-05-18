@@ -5,6 +5,9 @@ import cn.jja8.myWorld.bukkit.work.myWorldWorldGroupInform.PlayerLeaveLocation;
 import cn.jja8.myWorld.bukkit.work.myWorldWorldGroupInform.Trust;
 import cn.jja8.myWorld.bukkit.work.name.WorldsDataName;
 
+/**
+ * 代表一个世界组信息
+ * */
 public class MyWorldWorldGroupInform {
     Trust trust;
     PlayerLeaveLocation playerLeaveLocation;

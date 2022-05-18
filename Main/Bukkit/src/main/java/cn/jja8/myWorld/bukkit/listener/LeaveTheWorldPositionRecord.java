@@ -1,8 +1,9 @@
 package cn.jja8.myWorld.bukkit.listener;
 
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
-import cn.jja8.myWorld.bukkit.work.MyWorldManger;
-import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
+import cn.jja8.myWorld.bukkit.work.*;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -18,8 +19,6 @@ public class LeaveTheWorldPositionRecord implements Listener {
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this,MyWorldBukkit.getMyWorldBukkit());
     }
 
-
-
     @EventHandler
     public void 玩家传送(PlayerTeleportEvent event){
         MyWorldWorldGrouping form = MyWorldManger.getWorldGrouping(event.getFrom().getWorld());
@@ -30,13 +29,38 @@ public class LeaveTheWorldPositionRecord implements Listener {
         if (form==to){
             return;
         }
-        form.setPlayerLeaveLocation(event.getPlayer(),event.getFrom());
+        setPlayerLeaveLocation(event.getPlayer(), event.getFrom());
     }
+
     @EventHandler
     public void 玩家离开服务器(PlayerQuitEvent event){
-        MyWorldWorldGrouping myWorldWorldGrouping = MyWorldManger.getWorldGrouping(event.getPlayer().getWorld());
-        if (myWorldWorldGrouping!=null){
-            myWorldWorldGrouping.setPlayerLeaveLocation(event.getPlayer(),event.getPlayer().getLocation());
+        setPlayerLeaveLocation(event.getPlayer(),event.getPlayer().getLocation());
+    }
+
+    private static void setPlayerLeaveLocation(Player player, Location location){
+        if (location.getWorld()==null){
+            return;
         }
+        MyWorldWorldGrouping myWorldWorldGrouping = MyWorldManger.getWorldGrouping(location.getWorld());
+        if (myWorldWorldGrouping==null){
+            return;
+        }
+        MyWorldPlayer myWorldPlayer = MyWorldManger.getPlayer(player);
+        MyWorldTeam myWorldTeam = myWorldPlayer.getTeam();
+        if (myWorldTeam==null){
+            return;
+        }
+        MyWorldWorldGroup myWorldWorldGroup = myWorldTeam.getWorldGroup();
+        if (myWorldWorldGroup==null){
+            return;
+        }
+        MyWorldWorldGrouping playerMyWorldWorldGrouping = myWorldWorldGroup.getLoading();
+        if (playerMyWorldWorldGrouping==null){
+            return;
+        }
+        if (myWorldWorldGrouping!=playerMyWorldWorldGrouping){
+            return;
+        }
+        myWorldWorldGrouping.getMyWorldWordInform().getPlayerLeaveLocation().setPlayerLeaveLocation(player,location);
     }
 }

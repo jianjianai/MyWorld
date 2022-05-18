@@ -3,7 +3,7 @@ package cn.jja8.myWorld.bukkit.work;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.work.error.ExistsType;
-import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
+import cn.jja8.myWorld.bukkit.work.error.GroupNoWorld;
 import cn.jja8.myWorld.bukkit.work.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.work.name.PlayerWorldTypeAtName;
 import org.bukkit.Bukkit;
@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 代表正在服务器中加载运行的世界组
+ * */
 public class MyWorldWorldGrouping {
     MyWorldWorldGroup myWorldWorldGroup;
     MyWorldWorldGroupInform myWorldWorldGroupInform;
@@ -142,23 +145,6 @@ public class MyWorldWorldGrouping {
     }
 
     /**
-     * 玩家返回到这个世界
-     * */
-    public void playerBack(Player player) {
-        Location location = null;
-        try {
-            location = myWorldWorldGroupInform.getPlayerLeaveLocation().getPlayerLocation(player);
-        }catch (Exception|Error e){
-            new Exception("玩家"+player.getName()+"在"+myWorldWorldGroup.getName()+"世界上次的位置加载失败！",e).printStackTrace();
-        }
-
-        if (location!=null){
-            player.teleport(location);
-        }else {
-            playerBackSpawn(player);
-        }
-    }
-    /**
      * 获得这个世界的信息
      * */
     public MyWorldWorldGroupInform getMyWorldWordInform(){
@@ -166,9 +152,9 @@ public class MyWorldWorldGrouping {
     }
 
     /**
-     * 玩家回到出生点
+     * 获得世界出生点
      * */
-    public void playerBackSpawn(Player player) {
+    public Location getSpawnLocation(){
         MyWorldWorldGroupingWorlding world = type_MyWorldWorldGroupingWorlding.get(PlayerWorldTypeAtName.world.toString());
         if (world==null){
             for (MyWorldWorldGroupingWorlding s : type_MyWorldWorldGroupingWorlding.values()) {
@@ -177,10 +163,9 @@ public class MyWorldWorldGrouping {
             }
         }
         if (world==null){
-            player.sendMessage("你的世界组中没有任何世界，请联系管理员！");
-            throw new MyWorldError("至少要开启一个世界才能去玩家的世界。");
+            throw new GroupNoWorld("世界组中没有任何世界,请确保WorldCleans.yml文件配置正确。");
         }
-        player.teleport(world.myWorldWorlding.world.getSpawnLocation());
+        return world.getMyWorldWorldGrouping().getSpawnLocation();
     }
 
     /**
@@ -189,11 +174,6 @@ public class MyWorldWorldGrouping {
     public MyWorldWorldGroup getMyWorldWorldGroup() {
         return myWorldWorldGroup;
     }
-
-    public void setPlayerLeaveLocation(Player player, Location location) {
-        myWorldWorldGroupInform.getPlayerLeaveLocation().setPlayerLeaveLocation(player,location);
-    }
-
 
 
     /**

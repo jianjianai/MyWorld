@@ -1,7 +1,7 @@
 package cn.jja8.myWorld.bukkit.work;
 
 /**
- * 组中的世界
+ * 代表一个正在运行的组中的正在运行的世界
  * */
 public class MyWorldWorldGroupingWorlding {
     final String type;

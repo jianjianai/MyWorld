@@ -2,6 +2,9 @@ package cn.jja8.myWorld.bukkit.work;
 
 import java.util.Objects;
 
+/**
+ * 代表组中的世界
+ * */
 public class MyWorldWorldGroupWorld {
     private final MyWorldWorldGroup myWorldWorldGroup;
     private final MyWorldWorld myWorldWorld;

@@ -8,12 +8,18 @@ import org.bukkit.entity.Player;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 记录玩家位置
+ * */
 public class PlayerLeaveLocation {
     private final WorldGroup worldGroup;
     public PlayerLeaveLocation(WorldGroup worldGroup) {
         this.worldGroup = worldGroup;
     }
 
+    /**
+     * 设置玩家的位置
+     * */
     public void setPlayerLeaveLocation(Player player, Location location) {
         String dataName = "location/"+player.getUniqueId();
         WorldGroupData worldGroupData = worldGroup.getWorldGroupData(dataName);

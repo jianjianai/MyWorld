@@ -31,7 +31,7 @@ public class GoBeginningPoint implements CommandImplement {
             @Override
             public void onload(MyWorldWorldGrouping worldGrouping) {
                 Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
-                    worldGrouping.playerBackSpawn(player);
+                    player.teleport(worldGrouping.getSpawnLocation());
                     player.sendMessage(ConfigBukkit.getLang().去出生点_传送成功);
                 });
             }

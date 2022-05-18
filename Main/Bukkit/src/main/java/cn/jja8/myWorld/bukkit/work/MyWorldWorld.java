@@ -7,6 +7,9 @@ import org.bukkit.WorldCreator;
 
 import java.util.Objects;
 
+/**
+ * 代表一个世界
+ * */
 public class MyWorldWorld {
     final String name;
     MyWorldWorld(String name) {
