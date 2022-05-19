@@ -165,7 +165,7 @@ public class MyWorldWorldGrouping {
         if (world==null){
             throw new GroupNoWorld("世界组中没有任何世界,请确保WorldCleans.yml文件配置正确。");
         }
-        return world.getMyWorldWorldGrouping().getSpawnLocation();
+        return world.getMyWorldWorlding().getWorld().getSpawnLocation();
     }
 
     /**
