@@ -31,7 +31,7 @@ public class Go implements CommandImplement {
             public void onload(MyWorldWorldGrouping worldGrouping) {
                 Bukkit.getScheduler().runTask(MyWorldBukkit.getMyWorldBukkit(), () -> {
                     Location l = worldGrouping.getMyWorldWordInform().getPlayerLeaveLocation().getPlayerLocation(player);
-                    if (l==null){
+                    if (l!=null){
                         player.teleport(worldGrouping.getSpawnLocation());
                     }
                     player.sendMessage(ConfigBukkit.getLang().返回世界_传送成功);
