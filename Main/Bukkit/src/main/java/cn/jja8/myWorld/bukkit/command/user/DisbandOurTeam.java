@@ -5,11 +5,21 @@ import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
+import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
+import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class DisbandOurTeam implements CommandImplement {
+public class DisbandOurTeam implements CommandImplement, CanSetUp {
+
+    @NeedSet public String 删除成功 = "删除成功";
+    @NeedSet public String 删除确认 = "请添加一条参数”yes“来确认你确认要删除团队。";
+    @NeedSet public String 不是团长 = "只有团长才可以删除。";
+    @NeedSet public String 玩家没有团队 = "你没有团队";
+    @NeedSet public String 没有删除世界 = "在删除团队之前，请先删除世界。";
+
+
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {
 
@@ -18,29 +28,29 @@ public class DisbandOurTeam implements CommandImplement {
         MyWorldPlayer myWorldPlayer = MyWorldManger.getPlayer(player);
         MyWorldTeam team = myWorldPlayer.getTeam();
         if (team == null) {
-            player.sendMessage(ConfigBukkit.getLang().删除团队_玩家没有团队);
+            player.sendMessage(玩家没有团队);
             return true;
         }
         if (myWorldPlayer.getStatus().getLevel()> Status.leader.getLevel()) {
-            player.sendMessage(ConfigBukkit.getLang().删除团队_不是团长);
+            player.sendMessage(不是团长);
             return true;
         }
         if (strings.length < 1) {
-            player.sendMessage(ConfigBukkit.getLang().删除团队_删除确认);
+            player.sendMessage(删除确认);
             return true;
         }
         if (ConfigBukkit.getTeamConfig().删除团队时必须先删除世界) {
             if (team.getWorldGroup() != null) {
-                player.sendMessage(ConfigBukkit.getLang().删除团队_没有删除世界);
+                player.sendMessage(没有删除世界);
                 return true;
             }
         }
         if (!"yes".equals(strings[0])) {
-            player.sendMessage(ConfigBukkit.getLang().删除团队_删除确认);
+            player.sendMessage(删除确认);
             return true;
         }
         team.delete();
-        player.sendMessage(ConfigBukkit.getLang().删除团队_删除成功);
+        player.sendMessage(删除成功);
         return true;
     }
 }

@@ -4,7 +4,8 @@ import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 
-public class ServerName implements CommandImplement {
+public class ServerName implements CommandImplement{
+
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {
 
