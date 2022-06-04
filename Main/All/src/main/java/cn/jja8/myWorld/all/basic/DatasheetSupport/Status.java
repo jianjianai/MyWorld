@@ -1,5 +1,8 @@
 package cn.jja8.myWorld.all.basic.DatasheetSupport;
 
+/**
+ * 数字越小级别越高
+ * */
 public enum Status {
     leader(0),
     admin(1),

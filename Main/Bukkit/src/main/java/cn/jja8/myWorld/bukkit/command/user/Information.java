@@ -6,7 +6,7 @@ import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,14 +15,14 @@ import java.util.List;
 
 public class Information implements CommandImplement {
     @Override
-    public void command(CommandSender commandSender, String[] strings) {
+    public boolean command(CommandSender commandSender, String[] strings) {
 
-        if ((!(commandSender instanceof Player))) return;
+        if ((!(commandSender instanceof Player))) return true;
         Player player = (Player) commandSender;
         MyWorldTeam team = MyWorldManger.getPlayer(player).getTeam();
         if (team == null) {
             player.sendMessage(ConfigBukkit.getLang().查询信息_还没有团队);
-            return;
+            return true;
         }
 
         HashMap<String, String> map = new HashMap<>();
@@ -41,5 +41,6 @@ public class Information implements CommandImplement {
         for (String s : list) {
             player.sendMessage(s);
         }
+        return true;
     }
 }

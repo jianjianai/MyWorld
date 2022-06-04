@@ -2,7 +2,7 @@ package cn.jja8.myWorld.bukkit.work.myWorldWorldGroupInform;
 
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroupData;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.Data.String.LocationToString;
+import cn.jja8.patronSaint.bukkit.v2.Data.String.LocationToString;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

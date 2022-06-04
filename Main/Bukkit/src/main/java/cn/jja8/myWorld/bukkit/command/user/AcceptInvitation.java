@@ -5,7 +5,7 @@ import cn.jja8.myWorld.bukkit.command.UserCommand;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,21 +17,22 @@ public class AcceptInvitation implements CommandImplement {
     }
 
     @Override
-    public void command(CommandSender commandSender, String[] strings) {
-        if ((!(commandSender instanceof Player))) return;
+    public boolean command(CommandSender commandSender, String[] strings) {
+        if ((!(commandSender instanceof Player))) return true;
         Player player = (Player) commandSender;
         MyWorldTeam invitationTeam = userCommand.acceptInvitationMap.get(player);
         if (invitationTeam == null) {
             player.sendMessage(ConfigBukkit.getLang().接受邀请_没被邀请);
-            return;
+            return true;
         }
         MyWorldPlayer myWorldPlayer = MyWorldManger.getPlayer(player);
         MyWorldTeam myWorldTeam = myWorldPlayer.getTeam();
         if (myWorldTeam != null) {
             player.sendMessage(ConfigBukkit.getLang().接受邀请_已经有团队.replaceAll("<团队>", myWorldTeam.getTeamName()));
-            return;
+            return true;
         }
         myWorldPlayer.setTeam(invitationTeam);
         player.sendMessage(ConfigBukkit.getLang().接受邀请_接受成功.replaceAll("<团队>", invitationTeam.getTeamName()));
+        return true;
     }
 }

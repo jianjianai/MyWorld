@@ -6,7 +6,7 @@ import cn.jja8.myWorld.all.basic.DatasheetSupport.WorldGroup;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.basic.WorldData;
-import cn.jja8.myWorld.bukkit.config.WorldCleans;
+import cn.jja8.myWorld.bukkit.config.WorldCreators;
 import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
 import cn.jja8.myWorld.bukkit.work.error.TeamAlreadyExists;
 import cn.jja8.myWorld.bukkit.work.error.WorldGroupAlreadyExists;
@@ -91,7 +91,7 @@ public class MyWorldManger {
     /**
      * 创建新的世界组
      * */
-    public static MyWorldWorldGroup newWorldGroup(String worldGroupName, WorldCleans.Creator creator){
+    public static MyWorldWorldGroup newWorldGroup(String worldGroupName, WorldCreators.Creator creator){
         WorldGroup worldGroup = Teams.datasheetManager.getWorldGroupFromWorldsName(worldGroupName);
         if (worldGroup!=null){
             throw new WorldGroupAlreadyExists("世界组"+worldGroupName+"已经存在，不可以创建第二个。");
@@ -115,7 +115,7 @@ public class MyWorldManger {
                 return;
             }
             lock.getMyWorldWorldInform().getMyWorldWorldType().setType(s);
-            lock.getMyWorldWorldInform().getMyWorldWorldCreator().copy(myWorldWorldCreator);
+            lock.getMyWorldWorldInform().getMyWorldWorldCreator().copyForm(myWorldWorldCreator);
             lock.unlock(true);
             myWorldWorldGroup.putWorld(myWorldWorld);
         });

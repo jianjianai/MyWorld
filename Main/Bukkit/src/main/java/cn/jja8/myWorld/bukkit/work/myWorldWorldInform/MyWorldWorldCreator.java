@@ -28,7 +28,7 @@ public class MyWorldWorldCreator {
     }
 
 
-    public void copy(MyWorldWorldCreator myWorldWorldCreator) {
+    public void copyForm(MyWorldWorldCreator myWorldWorldCreator) {
         seed = myWorldWorldCreator.seed==0?seed:myWorldWorldCreator.seed; //如果种子是0就不拷贝。0代表不指定种子。
         environment = myWorldWorldCreator.environment; //环境
         generator = myWorldWorldCreator.generator; //区块加载器名称

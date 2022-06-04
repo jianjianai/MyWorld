@@ -7,7 +7,6 @@ import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.Teams;
 import cn.jja8.myWorld.bukkit.config.Lang;
-import cn.jja8.myWorld.bukkit.config.Permission;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
 import net.md_5.bungee.api.ChatMessageType;
@@ -32,7 +31,6 @@ import java.util.UUID;
 public class WorldSecurity implements Listener {
     UUID uuid = UUID.randomUUID();
     Lang lang = ConfigBukkit.getLang();
-    Permission permission = ConfigBukkit.getPermission();
     public WorldSecurity(){
         MyWorldBukkit.getMyWorldBukkit().getServer().getPluginManager().registerEvents(this, MyWorldBukkit.getMyWorldBukkit());
     }
@@ -101,7 +99,7 @@ public class WorldSecurity implements Listener {
      * 判断一个玩家在某世界是否有权限,只有信任的玩家有权限。
      */
     private boolean isHasAuthority(Player player, World world){
-        if (player.hasPermission(permission.admin)){
+        if (player.hasPermission("MyWorld.admin")){
             return true;
         }
         MyWorldWorldGrouping worldWorldGrouping = MyWorldManger.getWorldGrouping(world);

@@ -1,41 +1,106 @@
 package cn.jja8.myWorld.bukkit.command;
 
-import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.command.user.*;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandManger;
+import cn.jja8.patronSaint.bukkit.v3.command.Command;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandList;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandManger;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandMangering;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserCommand {
     //<被邀请的玩家,团队>
     public Map<Player, MyWorldTeam> acceptInvitationMap = new HashMap<>();
-    CommandManger commandManger;
+    CommandMangering commandManger;
     public UserCommand() {
-        commandManger = new CommandManger(MyWorldBukkit.getMyWorldBukkit(), "myWorld",new String[]{"my","mw","m","w"}, ConfigBukkit.getPermission().user);
         Go go = new Go();
-        commandManger.setDefaulCommand(go);
-        commandManger.addCommand(new String[]{"NewTeam","创建团队"}, new NewTeam());
-        commandManger.addCommand(new String[]{"DisbandOurTeam","解散团队"}, new DisbandOurTeam());
-        commandManger.addCommand(new String[]{"InviteFriend","邀请成员"}, new InviteFriend(this));
-        commandManger.addCommand(new String[]{"AcceptInvitation","接受邀请"}, new AcceptInvitation(this));
-        commandManger.addCommand(new String[]{"QuitThisTeam","退出团队"}, new QuitThisTeam());
-        commandManger.addCommand(new String[]{"TrustHim","添加信任"}, new TrustHim());
-        commandManger.addCommand(new String[]{"DistrustHim","取消信任"}, new DistrustHim());
-        commandManger.addCommand(new String[]{"Information","查询信息"}, new Information());
-        commandManger.addCommand(new String[]{"TrustedPeoples","信任列表"}, new TrustedPeoples());
-        commandManger.addCommand(new String[]{"DeleteWorld","删除世界"}, new DeleteWorld());
-        commandManger.addCommand(new String[]{"ServerName"}, new ServerName());
-        commandManger.addCommand(new String[]{"GoBeginningPoint","去出生点"}, new GoBeginningPoint());
-        commandManger.addCommand(new String[]{"Go","回到世界"}, go);
-        commandManger.addCommand(new String[]{"NewWorld","创建世界"}, new NewWorld(go));
-        commandManger.addCommand(new String[]{"GoToWorld","去世界"}, new GoToWorld(),ConfigBukkit.getPermission().comm_user_GoToWorld);
+        commandManger = new CommandManger(
+                new CommandList("MyWorld")
+                        .setAliases(Arrays.asList("my","mw","m","w","小队世界"))
+                        .setPower("MyWorld.user")
+                        .setCommandImplement(go)
+                        .addCommand(
+                                new Command("NewTeam")
+                                        .setAliases(Arrays.asList("创建团队"))
+                                        .setCommandImplement(new NewTeam())
+                        )
+                        .addCommand(
+                                new Command("DisbandOurTeam")
+                                        .setAliases(Arrays.asList("解散团队"))
+                                        .setCommandImplement(new DisbandOurTeam())
+                        )
+                        .addCommand(
+                                new Command("InviteFriend")
+                                        .setAliases(Arrays.asList("邀请成员"))
+                                        .setCommandImplement(new InviteFriend(this))
+                        )
+                        .addCommand(
+                                new Command("QuitThisTeam")
+                                        .setAliases(Arrays.asList("退出团队"))
+                                        .setCommandImplement(new QuitThisTeam())
+                        )
+                        .addCommand(
+                                new Command("TrustHim")
+                                        .setAliases(Arrays.asList("添加信任"))
+                                        .setCommandImplement(new TrustHim())
+                        )
+                        .addCommand(
+                                new Command("DistrustHim")
+                                        .setAliases(Arrays.asList("取消信任"))
+                                        .setCommandImplement( new DistrustHim())
+                        )
+                        .addCommand(
+                                new Command("Information")
+                                        .setAliases(Arrays.asList("查询信息"))
+                                        .setCommandImplement( new Information())
+                        )
+                        .addCommand(
+                                new Command("TrustedPeoples")
+                                        .setAliases(Arrays.asList("信任列表"))
+                                        .setCommandImplement( new TrustedPeoples())
+                        )
+                        .addCommand(
+                                new Command("DeleteWorld")
+                                        .setAliases(Arrays.asList("删除世界"))
+                                        .setCommandImplement( new DeleteWorld())
+                        )
+                        .addCommand(
+                                new Command("ServerName")
+                                        .setCommandImplement( new ServerName())
+                        )
+                        .addCommand(
+                                new Command("GoBeginningPoint")
+                                        .setAliases(Arrays.asList("去出生点"))
+                                        .setCommandImplement( new GoBeginningPoint())
+                        )
+                        .addCommand(
+                                new Command("Go")
+                                        .setAliases(Arrays.asList("回到世界"))
+                                        .setCommandImplement(go)
+                        )
+                        .addCommand(
+                                new Command("NewWorld")
+                                        .setAliases(Arrays.asList("创建世界"))
+                                        .setCommandImplement( new NewWorld(go))
+                        )
+                        .addCommand(
+                                new Command("GoToWorld")
+                                        .setAliases(Arrays.asList("去世界"))
+                                        .setCommandImplement( new GoToWorld())
+                                        .setPower("MyWorld.comm.user.GoToWorld")
+                        )
+        )
+                .load(new File(new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(),"command"),"MyWorld.yaml"))
+                .run(MyWorldBukkit.getMyWorldBukkit());
     }
 
-    public CommandManger getCommandManger() {
+    public CommandMangering getCommandManger() {
         return commandManger;
     }
 }

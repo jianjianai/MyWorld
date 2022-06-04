@@ -4,7 +4,7 @@ import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.work.*;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,32 +12,32 @@ import java.util.List;
 
 public class DeleteWorld implements CommandImplement {
     @Override
-    public void command(CommandSender commandSender, String[] strings) {
+    public boolean command(CommandSender commandSender, String[] strings) {
 
-        if ((!(commandSender instanceof Player))) return;
+        if ((!(commandSender instanceof Player))) return true;
         Player player = (Player) commandSender;
         if (strings.length < 1) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_删除确认);
-            return;
+            return true;
         }
         if (!"yes".equals(strings[0])) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_删除确认);
-            return;
+            return true;
         }
         MyWorldPlayer myWorldPlayer = MyWorldManger.getPlayer(player);
         MyWorldTeam team = myWorldPlayer.getTeam();
         if (team == null) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_玩家没有团队);
-            return;
+            return true;
         }
         if (myWorldPlayer.getStatus().getLevel()> Status.leader.getLevel()) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_不是团长);
-            return;
+            return true;
         }
         MyWorldWorldGroup worldGroup = team.getWorldGroup();
         if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().删除世界_世界不存在);
-            return;
+            return true;
         }
 
         MyWorldWorldGrouping myWorldWorldGrouping = worldGroup.getLoading();
@@ -54,5 +54,6 @@ public class DeleteWorld implements CommandImplement {
             lock.delete();
         }
         player.sendMessage(ConfigBukkit.getLang().删除世界_删除成功);
+        return true;
     }
 }

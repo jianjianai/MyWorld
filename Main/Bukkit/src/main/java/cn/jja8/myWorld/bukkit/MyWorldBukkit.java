@@ -14,7 +14,7 @@ import cn.jja8.myWorld.bukkit.listener.WorldPortal;
 import cn.jja8.myWorld.bukkit.listener.WorldClean;
 import cn.jja8.myWorld.bukkit.listener.WorldSecurity;
 import cn.jja8.myWorld.bukkit.work.MyWorldManger;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.bStats.Metrics;
+import cn.jja8.patronSaint.bukkit.v2.bStats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

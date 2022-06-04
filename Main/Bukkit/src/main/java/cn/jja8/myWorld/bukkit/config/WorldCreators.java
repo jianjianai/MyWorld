@@ -4,15 +4,17 @@ import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.work.error.MyWorldError;
 import cn.jja8.myWorld.bukkit.work.myWorldWorldInform.MyWorldWorldCreator;
-import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.JarFile;
+import cn.jja8.patronSaint.all.V2.file.JarFile;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-public class WorldCleans {
+/**
+ * 世界生成器组
+ * */
+public class WorldCreators {
     public static class Creator{
         private final Map<String,MyWorldWorldCreator> Type_defMyWorldWorldCreator = new HashMap<>();
         public Creator(ConfigurationSection yamlConfiguration) {
@@ -30,25 +32,31 @@ public class WorldCleans {
         }
     }
 
-    private final Map<String,Creator> clean_Creator = new HashMap<>();
-    public WorldCleans() {
-        File defWorlds = new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(),"WorldCleans.yml");
-        JarFile.unzipFile(defWorlds, ConfigBukkit.class,"WorldCleans.yml",false);
+    private final Map<String,Creator> creatorName_Creator = new HashMap<>();
+    public WorldCreators() {
+        File defWorlds = new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(),"WorldCreators.yml");
+        JarFile.unzipFile(defWorlds, ConfigBukkit.class,"WorldCreators.yml",false);
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(defWorlds);
         for (String key : yamlConfiguration.getKeys(false)) {
             ConfigurationSection configurationSection = yamlConfiguration.getConfigurationSection(key);
             if (configurationSection!=null){
-                clean_Creator.put(key,new Creator(configurationSection));
+                creatorName_Creator.put(key,new Creator(configurationSection));
             }
         }
     }
-    public Map<String, Creator> getClean_Creator() {
-        return clean_Creator;
+    /**
+     * 获得世界生成器名字map
+     * */
+    public Map<String, Creator> getCreatorName_Creator() {
+        return creatorName_Creator;
     }
+    /**
+     * 获得默认的世界生成器
+     * */
     public Creator getDefault(){
-        Creator def = clean_Creator.get("default");
+        Creator def = creatorName_Creator.get("default");
         if (def==null){
-            for (Creator value : clean_Creator.values()) {
+            for (Creator value : creatorName_Creator.values()) {
                 def = value;
                 break;
             }

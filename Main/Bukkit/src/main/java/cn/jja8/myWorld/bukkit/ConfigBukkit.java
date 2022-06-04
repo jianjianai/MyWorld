@@ -1,21 +1,20 @@
 package cn.jja8.myWorld.bukkit;
 
 import cn.jja8.myWorld.bukkit.config.*;
-import cn.jja8.patronSaint_2022_3_2_1244.allUsed.file.YamlConfig;
+import cn.jja8.patronSaint.all.V2.file.YamlConfig;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class ConfigBukkit {
-    static Permission permission;
     static FileConfig fileConfig;
     static Lang lang;
     static WorldConfig worldConfig;
     static TeamConfig teamConfig;
     static PlayerDataConfig playerDataConfig;
-    static WorldCleans worldCleans;
+    static WorldCreators worldCreators;
     static void load(){
-        worldCleans = new WorldCleans();
+        worldCreators = new WorldCreators();
         if (fileConfig==null){
             try {
                 fileConfig = YamlConfig.loadFromFile(new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(), "FileConfig.yml"),fileConfig = new FileConfig());
@@ -53,13 +52,6 @@ public class ConfigBukkit {
                     exception.printStackTrace();
                 }
             }
-            if (permission==null){
-                try {
-                    permission = YamlConfig.loadFromFile(new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(), "Permission.yml"),permission = new Permission());
-                } catch (Error|Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
         }
     }
     public static FileConfig getFileConfig() {
@@ -77,11 +69,8 @@ public class ConfigBukkit {
     public static PlayerDataConfig getPlayerDataConfig(){
         return playerDataConfig;
     }
-    public static Permission getPermission() {
-        return permission;
-    }
 
-    public static WorldCleans getDefWorlds() {
-        return worldCleans;
+    public static WorldCreators getDefWorlds() {
+        return worldCreators;
     }
 }

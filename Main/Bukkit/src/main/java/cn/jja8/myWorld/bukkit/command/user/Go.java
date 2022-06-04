@@ -4,7 +4,7 @@ import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.work.error.NoAllWorldLocks;
 import cn.jja8.myWorld.bukkit.work.*;
-import cn.jja8.patronSaint_2022_3_2_1244.bukkit.command.CommandImplement;
+import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -12,19 +12,19 @@ import org.bukkit.entity.Player;
 
 public class Go implements CommandImplement {
     @Override
-    public void command(CommandSender commandSender, String[] strings) {
-        if ((!(commandSender instanceof Player))) return;
+    public boolean command(CommandSender commandSender, String[] strings) {
+        if ((!(commandSender instanceof Player))) return true;
         Player player = (Player) commandSender;
         MyWorldPlayer myWorldPlayer = MyWorldManger.getPlayer(player);
         MyWorldTeam team = myWorldPlayer.getTeam();
         if (team == null) {
             player.sendMessage(ConfigBukkit.getLang().返回世界_没有团队);
-            return;
+            return true;
         }
         MyWorldWorldGroup worldGroup = team.getWorldGroup();
         if (worldGroup == null) {
             player.sendMessage(ConfigBukkit.getLang().返回世界_团队没有世界);
-            return;
+            return true;
         }
         worldGroup.load(new MyWorldWorldGroup.OnLoad() {
             @Override
@@ -51,5 +51,6 @@ public class Go implements CommandImplement {
 
             }
         });
+        return true;
     }
 }

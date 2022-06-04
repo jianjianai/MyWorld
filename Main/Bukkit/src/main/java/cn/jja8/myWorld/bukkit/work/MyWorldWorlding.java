@@ -1,5 +1,6 @@
 package cn.jja8.myWorld.bukkit.work;
 
+import cn.jja8.myWorld.bukkit.basic.WorldData;
 import org.bukkit.World;
 
 /**
@@ -12,12 +13,13 @@ public class MyWorldWorlding {
         this.myWorldWorldLock = myWorldWorldLock;
 
         MyWorldWorldLock.LoadingProgress loadingProgress =  new MyWorldWorldLock.LoadingProgress(myWorldWorldLock.myWorldWorld.name);
+        boolean fast = !WorldData.worldDataSupport.isWorldExistence(myWorldWorldLock.myWorldWorld.name);
         world = myWorldWorldLock.worldDataLock.loadWorldAsync(loadingProgress);
         loadingProgress.finish();
-
-
         MyWorldManger.worldName_MyWorldWorlding.put(myWorldWorldLock.myWorldWorld.name,this);
-        myWorldWorldLock.myWorldWorldInform.getMyWorldWorldCreator().setting(world);
+        if (fast){
+            myWorldWorldLock.myWorldWorldInform.getMyWorldWorldCreator().setting(world);
+        }
     }
 
     /**
