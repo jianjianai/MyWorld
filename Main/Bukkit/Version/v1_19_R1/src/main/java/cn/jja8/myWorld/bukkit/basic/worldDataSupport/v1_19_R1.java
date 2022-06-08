@@ -2,7 +2,6 @@ package cn.jja8.myWorld.bukkit.basic.worldDataSupport;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.core.Holder;
 import net.minecraft.core.IRegistry;
 import net.minecraft.resources.MinecraftKey;
 import net.minecraft.resources.ResourceKey;
@@ -12,18 +11,14 @@ import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.level.progress.WorldLoadListenerLogger;
 import net.minecraft.util.ChatDeserializer;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.datafix.DataConverterRegistry;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.entity.ai.village.VillageSiege;
 import net.minecraft.world.entity.npc.MobSpawnerCat;
 import net.minecraft.world.entity.npc.MobSpawnerTrader;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.WorldChunkManager;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.dimension.DimensionManager;
 import net.minecraft.world.level.dimension.WorldDimension;
-import net.minecraft.world.level.levelgen.ChunkGeneratorAbstract;
 import net.minecraft.world.level.levelgen.GeneratorSettings;
 import net.minecraft.world.level.levelgen.MobSpawnerPatrol;
 import net.minecraft.world.level.levelgen.MobSpawnerPhantom;
@@ -35,15 +30,18 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R1.generator.CraftWorldInfo;
-import org.bukkit.craftbukkit.v1_19_R1.generator.CustomWorldChunkManager;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 public class v1_19_R1 extends WorldDataAndLockSupport{
     public v1_19_R1(File allWordFile){
@@ -160,8 +158,8 @@ public class v1_19_R1 extends WorldDataAndLockSupport{
                     boolean hardcore = creator.hardcore();
                     WorldDataServer worlddata = (WorldDataServer)worldSession.a(this.console.registryreadops, this.console.datapackconfiguration, this.console.N.g());
                     if (worlddata == null) {
-                        DedicatedServerProperties.a properties = new DedicatedServerProperties.a(Objects.toString(creator.seed()), ChatDeserializer.a(creator.generatorSettings().isEmpty() ? "{}" : creator.generatorSettings()), creator.generateStructures(), creator.type().name().toLowerCase(Locale.ROOT));
-                        GeneratorSettings generatorsettings = properties.a(this.console.aX());
+                       DedicatedServerProperties.a properties = new DedicatedServerProperties.a(Objects.toString(creator.seed()), ChatDeserializer.a(creator.generatorSettings().isEmpty() ? "{}" : creator.generatorSettings()), creator.generateStructures(), creator.type().name().toLowerCase(Locale.ROOT));
+                       GeneratorSettings generatorsettings = properties.a(this.console.aX());
                         WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.a(craftServer.getDefaultGameMode().getValue()), hardcore, EnumDifficulty.b, false, new GameRules(), this.console.datapackconfiguration);
                         worlddata = new WorldDataServer(worldSettings, generatorsettings, Lifecycle.stable());
                     }

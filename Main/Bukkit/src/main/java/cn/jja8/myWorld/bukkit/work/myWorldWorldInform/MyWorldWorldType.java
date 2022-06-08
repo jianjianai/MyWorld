@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
  * */
 public class MyWorldWorldType {
     private String type = null;
-    private final WorldDataLock worldDataLock;
 
     public String getType() {
         return type;
@@ -20,15 +19,14 @@ public class MyWorldWorldType {
         this.type = type;
     }
 
-    public MyWorldWorldType(WorldDataLock worldDataLock1) {
-        this.worldDataLock = worldDataLock1;
+    public MyWorldWorldType(WorldDataLock worldDataLock) {
         byte[] bytes = worldDataLock.getCustomDataByte(WorldsDataName.WorldType.toString());
         if (bytes!=null){
             type = new String(bytes,StandardCharsets.UTF_8);
         }
     }
 
-    public void save(){
+    public void save(WorldDataLock worldDataLock){
         if (type!=null){
             worldDataLock.setCustomDataByte(WorldsDataName.WorldType.toString(),type.getBytes(StandardCharsets.UTF_8));
         }

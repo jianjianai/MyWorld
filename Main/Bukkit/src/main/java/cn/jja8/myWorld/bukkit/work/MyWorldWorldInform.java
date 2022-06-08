@@ -2,6 +2,7 @@ package cn.jja8.myWorld.bukkit.work;
 
 import cn.jja8.myWorld.bukkit.work.myWorldWorldInform.MyWorldWorldCreator;
 import cn.jja8.myWorld.bukkit.work.myWorldWorldInform.MyWorldWorldType;
+import cn.jja8.myWorld.bukkit.work.myWorldWorldInform.State;
 import cn.jja8.myWorld.bukkit.work.name.WorldCustomDataName;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -16,6 +17,7 @@ public class MyWorldWorldInform {
 
     private final MyWorldWorldCreator myWorldWorldCreator;
     private final MyWorldWorldType myWorldWorldType;
+    private final State state;
     public MyWorldWorldInform(MyWorldWorldLock myWorldWorldLock) {
         this.myWorldWorldLock =myWorldWorldLock;
 
@@ -31,6 +33,9 @@ public class MyWorldWorldInform {
             stringReader.close();
             myWorldWorldCreator.loadByYaml(yamlConfiguration);
         }
+
+        //加载state
+        state = new State(myWorldWorldLock.worldDataLock);
     }
 
     public void save(){
@@ -39,7 +44,9 @@ public class MyWorldWorldInform {
         myWorldWorldCreator.saveToYaml(yamlConfiguration);
         myWorldWorldLock.worldDataLock.setCustomDataByte(WorldCustomDataName.WorldCreator.toString(),yamlConfiguration.saveToString().getBytes(StandardCharsets.UTF_8));
         //保存type
-        myWorldWorldType.save();
+        myWorldWorldType.save(myWorldWorldLock.worldDataLock);
+        //保存state
+        state.save(myWorldWorldLock.worldDataLock);
     }
 
     public MyWorldWorldCreator getMyWorldWorldCreator() {
@@ -48,5 +55,9 @@ public class MyWorldWorldInform {
 
     public MyWorldWorldType getMyWorldWorldType() {
         return myWorldWorldType;
+    }
+
+    public State getState() {
+        return state;
     }
 }

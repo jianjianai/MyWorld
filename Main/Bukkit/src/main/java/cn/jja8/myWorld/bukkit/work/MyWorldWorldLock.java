@@ -1,16 +1,8 @@
 package cn.jja8.myWorld.bukkit.work;
 
-import cn.jja8.myWorld.bukkit.ConfigBukkit;
 import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.basic.worldDataSupport.WorldDataLock;
-import cn.jja8.myWorld.bukkit.config.Lang;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * 一个世界的锁
