@@ -65,25 +65,25 @@ public class MyWorldWorldCreator {
         try {
             this.type = WorldType.valueOf(type);
         } catch (IllegalArgumentException illegalArgumentException) {
-            MyWorldBukkit.getMyWorldBukkit().getLogger().warning("type '" + environment + "' 不存在！");
+            MyWorldBukkit.getMyWorldBukkit().getLogger().warning("type '" + type + "' 不存在！");
         }
         try {
             this.difficulty = Difficulty.valueOf(difficulty);
         } catch (IllegalArgumentException illegalArgumentException) {
-            MyWorldBukkit.getMyWorldBukkit().getLogger().warning("difficulty '" + environment + "' 不存在！");
+            MyWorldBukkit.getMyWorldBukkit().getLogger().warning("difficulty '" + difficulty + "' 不存在！");
         }
     }
 
     public void saveToYaml(ConfigurationSection configurationSection) {
         configurationSection.set("seed", getSeedPrivate());
-        configurationSection.set("environment", environment.toString());
+        configurationSection.set("environment", environment==null?null:environment.toString());
         configurationSection.set("generator", generator);
         configurationSection.set("generatorSettings", generatorSettings);
-        configurationSection.set("type", type.toString());
+        configurationSection.set("type", type==null?null:type.toString());
         configurationSection.set("generateStructures", generateStructures);
         configurationSection.set("hardcore", hardcore);
         configurationSection.createSection("gameRule", gameRule);
-        configurationSection.set("difficulty", difficulty.toString());
+        configurationSection.set("difficulty", difficulty==null?null:difficulty.toString());
     }
 
     /**
