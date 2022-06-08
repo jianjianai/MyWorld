@@ -12,7 +12,7 @@ public class MyWorldWorlding {
     MyWorldWorlding(MyWorldWorldLock myWorldWorldLock) {
         this.myWorldWorldLock = myWorldWorldLock;
 
-        MyWorldWorldLock.LoadingProgress loadingProgress =  new MyWorldWorldLock.LoadingProgress(myWorldWorldLock.myWorldWorld.name);
+        LoadingProgress loadingProgress =  new LoadingProgress(myWorldWorldLock.myWorldWorld.name);
         boolean fast = !WorldData.worldDataSupport.isWorldExistence(myWorldWorldLock.myWorldWorld.name);
         world = myWorldWorldLock.worldDataLock.loadWorldAsync(loadingProgress);
         loadingProgress.finish();

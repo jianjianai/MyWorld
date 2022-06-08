@@ -19,6 +19,7 @@ dependencies {
     implementation project("Main:Bukkit:Version:v1_18_R2")
     implementation project("Main:Bukkit:Version:v1_12_R1")
     implementation project("Main:Bukkit:Version:v1_16_R3")
+    implementation project("Main:Bukkit:Version:v1_19_R1")
 }
 
 test {
