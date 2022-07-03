@@ -7,19 +7,19 @@ import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class InviteFriend implements CommandImplement , CanSetUp {
     private final UserCommand userCommand;
-    @NeedSet public String 被邀请信息 = "你被<玩家>邀请进<团队>团队，赶紧同意吧！";
-    @NeedSet public String 玩家不在线 = "玩家<不在线玩家>不在线。";
-    @NeedSet public String 没有参数 = "你要邀请谁呢？请添加一个玩家名参数吧。";
-    @NeedSet public String 邀请成功 = "邀请成功";
-    @NeedSet public String 不是管理 = "只有管理可以邀请成员";
-    @NeedSet public String 玩家没有团队 = "你没有团队";
+    @Lang public String 被邀请信息 = "你被<玩家>邀请进<团队>团队，赶紧同意吧！";
+    @Lang public String 玩家不在线 = "玩家<不在线玩家>不在线。";
+    @Lang public String 没有参数 = "你要邀请谁呢？请添加一个玩家名参数吧。";
+    @Lang public String 邀请成功 = "邀请成功";
+    @Lang public String 不是管理 = "只有管理可以邀请成员";
+    @Lang public String 玩家没有团队 = "你没有团队";
 
     public InviteFriend(UserCommand userCommand) {
         this.userCommand = userCommand;

@@ -5,17 +5,18 @@ import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UnLoadWorld implements CommandImplement , CanSetUp {
-    @NeedSet public String 世界没有加载 = "<世界>没有被加载，不用卸载哦。";
-    @NeedSet public String 卸载完成="<世界>卸载完成。";
-    @NeedSet public String 未指定世界名="未指定世界名";
-    @NeedSet public String 世界不存在="<世界>世界不存在。";
+    @Lang public String 世界没有加载 = "<世界>没有被加载，不用卸载哦。";
+    @Lang public String 卸载完成="<世界>卸载完成。";
+    @Lang public String 未指定世界名="未指定世界名";
+    @Lang
+    public String 世界不存在="<世界>世界不存在。";
 
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {

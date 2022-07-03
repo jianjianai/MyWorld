@@ -10,7 +10,7 @@ import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewWorld implements CommandImplement , CanSetUp {
-    @NeedSet public  String 世界名称被他人占用 = "这个世界名称已经被占用，请换一个吧。";
-    @NeedSet public  String 需要世界名称 = "世界需要一个名称哦";
-    @NeedSet public  String 不是团长 = "只有团长才可以创建世界。";
-    @NeedSet public  String 团队已经有世界了 = "你所在的团队已经有世界了";
-    @NeedSet public  String 玩家没有团队 = "创建世界之前需要先加入一个团队";
-    @NeedSet public  String 创建成功 = "世界创建成功";
-    @NeedSet public  String 世界名不合法 = "世界创建失败，世界名不合法。{长度必须大于3，只能使用小写字母}";
-    @NeedSet public  String 名称禁止使用 = "<世界>名称被禁止使用";
-    @NeedSet public  String 世界生成器不存在 = "世界生成器<WorldClean>不存在。";
+    @Lang public  String 世界名称被他人占用 = "这个世界名称已经被占用，请换一个吧。";
+    @Lang public  String 需要世界名称 = "世界需要一个名称哦";
+    @Lang public  String 不是团长 = "只有团长才可以创建世界。";
+    @Lang public  String 团队已经有世界了 = "你所在的团队已经有世界了";
+    @Lang public  String 玩家没有团队 = "创建世界之前需要先加入一个团队";
+    @Lang public  String 创建成功 = "世界创建成功";
+    @Lang public  String 世界名不合法 = "世界创建失败，世界名不合法。{长度必须大于3，只能使用小写字母}";
+    @Lang public  String 名称禁止使用 = "<世界>名称被禁止使用";
+    @Lang public  String 世界生成器不存在 = "世界生成器<WorldClean>不存在。";
 
     Go go;
     public NewWorld(Go go) {

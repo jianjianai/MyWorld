@@ -8,15 +8,15 @@ import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class NewTeam implements CommandImplement , CanSetUp {
-    @NeedSet public  String 团队名称被占用 = "<团队>名称已经被其他团队占用了。";
-    @NeedSet public  String 没有团队名参数 = "需要给团队取一个名字哦。";
-    @NeedSet public  String 已经在团队中了 = "你已经在<团队>团队中了。";
-    @NeedSet public  String 创建成功 = "团队创建成功";
+    @Lang public  String 团队名称被占用 = "<团队>名称已经被其他团队占用了。";
+    @Lang public  String 没有团队名参数 = "需要给团队取一个名字哦。";
+    @Lang public  String 已经在团队中了 = "你已经在<团队>团队中了。";
+    @Lang public  String 创建成功 = "团队创建成功";
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {
 

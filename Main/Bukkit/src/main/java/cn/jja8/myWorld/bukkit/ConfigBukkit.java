@@ -10,7 +10,6 @@ public class ConfigBukkit {
     static FileConfig fileConfig;
     static Lang lang;
     static WorldConfig worldConfig;
-    static TeamConfig teamConfig;
     static PlayerDataConfig playerDataConfig;
     static WorldCreators worldCreators;
     static void load(){
@@ -38,13 +37,6 @@ public class ConfigBukkit {
                     exception.printStackTrace();
                 }
             }
-            if (teamConfig==null){
-                try {
-                    teamConfig = YamlConfig.loadFromFile(new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(), "TeamConfig.yml"), teamConfig = new TeamConfig());
-                } catch (Error|Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
             if (playerDataConfig==null){
                 try {
                     playerDataConfig = YamlConfig.loadFromFile(new File(MyWorldBukkit.getMyWorldBukkit().getDataFolder(), "PlayerDataConfig.yml"), playerDataConfig = new PlayerDataConfig());
@@ -62,9 +54,6 @@ public class ConfigBukkit {
     }
     public static WorldConfig getWorldConfig() {
         return worldConfig;
-    }
-    public static TeamConfig getTeamConfig() {
-        return teamConfig;
     }
     public static PlayerDataConfig getPlayerDataConfig(){
         return playerDataConfig;

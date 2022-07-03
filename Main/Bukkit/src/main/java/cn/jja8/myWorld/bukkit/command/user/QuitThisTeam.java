@@ -6,15 +6,15 @@ import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class QuitThisTeam implements CommandImplement , CanSetUp {
-    @NeedSet public String 退出成功 = "退出成功";
-    @NeedSet public String 团长不能退出 = "团长不能退出团队";
-    @NeedSet public String 退出确认 = "请添加一条参数”yes“来确认你确认要退出团队。";
-    @NeedSet public String 你没有团队 = "你不在任何团队中";
+    @Lang public String 退出成功 = "退出成功";
+    @Lang public String 团长不能退出 = "团长不能退出团队";
+    @Lang public String 退出确认 = "请添加一条参数”yes“来确认你确认要退出团队。";
+    @Lang public String 你没有团队 = "你不在任何团队中";
 
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {

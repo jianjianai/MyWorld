@@ -4,18 +4,18 @@ import cn.jja8.myWorld.all.basic.DatasheetSupport.Status;
 import cn.jja8.myWorld.bukkit.work.*;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TrustHim implements CommandImplement , CanSetUp {
 
-    @NeedSet public String 世界不存在 ="你所在的团队没有世界";
-    @NeedSet public String 你没有团队 = "你不在任何一个团队中。";
-    @NeedSet public String 权限不足 = "只有管理员才可以添加信任的玩家。";
-    @NeedSet public String 世界未加载 = "世界没有加载时无法添加信任玩家，请先进入你所在团队的世界。";
-    @NeedSet public String 添加成功 = "添加成功！";
-    @NeedSet public String 没有参数 = "需要添加的玩家名称";
+    @Lang public String 世界不存在 ="你所在的团队没有世界";
+    @Lang public String 你没有团队 = "你不在任何一个团队中。";
+    @Lang public String 权限不足 = "只有管理员才可以添加信任的玩家。";
+    @Lang public String 世界未加载 = "世界没有加载时无法添加信任玩家，请先进入你所在团队的世界。";
+    @Lang public String 添加成功 = "添加成功！";
+    @Lang public String 没有参数 = "需要添加的玩家名称";
     
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {

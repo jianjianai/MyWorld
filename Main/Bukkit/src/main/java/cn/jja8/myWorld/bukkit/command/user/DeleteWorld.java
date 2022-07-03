@@ -5,18 +5,18 @@ import cn.jja8.myWorld.bukkit.MyWorldBukkit;
 import cn.jja8.myWorld.bukkit.work.*;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class DeleteWorld implements CommandImplement , CanSetUp {
-    @NeedSet public String 删除成功 = "删除成功";
-    @NeedSet public String 删除确认 = "请添加一条参数”yes“来确认你确认要删除世界。";
-    @NeedSet public String 玩家没有团队 = "你没有团队";
-    @NeedSet public String 不是团长 = "只有团长才可以删除。";
-    @NeedSet public String 世界不存在 = "团队没有世界";
+    @Lang public String 删除成功 = "删除成功";
+    @Lang public String 删除确认 = "请添加一条参数”yes“来确认你确认要删除世界。";
+    @Lang public String 玩家没有团队 = "你没有团队";
+    @Lang public String 不是团长 = "只有团长才可以删除。";
+    @Lang public String 世界不存在 = "团队没有世界";
 
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {

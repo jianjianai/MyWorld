@@ -18,6 +18,7 @@ import net.minecraft.world.entity.npc.MobSpawnerTrader;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.dimension.DimensionManager;
 import net.minecraft.world.level.dimension.WorldDimension;
 import net.minecraft.world.level.levelgen.GeneratorSettings;
 import net.minecraft.world.level.levelgen.MobSpawnerPatrol;
@@ -177,7 +178,7 @@ public class v1_19_R1 extends WorldDataAndLockSupport{
                     List<MobSpawner> list = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worlddata));
                     IRegistry<WorldDimension> iregistry = worlddata.A().d();
                     WorldDimension worlddimension = iregistry.a(actualDimension);
-                    WorldInfo worldInfo = new CraftWorldInfo(worlddata, worldSession, creator.environment(), worlddimension.a().a());
+                    WorldInfo worldInfo = new CraftWorldInfo(worlddata, worldSession, creator.environment(),(DimensionManager)worlddimension.a().a(),worlddimension.b(), craftServer.getHandle().b().aX());
                     if (biomeProvider == null && generator != null) {
                         biomeProvider = generator.getDefaultBiomeProvider(worldInfo);
                     }

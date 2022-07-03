@@ -3,7 +3,7 @@ package cn.jja8.myWorld.bukkit.command.user;
 import cn.jja8.myWorld.bukkit.work.*;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoToWorld implements CommandImplement , CanSetUp {
-    @NeedSet public String 没有指定世界type = "未指定type";
-    @NeedSet public String 没有团队 = "你还没有加入团队";
-    @NeedSet public String 团队没有世界 = "你所在的团队还没有世界";
-    @NeedSet public String 世界没有加载 = "你所在的团队的世界没有加载，请先进入世界。";
-    @NeedSet public String type错误 = "type'<type>'不存在";
-    @NeedSet public String 传送成功 = "传送成功。";
+    @Lang public String 没有指定世界type = "未指定type";
+    @Lang public String 没有团队 = "你还没有加入团队";
+    @Lang public String 团队没有世界 = "你所在的团队还没有世界";
+    @Lang public String 世界没有加载 = "你所在的团队的世界没有加载，请先进入世界。";
+    @Lang public String type错误 = "type'<type>'不存在";
+    @Lang public String 传送成功 = "传送成功。";
 
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {

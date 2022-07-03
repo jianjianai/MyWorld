@@ -6,14 +6,14 @@ import cn.jja8.myWorld.bukkit.work.MyWorldPlayer;
 import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AcceptInvitation implements CommandImplement, CanSetUp {
-    @NeedSet public String 没被邀请 = "你没有被邀请哦。";
-    @NeedSet public String 已经有团队="你已经在<团队>团队中了。";
-    @NeedSet public String 接受成功="你已加入<团队>团队。";
+    @Lang public String 没被邀请 = "你没有被邀请哦。";
+    @Lang public String 已经有团队="你已经在<团队>团队中了。";
+    @Lang public String 接受成功="你已加入<团队>团队。";
 
     private final UserCommand userCommand;
     public AcceptInvitation(UserCommand userCommand) {

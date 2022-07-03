@@ -4,14 +4,14 @@ import cn.jja8.myWorld.bukkit.work.MyWorldManger;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGrouping;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import org.bukkit.command.CommandSender;
 
 import java.util.function.BiConsumer;
 
 public class UnLoadAllWorld implements CommandImplement, CanSetUp {
-   @NeedSet public String 卸载 = "正在卸载<世界>";
-   @NeedSet public String 卸载完成="所有世界已经卸载完成。";
+   @Lang public String 卸载 = "正在卸载<世界>";
+   @Lang public String 卸载完成="所有世界已经卸载完成。";
     
     @Override
     public boolean command(CommandSender commandSender, String[] strings) {

@@ -7,7 +7,7 @@ import cn.jja8.myWorld.bukkit.work.MyWorldTeam;
 import cn.jja8.myWorld.bukkit.work.MyWorldWorldGroup;
 import cn.jja8.patronSaint.bukkit.v3.command.CanSetUp;
 import cn.jja8.patronSaint.bukkit.v3.command.CommandImplement;
-import cn.jja8.patronSaint.bukkit.v3.command.NeedSet;
+import cn.jja8.patronSaint.bukkit.v3.command.canSetUpLoadType.Lang;
 import cn.jja8.patronSaint.bukkit.v3.tool.Config.ConfigurationSectionSetDefGet;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Information implements CommandImplement , CanSetUp {
-    @NeedSet public  String 团队世界信息 = "该团队的世界是：<世界>";
-    @NeedSet public  String 团队没有世界 = "你加入的团队还没有世界";
-    @NeedSet public  String 还没有团队 = "你现在还没有加入团队";
+    @Lang public  String 团队世界信息 = "该团队的世界是：<世界>";
+    @Lang public  String 团队没有世界 = "你加入的团队还没有世界";
+    @Lang public  String 还没有团队 = "你现在还没有加入团队";
     public List<String> 团队信息列表 = Arrays.asList(
             "你所在的团队是：<团队>",
             "<团队世界信息>",
